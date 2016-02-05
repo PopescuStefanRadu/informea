@@ -1,0 +1,8 @@
+name = elis_consumer
+description = Consume external web services from ELIS
+core = 7.x
+package = InforMEA
+version = 7.x-0.1
+project = elis_consumer
+dependencies[] = migrate
+files[] = includes/AbstractElisMigration.inc
