@@ -6,3 +6,4 @@ version = 7.x-0.1
 project = elis_consumer
 dependencies[] = migrate
 files[] = includes/AbstractElisMigration.inc
+files[] = migration/TreatyElisMigration.inc
