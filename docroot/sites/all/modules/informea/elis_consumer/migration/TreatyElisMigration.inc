@@ -83,45 +83,28 @@ class TreatyElistMigrateList extends MigrateList {
     return $return;
   }
 
-  public function get_xml_data_from_url($url) {
-    $response = drupal_http_request($url, array('headers' => array('Accept' => 'application/xml')));
-    if ($response->code != 200) {
-      if (function_exists('drush_log')) {
-        drush_log('Could not retrieve treaties data from ELIS.', 'error');
-      }
-      return NULL;
-    }
-    $data = trim(utf8_encode($response->data));
-    $xml = simplexml_load_string($data);
-    return $xml;
-  }
-
   /** {@inheritdoc} */
   public function getIDList() {
     $ids = array();
-    $period = $this->get_date_period();
-    foreach ($period as $p) {
-      $spage_query = $this->hexadecimally_encode_string($this->spage_query_default_string . ' AND DE:' . $p);
-      $spage_first = 0;
+    $spage_query = $this->hexadecimally_encode_string($this->spage_query_default_string);
+    $spage_first = 0;
+    $url = str_replace(
+      array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+      array($spage_query,$spage_first),
+      $this->generic_url
+    );
+    $xml = elis_consumer_get_xml_data_from_url($url);
+    while ($xml != NULL && intval($xml->attributes()['numberResultsFound']) > $spage_first) {
+      foreach ($xml->document as $treaty) {
+        $ids[] = (string) $treaty->Recid;
+      }
+      $spage_first += ELIS_ITEMS_PER_PAGE;
       $url = str_replace(
         array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
         array($spage_query,$spage_first),
         $this->generic_url
       );
-      $xml = $this->get_xml_data_from_url($url);
-      $count = intval($xml->attributes()['numberResultsFound']);
-      while ($count > $spage_first) {
-        foreach ($xml->document as $treaty) {
-          $ids[] = (string) $treaty->Recid;
-        }
-        $spage_first += ELIS_ITEMS_PER_PAGE;
-        $url = str_replace(
-          array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
-          array($spage_query,$spage_first),
-          $this->generic_url
-        );
-        $xml = $this->get_xml_data_from_url($url);
-      }
+      $xml = elis_consumer_get_xml_data_from_url($url);
     }
     return array_unique($ids);
   }
@@ -133,7 +116,7 @@ class TreatyElistMigrateList extends MigrateList {
       array($this->hexadecimally_encode_string($this->spage_query_default_string),0),
       $this->generic_url
     );
-    $xml = $this->get_xml_data_from_url($url);
+    $xml = elis_consumer_get_xml_data_from_url($url);
     return intval($xml->attributes()['numberResultsFound']);
   }
 
@@ -141,10 +124,15 @@ class TreatyElistMigrateList extends MigrateList {
 
 class TreatyElisMigrateItem extends MigrateItem {
 
-  protected $item_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vb_query=';
+  protected $item_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vq_query=';
 
   public function getItem($id) {
-    // TODO: Implement getItem() method.
+    $vq_query = sprintf('ID:"%s"', $id);
+    $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
+    $json = json_encode($xml->document[0]);
+    $ob = json_decode($json,TRUE);
+    var_dump($ob);
+    die;
   }
 }
 
