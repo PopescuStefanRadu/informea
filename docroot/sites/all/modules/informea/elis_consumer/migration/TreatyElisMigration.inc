@@ -1,6 +1,7 @@
 <?php
 
 define('ELIS_ITEMS_PER_PAGE', 20);
+define('DRUPAL_TYPE_TREATY', 'treaty');
 
 /**
  * Class TreatyElisMigrateSourceList provides fields for Treaty migration.
@@ -12,7 +13,7 @@ class TreatyElisMigrateSourceList extends MigrateSourceList {
    */
   public function fields() {
     return array(
-      'id' => 'Remote primary key',
+      'Recid' => 'Remote primary key',
       'dateOfEntry' => 'Date of entry',
       'dateOfModification' => 'Date of modification',
       'titleOfText' => 'Title of text',
@@ -130,9 +131,8 @@ class TreatyElisMigrateItem extends MigrateItem {
     $vq_query = sprintf('ID:"%s"', $id);
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
     $json = json_encode($xml->document[0]);
-    $ob = json_decode($json,TRUE);
-    var_dump($ob);
-    die;
+    $ob = json_decode($json);
+    return $ob;
   }
 }
 
@@ -148,7 +148,7 @@ class TreatyElisMigration extends AbstractElisMigration {
 
     $this->map = new MigrateSQLMap($this->machineName,
       array(
-        'id' => array(
+        'Recid' => array(
           'type' => 'varchar',
           'length' => 255,
           'not null' => TRUE,
@@ -157,6 +157,8 @@ class TreatyElisMigration extends AbstractElisMigration {
       ),
       MigrateDestinationNode::getKeySchema()
     );
+
+    $this->destination = new MigrateDestinationNode(DRUPAL_TYPE_TREATY);
   }
 
 }
