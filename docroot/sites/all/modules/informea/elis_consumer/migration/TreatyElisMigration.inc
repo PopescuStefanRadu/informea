@@ -1,5 +1,7 @@
 <?php
 
+define('ELIS_ITEMS_PER_PAGE', 20);
+
 /**
  * Class TreatyElisMigrateSourceList provides fields for Treaty migration.
  */
@@ -107,11 +109,21 @@ class TreatyElistMigrateList extends MigrateList {
         $this->generic_url
       );
       $xml = $this->get_xml_data_from_url($url);
-      foreach ($xml->document as $treaty) {
-        $ids[] = (string) $treaty->Recid;
+      $count = intval($xml->attributes()['numberResultsFound']);
+      while ($count > $spage_first) {
+        foreach ($xml->document as $treaty) {
+          $ids[] = (string) $treaty->Recid;
+        }
+        $spage_first += ELIS_ITEMS_PER_PAGE;
+        $url = str_replace(
+          array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+          array($spage_query,$spage_first),
+          $this->generic_url
+        );
+        $xml = $this->get_xml_data_from_url($url);
       }
     }
-    return $ids;
+    return array_unique($ids);
   }
 
   /** {@inheritdoc} */
