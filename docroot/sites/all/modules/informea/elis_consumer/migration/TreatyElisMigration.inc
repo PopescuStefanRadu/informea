@@ -48,8 +48,10 @@ class TreatyElisMigrateSourceList extends MigrateSourceList {
  */
 class TreatyElistMigrateList extends MigrateList {
 
-  // @todo: change "spage_first" parameter
-  protected $url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=page_search&table=all&spage_query=45533a4920414e4420535441543a4320414e44202844453a323031323031204f5220444d3a32303132303129&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&spage_first=11&free_text=(v120^d[1]%3E%2720120101%27)%20or%20(v130^d[nocc(v130)]%3E%2720120101%27)';
+  // Replace "SPAGE_QUERY_VALUE" and "SPAGE_FIRST_VALUE" in this string
+  protected $generic_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=page_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&spage_query=SPAGE_QUERY_VALUE&spage_first=SPAGE_FIRST_VALUE';
+  protected $start_date = '1981-01';
+  protected $spage_query_default_string = 'ES:I AND STAT:C';
 
   public function __construct() {
     parent::__construct();
@@ -60,10 +62,26 @@ class TreatyElistMigrateList extends MigrateList {
     return sprintf('Extract treaties from ELIS.');
   }
 
-  public function get_xml_data_from_url($url = NULL) {
-    if ($url === NULL) {
-      $url = $this->url;
+  public function hexadecimally_encode_string($str) {
+    return reset(unpack('H*', $str));
+  }
+
+  public function get_date_period() {
+    $return = array();
+    $begin = new DateTime($this->start_date);
+    $end = new DateTime();
+
+    $interval = DateInterval::createFromDateString('1 month');
+    $period = new DatePeriod($begin, $interval, $end);
+
+    foreach ($period as $p) {
+      $return[] = $p->format('Ym');
     }
+
+    return $return;
+  }
+
+  public function get_xml_data_from_url($url) {
     $response = drupal_http_request($url, array('headers' => array('Accept' => 'application/xml')));
     if ($response->code != 200) {
       if (function_exists('drush_log')) {
@@ -79,19 +97,31 @@ class TreatyElistMigrateList extends MigrateList {
   /** {@inheritdoc} */
   public function getIDList() {
     $ids = array();
-    $xml = $this->get_xml_data_from_url();
-    foreach ($xml->document as $treaty) {
-      $ids[] = (string) $treaty->Recid;
+    $period = $this->get_date_period();
+    foreach ($period as $p) {
+      $spage_query = $this->hexadecimally_encode_string($this->spage_query_default_string . ' AND DE:' . $p);
+      $spage_first = 0;
+      $url = str_replace(
+        array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+        array($spage_query,$spage_first),
+        $this->generic_url
+      );
+      $xml = $this->get_xml_data_from_url($url);
+      foreach ($xml->document as $treaty) {
+        $ids[] = (string) $treaty->Recid;
+      }
     }
     return $ids;
   }
 
   /** {@inheritdoc} */
   public function computeCount() {
-    $xml = $this->get_xml_data_from_url();
-    if (empty($xml)) {
-      return 0;
-    }
+    $url = str_replace(
+      array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+      array($this->hexadecimally_encode_string($this->spage_query_default_string),0),
+      $this->generic_url
+    );
+    $xml = $this->get_xml_data_from_url($url);
     return intval($xml->attributes()['numberResultsFound']);
   }
 
@@ -99,9 +129,7 @@ class TreatyElistMigrateList extends MigrateList {
 
 class TreatyElisMigrateItem extends MigrateItem {
 
-  public function __construct() {
-
-  }
+  protected $item_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vb_query=';
 
   public function getItem($id) {
     // TODO: Implement getItem() method.
