@@ -48,7 +48,8 @@ class TreatyElisMigrateSourceList extends MigrateSourceList {
  */
 class TreatyElistMigrateList extends MigrateList {
 
-  private $url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=page_search&table=all&spage_query=45533a4920414e4420535441543a4320414e44202844453a323031323031204f5220444d3a32303132303129&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&spage_first=0&free_text=(v120^d[1]%3E%2720120101%27)%20or%20(v130^d[nocc(v130)]%3E%2720120101%27)';
+  // @todo: change "spage_first" parameter
+  protected $url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=page_search&table=all&spage_query=45533a4920414e4420535441543a4320414e44202844453a323031323031204f5220444d3a32303132303129&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&spage_first=11&free_text=(v120^d[1]%3E%2720120101%27)%20or%20(v130^d[nocc(v130)]%3E%2720120101%27)';
 
   public function __construct() {
     parent::__construct();
@@ -59,17 +60,41 @@ class TreatyElistMigrateList extends MigrateList {
     return sprintf('Extract treaties from ELIS.');
   }
 
+  public function get_xml_data_from_url($url = NULL) {
+    if ($url === NULL) {
+      $url = $this->url;
+    }
+    $response = drupal_http_request($url, array('headers' => array('Accept' => 'application/xml')));
+    if ($response->code != 200) {
+      if (function_exists('drush_log')) {
+        drush_log('Could not retrieve treaties data from ELIS.', 'error');
+      }
+      return NULL;
+    }
+    $data = trim(utf8_encode($response->data));
+    $xml = simplexml_load_string($data);
+    return $xml;
+  }
+
   /** {@inheritdoc} */
   public function getIDList() {
-    $response = drupal_http_request($this->url, array('headers' => array('Accept' => 'application/xml')));
-    var_dump($response);
-    die;
+    $ids = array();
+    $xml = $this->get_xml_data_from_url();
+    foreach ($xml->document as $treaty) {
+      $ids[] = (string) $treaty->Recid;
+    }
+    return $ids;
   }
 
   /** {@inheritdoc} */
   public function computeCount() {
-
+    $xml = $this->get_xml_data_from_url();
+    if (empty($xml)) {
+      return 0;
+    }
+    return intval($xml->attributes()['numberResultsFound']);
   }
+
 }
 
 class TreatyElisMigrateItem extends MigrateItem {
