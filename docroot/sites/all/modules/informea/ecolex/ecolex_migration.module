@@ -7,14 +7,18 @@
  * Set the API level to 2, for migration classes to be recognized by Migrate.
  */
 function ecolex_migration_migrate_api() {
+  module_load_include('inc', 'elis_consumer', 'includes/migrations/TreatyElisMigration');
   $ret = array(
     'api' => 2,
     'groups' => array(
       'ecolex' => array(
         'title' => 'ECOLEX content migration'
-      )
+      ),
+      'elis_consumer' => array(
+        'title' => t('Migrations from ELIS'),
+      ),
     ),
-    'migrations' => array()
+    'migrations' => array(),
   );
   if($base_data_dir = variable_get('ecolex_data_dir')) {
     $ret['migrations']['EcolexTreaties'] = array(
@@ -36,6 +40,10 @@ function ecolex_migration_migrate_api() {
       'class_name' => 'EcolexCourtDecisionsMigrate',
       'data_dir' => $base_data_dir . '/courtdecisions/',
       'group_name' => 'ecolex',
+    );
+    $ret['migrations']['elis_treaties'] = array(
+      'class_name' => 'ImeaTreatyElisMigration',
+      'group_name' => 'elis_consumer',
     );
   }
   return $ret;
