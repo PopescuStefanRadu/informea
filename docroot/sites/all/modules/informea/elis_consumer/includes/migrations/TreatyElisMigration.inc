@@ -5,9 +5,15 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
   public function __construct($arguments) {
     parent::__construct($arguments);
 
+    $this->translatable_fields = array(
+      'abstract', 'titleOfText', 'typeOfText', 'jurisdiction', 'fieldOfApplication',
+      'region', 'subject', 'languageOfDocument', 'languageOfTranslation',
+      'depository', 'linkToFullText', 'keyword',
+    );
+
     $this->source = new TreatyElisMigrateSourceList(
       new TreatyElistMigrateList(),
-      new TreatyElisMigrateItem()
+      new TreatyElisMigrateItem($this->translatable_fields)
     );
 
     $this->map = new MigrateSQLMap($this->machineName,
