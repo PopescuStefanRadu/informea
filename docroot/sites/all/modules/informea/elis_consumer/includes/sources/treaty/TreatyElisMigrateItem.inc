@@ -3,11 +3,14 @@
 class TreatyElisMigrateItem extends ElisMigrateItem {
 
   protected $item_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vq_query=';
-  protected $translatable_fields = array(
-    'titleOfText', 'typeOfText', 'jurisdiction', 'fieldOfApplication',
-    'region', 'subject', 'languageOfDocument', 'languageOfTranslation',
-    'depository', 'linkToFullText', 'keyword',
-  );
+
+  public function __construct() {
+    $this->translatable_fields = array(
+      'titleOfText', 'typeOfText', 'jurisdiction', 'fieldOfApplication',
+      'region', 'subject', 'languageOfDocument', 'languageOfTranslation',
+      'depository', 'linkToFullText', 'keyword',
+    );
+  }
 
   public function getItem($id) {
     $ob = new stdClass();

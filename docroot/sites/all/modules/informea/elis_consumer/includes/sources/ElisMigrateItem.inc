@@ -7,6 +7,7 @@ abstract class ElisMigrateItem extends MigrateItem {
     'fr' => 'FR',
     'es' => 'ES',
   );
+  protected $translatable_fields = array();
 
   protected function translateField(&$item, $field_name) {
     if (!property_exists($item, $field_name)) {
