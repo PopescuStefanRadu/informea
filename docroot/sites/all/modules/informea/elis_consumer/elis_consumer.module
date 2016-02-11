@@ -3,9 +3,7 @@
 function elis_consumer_get_xml_data_from_url($url) {
   $response = drupal_http_request($url, array('headers' => array('Accept' => 'application/xml')));
   if ($response->code != 200) {
-    if (function_exists('drush_log')) {
-      drush_log('Could not retrieve data from url: ' . $url, 'error');
-    }
+    elis_consumer_log('Could not retrieve data from url: ' . $url, MigrationBase::MESSAGE_ERROR);
     return NULL;
   }
   $data = trim(utf8_encode($response->data));
@@ -14,9 +12,33 @@ function elis_consumer_get_xml_data_from_url($url) {
     return $xml;
   }
   catch (Exception $e) {
-    if (function_exists('drush_log')) {
-      drush_log('Could not parse the xml from url: ' . $url, 'error');
-    }
+    elis_consumer_log('Could not parse the xml from url: ' . $url, MigrationBase::MESSAGE_ERROR);
     return NULL;
+  }
+}
+
+/**
+ * Log system for the ws_consumer_odata migrations.
+ *
+ * @param string $message
+ *   Log message
+ * @param int $severity
+ *    See MigrationBase::MESSAGE_* constants
+ */
+function elis_consumer_log($message, $severity = MigrationBase::MESSAGE_INFORMATIONAL) {
+  if (function_exists('drush_log')) {
+    $status = 'status';
+    switch($severity) {
+      case MigrationBase::MESSAGE_ERROR:
+        $status = 'error';
+        break;
+      case MigrationBase::MESSAGE_WARNING:
+        $status = 'warning';
+        break;
+      case MigrationBase::MESSAGE_NOTICE:
+        $status = 'notice';
+        break;
+    }
+    drush_log($message, $status);
   }
 }

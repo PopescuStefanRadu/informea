@@ -41,11 +41,11 @@ function ecolex_migration_migrate_api() {
       'data_dir' => $base_data_dir . '/courtdecisions/',
       'group_name' => 'ecolex',
     );
-    $ret['migrations']['elis_treaties'] = array(
-      'class_name' => 'ImeaTreatyElisMigration',
-      'group_name' => 'elis_consumer',
-    );
   }
+  $ret['migrations']['elis_treaties'] = array(
+    'class_name' => 'ImeaTreatyElisMigration',
+    'group_name' => 'elis_consumer',
+  );
   return $ret;
 }
 
