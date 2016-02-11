@@ -66,7 +66,8 @@ class TreatyElistMigrateList extends MigrateList {
   }
 
   public function hexadecimally_encode_string($str) {
-    return reset(unpack('H*', $str));
+    $unpack = unpack('H*', $str);
+    return reset($unpack);
   }
 
   public function get_date_period() {
