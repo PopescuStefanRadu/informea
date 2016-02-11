@@ -25,6 +25,7 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
         $ob->{$field_name} = (string) $value;
       }
     }
+    $ob->titleOfText_original = reset($ob->titleOfText);
     foreach ($this->translatable_fields as $field_name) {
       $this->translateField($ob, $field_name);
     }

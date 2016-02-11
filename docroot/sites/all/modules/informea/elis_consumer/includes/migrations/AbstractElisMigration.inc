@@ -8,7 +8,7 @@ abstract class AbstractElisMigration extends Migration {
     $translate_in = array();
     foreach ($this->translatable_fields as $field_name) {
       if (property_exists($row, $field_name . '_languages')) {
-        $translate_in = array_merge($translate_in, $row->{$field_name . '_languages'})
+        $translate_in = array_merge($translate_in, $row->{$field_name . '_languages'});
       }
     }
     return array_unique($translate_in);

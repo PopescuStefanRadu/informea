@@ -6,7 +6,7 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
     parent::__construct($arguments);
 
     $this->translatable_fields = array(
-      'abstract', 'titleOfText', 'typeOfText', 'jurisdiction', 'fieldOfApplication',
+      'abstract', 'titleOfText', 'titleAbbreviation','typeOfText', 'jurisdiction', 'fieldOfApplication',
       'region', 'subject', 'languageOfDocument', 'languageOfTranslation',
       'depository', 'linkToFullText', 'keyword',
     );
