@@ -1,8 +1,6 @@
 <?php
 
-define('ELIS_ITEMS_PER_PAGE', 20);
-
-class TreatyElisMigration extends AbstractElisMigration {
+abstract class TreatyElisMigration extends AbstractElisMigration {
 
   public function __construct($arguments) {
     parent::__construct($arguments);

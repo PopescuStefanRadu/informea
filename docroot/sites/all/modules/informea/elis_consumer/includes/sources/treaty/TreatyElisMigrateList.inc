@@ -1,5 +1,7 @@
 <?php
 
+define('ELIS_ITEMS_PER_PAGE', 20);
+
 /**
  * Class TreatyElistMigrateList. See MigrateSourceList pattern.
  *
