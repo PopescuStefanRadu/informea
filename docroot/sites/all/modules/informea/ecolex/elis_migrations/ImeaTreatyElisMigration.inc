@@ -20,46 +20,44 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('sticky')->defaultValue(0);
     $this->addFieldMapping('revision')->defaultValue(0);
     $this->addFieldMapping('language')->defaultValue('en');
-    $this->addFieldMapping('body', 'abstract');
-    $this->addFieldMapping('body:language', 'abstract_languages');
     $this->addFieldMapping('field_available_in', 'availableIn');
     $this->addFieldMapping('field_entry_into_force', 'entryIntoForceDate');
-    $this->addFieldMapping('field_field_of_application', 'fieldOfApplication');
     // @ToDo: create terms programmatically or map them with the existing ones
-    $this->addFieldMapping('field_field_of_application:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_field_of_application:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_field_of_application', 'fieldOfApplication');
+//    $this->addFieldMapping('field_field_of_application:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_field_of_application:ignore_case')->defaultValue(TRUE);
     $this->addFieldMapping('field_obsolete', 'obsolete');
     $this->addFieldMapping('field_date_of_entry', 'dateOfEntry');
     $this->addFieldMapping('field_date_of_modification', 'dateOfModification');
     $this->addFieldMapping('field_title_abbreviation', 'titleAbbreviation');
     $this->addFieldMapping('field_title_abbreviation:language', 'titleAbbreviation_languages');
-    $this->addFieldMapping('field_type_of_text', 'typeOfText');
-    $this->addFieldMapping('field_type_of_text:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_type_of_text:ignore_case')->defaultValue(TRUE);
-    $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
-    $this->addFieldMapping('field_jurisdiction:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_jurisdiction:ignore_case')->defaultValue(TRUE);
-    $this->addFieldMapping('field_region', 'region');
-    $this->addFieldMapping('field_region:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_region:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_type_of_text', 'typeOfText');
+//    $this->addFieldMapping('field_type_of_text:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_type_of_text:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
+//    $this->addFieldMapping('field_jurisdiction:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_jurisdiction:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_region', 'region');
+//    $this->addFieldMapping('field_region:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_region:ignore_case')->defaultValue(TRUE);
     $this->addFieldMapping('field_place_of_adoption', 'placeOfAdoption');
     // @ToDo: map countries by name
     $this->addFieldMapping('field_country', 'depository');
     $this->addFieldMapping('field_official_publication', 'officialPublication');
-    $this->addFieldMapping('field_keywords', 'keyword');
-    $this->addFieldMapping('field_keywords:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_keywords:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_keywords', 'keyword');
+//    $this->addFieldMapping('field_keywords:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_keywords:ignore_case')->defaultValue(TRUE);
     $this->addFieldMapping('field_related_website', 'relatedWebSite');
     $this->addFieldMapping('field_treaty_text_url', 'linkToFullText');
     $this->addFieldMapping('field_treaty_text_url:language', 'linkToFullText_languages');
     // @ToDo: map treaties by RecID
     $this->addFieldMapping('field_amends_treaty', 'amendsTreaty');
-    $this->addFieldMapping('field_ecolex_tags', 'subject');
-    $this->addFieldMapping('field_ecolex_tags:create_term')->defaultValue(FALSE);
-    $this->addFieldMapping('field_ecolex_tags:ignore_case')->defaultValue(TRUE);
+//    $this->addFieldMapping('field_ecolex_tags', 'subject');
+//    $this->addFieldMapping('field_ecolex_tags:create_term')->defaultValue(FALSE);
+//    $this->addFieldMapping('field_ecolex_tags:ignore_case')->defaultValue(TRUE);
     $this->addUnmigratedSources(array(
       'sortFieldOfApplication', 'languageOfDocument',
-      'languageOfTranslation', 'dateOfText', 'searchDate', 'parties',
+      'languageOfTranslation', 'dateOfText', 'searchDate', 'parties', 'abstract'
     ));
 
     $this->addUnmigratedDestinations(array(
