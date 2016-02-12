@@ -41,7 +41,7 @@ class TreatyElisMigrateSourceList extends MigrateSourceList {
       'abstract' => 'Abstract',
       'abstract_languages' => 'Languages of abstract field',
       'amendsTreaty' => 'Amends treaty',
-      'party' => 'Parties',
+      'parties' => 'Parties',
     );
   }
 }

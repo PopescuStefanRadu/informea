@@ -9,23 +9,35 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
   }
 
   public function getItem($id) {
+    // @ToDo: get parties, keywords and subjects
     $ob = new stdClass();
     $vq_query = sprintf('ID:"%s"', $id);
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
+    $parties = array();
     foreach ($xml->document[0] as $field_name => $value) {
-      if (property_exists($ob, $field_name)) {
+      if (in_array($field_name, array('keyword', 'subject'))) {
+        continue;
+      }
+      elseif ($field_name == 'party') {
+        $parties[] = $value;
+        continue;
+      }
+      elseif (property_exists($ob, $field_name)) {
         if (is_array($ob->{$field_name})) {
-          $ob->{$field_name}[] = $value;
+          $ob->{$field_name}[] = (string)$value;
         }
         else {
-          $ob->{$field_name} = array($value);
+          $ob->{$field_name} = array((string) $value);
         }
       }
       else {
+        if ($field_name == 'titleOfText') {
+          $ob->titleOfText_original = (string) $value;
+        }
         $ob->{$field_name} = (string) $value;
       }
     }
-    $ob->titleOfText_original = $ob->titleOfText;
+    $ob->parties = $parties;
     if (property_exists($ob, 'obsolete')) {
       $ob->obsolete = (int) $ob->obsolete;
     }
