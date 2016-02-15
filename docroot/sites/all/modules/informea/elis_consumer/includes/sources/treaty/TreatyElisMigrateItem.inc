@@ -9,7 +9,6 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
   }
 
   public function getItem($id) {
-    // @ToDo: get parties, keywords and subjects
     $ob = new stdClass();
     $vq_query = sprintf('ID:"%s"', $id);
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
@@ -24,7 +23,7 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
           $ob->{$field_name}[] = (string)$value;
         }
         else {
-          $ob->{$field_name} = array((string) $value);
+          $ob->{$field_name} = array($ob->{$field_name}, (string) $value);
         }
       }
       else {

@@ -109,7 +109,9 @@ abstract class AbstractElisMigration extends Migration {
       $tid = $this->get_taxonomy_term_tid($term['name'], $vocabulary);
       if ($tid === NULL) {
         $tid = $this->create_taxonomy_term($term['name'], $vocabulary, $term['translations']);
-        var_dump($tid);
+        if (function_exists('drush_log')) {
+          drush_log(dt('Created new taxonomy term with tid = @tid', array('@tid' => $tid)), 'ok');
+        }
       }
       $row->{$field_name}[] = $tid;
     }

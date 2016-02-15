@@ -50,9 +50,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_treaty_text_url', 'linkToFullText');
     // @ToDo: map treaties by RecID
     $this->addFieldMapping('field_amends_treaty', 'amendsTreaty');
-//    $this->addFieldMapping('field_ecolex_tags', 'subject');
-//    $this->addFieldMapping('field_ecolex_tags:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_ecolex_tags:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_ecolex_tags', 'subject');
+    $this->addFieldMapping('field_ecolex_tags:source_type')->defaultValue('tid');
     $this->addUnmigratedSources(array(
       'sortFieldOfApplication', 'languageOfDocument',
       'languageOfTranslation', 'dateOfText', 'searchDate', 'parties', 'abstract'
@@ -62,7 +61,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'created', 'changed', 'log', 'tnid', 'translate', 'revision_uid', 'is_new',
       'field_data_source', 'field_data_source:source_type', 'field_data_source:create_term',
       'field_data_source:ignore_case', 'field_depositary',
-      'field_ecolex_tags:source_type', 'field_ecolex_url:title', 'field_ecolex_url:attributes',
+      'field_ecolex_url:title', 'field_ecolex_url:attributes',
       'field_date_of_entry:timezone', 'field_date_of_entry:rrule', 'field_date_of_entry:to',
       'field_entry_into_force:timezone', 'field_entry_into_force:rrule', 'field_entry_into_force:to',
       'field_date_of_modification:timezone', 'field_date_of_modification:rrule',
@@ -81,7 +80,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_primary_topic:create_term', 'field_primary_topic:ignore_case', 'field_ratification_xml_url',
       'field_ratification_xml_url:title', 'field_ratification_xml_url:attributes',
       'field_ratification_xml_url:language', 'field_secondary_topic', 'field_secondary_topic:source_type',
-      'field_secondary_topic:create_term', 'field_secondary_topic:ignore_case',
+      'field_secondary_topic:create_term', 'field_secondary_topic:ignore_case', 'field_ecolex_tags:create_term', 'field_ecolex_tags:ignore_case',
       'field_treaty_parties_url', 'field_treaty_parties_url:title', 'field_treaty_parties_url:attributes',
       'field_treaty_parties_url:language', 'field_treaty_text_url:title', 'field_treaty_text_url:attributes',
       'field_treaty_text_url:language', 'body', 'body:language',
@@ -120,17 +119,32 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
 
     if (!empty($row->keyword)) {
       $data = array();
-      foreach($row->keyword as $term_key => $keyword) {
+      foreach ($row->keyword as $term_key => $keyword) {
         $term_translations = array();
         foreach ($row->keyword_languages as $lang_key => $lang) {
           $term_translations[$lang] = $row->keyword_translations[$lang_key][$term_key];
         }
         $data[] = array(
-          'name' => $keyword,
+          'name' => htmlspecialchars_decode($keyword),
           'translations' => $term_translations,
         );
       }
       $this->prepare_term_reference_field($row, 'keyword', $data, 'keywords');
+    }
+
+    if (!empty($row->subject)) {
+      $data = array();
+      foreach($row->subject as $term_key => $subject) {
+        $term_translations = array();
+        foreach ($row->subject_languages as $lang_key => $lang) {
+          $term_translations[$lang] = $row->subject_translations[$lang_key][$term_key];
+        }
+        $data[] = array(
+          'name' => htmlspecialchars_decode($subject),
+          'translations' => $term_translations,
+        );
+      }
+      $this->prepare_term_reference_field($row, 'subject', $data, 'thesaurus_ecolex');
     }
   }
 
