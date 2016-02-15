@@ -3,6 +3,7 @@
 abstract class AbstractElisMigration extends Migration {
 
   protected $translatable_fields = array();
+  protected $taxonomy_term_fields = array();
 
   public function getTranslationLanguages($row) {
     $translate_in = array();
@@ -84,6 +85,29 @@ abstract class AbstractElisMigration extends Migration {
     return $term->tid;
   }
 
+  public function get_terms_from_source_field($row, $field_name) {
+    $data = array();
+    if (!property_exists($row, $field_name)) {
+      return $data;
+    }
+    $row->{$field_name} = !is_array($row->{$field_name}) ? array($row->{$field_name}) : $row->{$field_name};
+    foreach($row->{$field_name} as $term_key => $term) {
+      $term_translations = array();
+      if (!empty($row->{$field_name . '_translations'})) {
+        $row->{$field_name . '_translations'} = !is_array($row->{$field_name}) ? array($row->{$field_name . '_translations'}) : $row->{$field_name . '_translations'};
+        $row->{$field_name . '_languages'} = !is_array($row->{$field_name}) ? array($row->{$field_name . '_languages'}) : $row->{$field_name . '_languages'};
+        foreach ($row->{$field_name . '_languages'} as $lang_key => $lang) {
+          $term_translations[$lang] = $row->{$field_name . '_translations'}[$lang_key][$term_key];
+        }
+      }
+      $data[$term_key] = array(
+        'name' => htmlspecialchars_decode($term),
+        'translations' => $term_translations,
+      );
+    }
+    return $data;
+  }
+
   /**
    * Map the term names with the existing terms tids.
    * If the vocabulary doesn't contain a term with that name, it will be created.
@@ -100,7 +124,8 @@ abstract class AbstractElisMigration extends Migration {
    * @param $vocabulary
    *  Vocabulary machine name.
    */
-  public function prepare_term_reference_field(&$row, $field_name, $data, $vocabulary) {
+  public function prepare_term_reference_field(&$row, $field_name, $vocabulary) {
+    $data = $this->get_terms_from_source_field($row, $field_name);
     if (empty($data)) {
       return;
     }

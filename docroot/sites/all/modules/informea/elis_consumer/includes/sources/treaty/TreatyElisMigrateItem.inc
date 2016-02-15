@@ -4,8 +4,9 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
 
   protected $item_url = 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vq_query=';
 
-  public function __construct($translatable_fields) {
+  public function __construct($translatable_fields = array(), $taxonomy_term_fields = array()) {
     $this->translatable_fields = $translatable_fields;
+    $this->taxonomy_term_fields = $taxonomy_term_fields;
   }
 
   public function getItem($id) {
@@ -40,13 +41,11 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
     foreach ($this->translatable_fields as $field_name) {
       $this->translateField($ob, $field_name);
     }
-    if (!empty($ob->keyword)) {
-      $ob->keyword_translations = $ob->keyword;
-      $ob->keyword = reset($ob->keyword);
-    }
-    if (!empty($ob->subject)) {
-      $ob->subject_translations = $ob->subject;
-      $ob->subject = reset($ob->subject);
+    foreach ($this->taxonomy_term_fields as $field_name) {
+      if (!empty($ob->{$field_name})) {
+        $ob->{$field_name . '_translations'} = $ob->{$field_name};
+        $ob->{$field_name} = reset($ob->{$field_name});
+      }
     }
     return $ob;
   }

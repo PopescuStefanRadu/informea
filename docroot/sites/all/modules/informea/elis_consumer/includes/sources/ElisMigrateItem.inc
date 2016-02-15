@@ -9,6 +9,7 @@ abstract class ElisMigrateItem extends MigrateItem {
     'sp' => 'SP',
   );
   protected $translatable_fields = array();
+  protected $taxonomy_term_fields = array();
 
   protected function translateField(&$item, $field_name) {
     if (!property_exists($item, $field_name)) {

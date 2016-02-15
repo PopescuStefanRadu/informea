@@ -23,17 +23,15 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_available_in', 'availableIn');
     $this->addFieldMapping('field_entry_into_force', 'entryIntoForceDate');
     // @ToDo: create terms programmatically or map them with the existing ones
-//    $this->addFieldMapping('field_field_of_application', 'fieldOfApplication');
-//    $this->addFieldMapping('field_field_of_application:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_field_of_application:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_field_of_application', 'fieldOfApplication');
+    $this->addFieldMapping('field_field_of_application:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_obsolete', 'obsolete');
     $this->addFieldMapping('field_date_of_entry', 'dateOfEntry');
     $this->addFieldMapping('field_date_of_modification', 'dateOfModification');
     $this->addFieldMapping('field_title_abbreviation', 'titleAbbreviation');
     $this->addFieldMapping('field_title_abbreviation:language', 'titleAbbreviation_languages');
-//    $this->addFieldMapping('field_type_of_text', 'typeOfText');
-//    $this->addFieldMapping('field_type_of_text:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_type_of_text:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_type_of_text', 'typeOfText');
+    $this->addFieldMapping('field_type_of_text:source_type')->defaultValue('tid');
 //    $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
 //    $this->addFieldMapping('field_jurisdiction:create_term')->defaultValue(FALSE);
 //    $this->addFieldMapping('field_jurisdiction:ignore_case')->defaultValue(TRUE);
@@ -69,7 +67,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_alternative_record_id', 'field_cited_treaties', 'field_ecolex_url',
       'field_ecolex_url:language', 'field_faolex_url', 'field_faolex_url:title',
       'field_faolex_url:attributes', 'field_faolex_url:language',
-      'field_field_of_application:source_type', 'field_internet_reference',
+      'field_internet_reference',
       'field_internet_reference:language', 'field_is_protocol',
       'field_jurisdiction:source_type', 'field_logo', 'field_logo:file_class',
       'field_logo:language', 'field_logo:preserve_files', 'field_logo:destination_dir',
@@ -81,11 +79,12 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_ratification_xml_url:title', 'field_ratification_xml_url:attributes',
       'field_ratification_xml_url:language', 'field_secondary_topic', 'field_secondary_topic:source_type',
       'field_secondary_topic:create_term', 'field_secondary_topic:ignore_case', 'field_ecolex_tags:create_term', 'field_ecolex_tags:ignore_case',
+      'field_type_of_text:create_term', 'field_type_of_text:ignore_case',
       'field_treaty_parties_url', 'field_treaty_parties_url:title', 'field_treaty_parties_url:attributes',
       'field_treaty_parties_url:language', 'field_treaty_text_url:title', 'field_treaty_text_url:attributes',
       'field_treaty_text_url:language', 'body', 'body:language',
       'field_treaty_website_url', 'field_treaty_website_url:title', 'field_treaty_website_url:attributes',
-      'field_treaty_website_url:language', 'field_type_of_text:source_type',
+      'field_treaty_website_url:language', 'field_field_of_application:create_term', 'field_field_of_application:ignore_case',
       'field_informea_tags', 'field_informea_tags:source_type', 'field_informea_tags:create_term',
       'field_informea_tags:ignore_case', 'field_keywords:create_term', 'field_keywords:ignore_case', 'field_region:source_type',
       'field_sorting_order', 'field_related_url', 'field_related_url:title', 'field_related_url:attributes',
@@ -116,36 +115,10 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
 
   public function prepareRow($row) {
     parent::prepareRow($row);
-
-    if (!empty($row->keyword)) {
-      $data = array();
-      foreach ($row->keyword as $term_key => $keyword) {
-        $term_translations = array();
-        foreach ($row->keyword_languages as $lang_key => $lang) {
-          $term_translations[$lang] = $row->keyword_translations[$lang_key][$term_key];
-        }
-        $data[] = array(
-          'name' => htmlspecialchars_decode($keyword),
-          'translations' => $term_translations,
-        );
-      }
-      $this->prepare_term_reference_field($row, 'keyword', $data, 'keywords');
-    }
-
-    if (!empty($row->subject)) {
-      $data = array();
-      foreach($row->subject as $term_key => $subject) {
-        $term_translations = array();
-        foreach ($row->subject_languages as $lang_key => $lang) {
-          $term_translations[$lang] = $row->subject_translations[$lang_key][$term_key];
-        }
-        $data[] = array(
-          'name' => htmlspecialchars_decode($subject),
-          'translations' => $term_translations,
-        );
-      }
-      $this->prepare_term_reference_field($row, 'subject', $data, 'thesaurus_ecolex');
-    }
+    $this->prepare_term_reference_field($row, 'keyword', 'keywords');
+    $this->prepare_term_reference_field($row, 'subject', 'thesaurus_ecolex');
+    $this->prepare_term_reference_field($row, 'typeOfText', 'type_of_text');
+    $this->prepare_term_reference_field($row, 'fieldOfApplication', 'field_of_application');
   }
 
 }
