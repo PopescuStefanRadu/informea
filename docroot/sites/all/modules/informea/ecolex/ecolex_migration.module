@@ -8,6 +8,7 @@
  */
 function ecolex_migration_migrate_api() {
   module_load_include('inc', 'elis_consumer', 'includes/migrations/TreatyElisMigration');
+  module_load_include('inc', 'elis_consumer', 'includes/migrations/CourtDecisionElisMigration');
   $ret = array(
     'api' => 2,
     'groups' => array(
