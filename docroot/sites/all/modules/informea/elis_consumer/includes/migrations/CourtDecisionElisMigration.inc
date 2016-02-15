@@ -5,14 +5,16 @@ abstract class CourtDecisionElisMigration extends AbstractElisMigration {
   public function __construct($arguments) {
     parent::__construct($arguments);
 
-    $this->translatable_fields = array();
+    $this->translatable_fields = array(
+      'abstract', 'titleOfText', 'country', 'subject', 'keyword',
+    );
     /*
      * If mapped, all `taxonomy term reference` fields should be sent to
      * prepare_term_reference_field() method within prepareRow() method.
      *
      * E.g. $this->prepare_term_reference_field($row, 'subject', 'thesaurus_ecolex');
      */
-    $this->taxonomy_term_fields = array();
+    $this->taxonomy_term_fields = array('subject', 'keyword',);
 
     $this->source = new CourtDecisionElisMigrateSourceList(
       new CourtDecisionElisMigrateList('id'),
