@@ -141,4 +141,21 @@ abstract class AbstractElisMigration extends Migration {
       $row->{$field_name}[] = $tid;
     }
   }
+
+  /**
+   * Map the nodes with the existing ones by title.
+   * Used for `Entity Reference` fields.
+   *
+   * @param array $titles
+   * @param $type
+   * @return array
+   *  An array of nids.
+   */
+  public function map_nodes_by_title($titles = array(), $type) {
+    $q = db_select('node', 'n')
+      ->fields('n', array('nid'))
+      ->condition('n.type', $type)
+      ->condition('n.title', $titles, 'IN');
+    return $q->execute()->fetchCol();
+  }
 }

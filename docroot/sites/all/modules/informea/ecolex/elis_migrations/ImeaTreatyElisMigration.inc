@@ -36,7 +36,6 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_region', 'region');
     $this->addFieldMapping('field_region:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_place_of_adoption', 'placeOfAdoption');
-    // @ToDo: map countries by name
     $this->addFieldMapping('field_country', 'depository');
     $this->addFieldMapping('field_official_publication', 'officialPublication');
     $this->addFieldMapping('field_keywords', 'keyword');
@@ -120,6 +119,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->prepare_term_reference_field($row, 'fieldOfApplication', 'field_of_application');
     $this->prepare_term_reference_field($row, 'jurisdiction', 'jurisdiction');
     $this->prepare_term_reference_field($row, 'region', 'geographical_region');
+
+    $row->depository = $this->map_nodes_by_title($row->depository, 'country');
   }
 
 }
