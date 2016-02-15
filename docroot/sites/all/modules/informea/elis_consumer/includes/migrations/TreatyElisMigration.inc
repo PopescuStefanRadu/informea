@@ -8,6 +8,7 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
     $this->translatable_fields = array(
       'abstract', 'titleOfText', 'titleAbbreviation','typeOfText', 'jurisdiction', 'fieldOfApplication',
       'region', 'languageOfDocument', 'languageOfTranslation', 'depository', 'linkToFullText',
+      'subject', 'keyword',
       );
 
     $this->source = new TreatyElisMigrateSourceList(

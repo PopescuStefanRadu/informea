@@ -15,10 +15,7 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
     $parties = array();
     foreach ($xml->document[0] as $field_name => $value) {
-      if (in_array($field_name, array('keyword', 'subject'))) {
-        continue;
-      }
-      elseif ($field_name == 'party') {
+      if ($field_name == 'party') {
         $parties[] = $value;
         continue;
       }
@@ -44,6 +41,10 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
     foreach ($this->translatable_fields as $field_name) {
       $this->translateField($ob, $field_name);
     }
+    $ob->keyword_translations = $ob->keyword;
+    $ob->keyword = reset($ob->keyword);
+    $ob->subject_translations = $ob->subject;
+    $ob->subject = reset($ob->subject);
     return $ob;
   }
 }

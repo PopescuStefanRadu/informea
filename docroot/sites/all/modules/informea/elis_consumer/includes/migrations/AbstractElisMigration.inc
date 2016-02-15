@@ -56,4 +56,9 @@ abstract class AbstractElisMigration extends Migration {
       }
     }
   }
+
+  public function get_taxonomy_term_tid($name, $vocabulary = NULL) {
+    $term = taxonomy_get_term_by_name($name, $vocabulary);
+    return empty($term) ? NULL : reset($term)->tid;
+  }
 }
