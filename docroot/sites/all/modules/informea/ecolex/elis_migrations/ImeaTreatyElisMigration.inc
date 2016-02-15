@@ -109,4 +109,11 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     ));
   }
 
+  public function prepare($entity, $row) {
+    parent::prepare($entity, $row);
+    if (!empty($row->linkToFullText)) {
+      $this->fix_link_field_multilingual_data($entity, 'field_treaty_text_url', $row->linkToFullText, $row->linkToFullText_languages, 'url');
+    }
+  }
+
 }

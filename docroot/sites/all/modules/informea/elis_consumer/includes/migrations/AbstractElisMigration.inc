@@ -42,7 +42,18 @@ abstract class AbstractElisMigration extends Migration {
     $this->setTranslation($entity, $translate_in);
   }
 
-  public function fix_link_field_multilingual_data(&$entity, $row, $field_name, $translations) {
-
+  public function fix_link_field_multilingual_data(&$entity, $field_name, $field_values, $field_translations, $value_index) {
+    foreach ($field_translations as $key => $lang) {
+      $val = $field_values[$key];
+      $entity->{$field_name}[$lang] = array();
+      if (is_array($val)) {
+        foreach ($val as $value) {
+          $entity->{$field_name}[$lang][] = array($value_index => $value);
+        }
+      }
+      else {
+        $entity->{$field_name}[$lang][] = array($value_index => $val);
+      }
+    }
   }
 }
