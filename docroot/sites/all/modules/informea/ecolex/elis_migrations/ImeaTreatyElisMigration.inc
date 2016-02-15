@@ -45,6 +45,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_amends_treaty', 'amendsTreaty');
     $this->addFieldMapping('field_ecolex_tags', 'subject');
     $this->addFieldMapping('field_ecolex_tags:source_type')->defaultValue('tid');
+
     $this->addUnmigratedSources(array(
       'sortFieldOfApplication', 'languageOfDocument',
       'languageOfTranslation', 'dateOfText', 'searchDate', 'parties', 'abstract',

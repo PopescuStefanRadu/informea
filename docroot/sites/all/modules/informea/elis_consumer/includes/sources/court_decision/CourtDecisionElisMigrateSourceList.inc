@@ -11,6 +11,8 @@ class CourtDecisionElisMigrateSourceList extends MigrateSourceList {
   public function fields() {
     return array(
       'id' => 'Remote primary key',
+      'id2' => 'ID2',
+      'isisMfn' => 'Isis number',
       'dateOfEntry' => 'Date of entry',
       'dateOfModification' => 'Date of modification',
       'titleOfText' => 'Title of text',
@@ -29,6 +31,7 @@ class CourtDecisionElisMigrateSourceList extends MigrateSourceList {
       'linkToFullText_languages' => 'Languages of linkToFullText field',
       'keyword' => 'Keywords',
       'abstract' => 'Abstract',
+      'typeOfText' => 'Type of text',
       'abstract_languages' => 'Languages of abstract field',
       'referenceToNationalLegislation' => 'Reference to legislation',
     );
