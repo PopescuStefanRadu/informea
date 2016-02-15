@@ -119,17 +119,18 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     parent::prepareRow($row);
 
     if (!empty($row->keyword)) {
+      $data = array();
       foreach($row->keyword as $term_key => $keyword) {
-        $tid = $this->get_taxonomy_term_tid($keyword, 'keywords');
-        if ($tid === NULL) {
-          $term_translations = array();
-          foreach ($row->keyword_languages as $lang_key => $lang) {
-            $term_translations[$lang] = $row->keyword_translations[$lang_key][$term_key];
-          }
-          $tid = $this->create_taxonomy_term($keyword, 'keywords', $term_translations);
+        $term_translations = array();
+        foreach ($row->keyword_languages as $lang_key => $lang) {
+          $term_translations[$lang] = $row->keyword_translations[$lang_key][$term_key];
         }
-        $row->keyword[$term_key] = $tid;
+        $data[] = array(
+          'name' => $keyword,
+          'translations' => $term_translations,
+        );
       }
+      $this->prepare_term_reference_field($row, 'keyword', $data, 'keywords');
     }
   }
 

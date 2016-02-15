@@ -83,4 +83,35 @@ abstract class AbstractElisMigration extends Migration {
     $this->translate_entity('taxonomy_term', $term, array_keys($name_translations));
     return $term->tid;
   }
+
+  /**
+   * Map the term names with the existing terms tids.
+   * If the vocabulary doesn't contain a term with that name, it will be created.
+   *
+   * @param $row
+   *  Current migration row.
+   * @param $field_name
+   *  Name of the source field.
+   * @param $data
+   *  An array containing the terms. Each item needs to be an associative array
+   * containing:
+   *  - name: original term name
+   *  - translations: an array containing language => translation pairs.
+   * @param $vocabulary
+   *  Vocabulary machine name.
+   */
+  public function prepare_term_reference_field(&$row, $field_name, $data, $vocabulary) {
+    if (empty($data)) {
+      return;
+    }
+    $row->{$field_name} = array();
+    foreach($data as $term) {
+      $tid = $this->get_taxonomy_term_tid($term['name'], $vocabulary);
+      if ($tid === NULL) {
+        $tid = $this->create_taxonomy_term($term['name'], $vocabulary, $term['translations']);
+        var_dump($tid);
+      }
+      $row->{$field_name}[] = $tid;
+    }
+  }
 }

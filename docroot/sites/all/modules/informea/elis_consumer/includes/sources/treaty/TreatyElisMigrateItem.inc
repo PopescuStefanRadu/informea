@@ -41,10 +41,14 @@ class TreatyElisMigrateItem extends ElisMigrateItem {
     foreach ($this->translatable_fields as $field_name) {
       $this->translateField($ob, $field_name);
     }
-    $ob->keyword_translations = $ob->keyword;
-    $ob->keyword = reset($ob->keyword);
-    $ob->subject_translations = $ob->subject;
-    $ob->subject = reset($ob->subject);
+    if (!empty($ob->keyword)) {
+      $ob->keyword_translations = $ob->keyword;
+      $ob->keyword = reset($ob->keyword);
+    }
+    if (!empty($ob->subject)) {
+      $ob->subject_translations = $ob->subject;
+      $ob->subject = reset($ob->subject);
+    }
     return $ob;
   }
 }
