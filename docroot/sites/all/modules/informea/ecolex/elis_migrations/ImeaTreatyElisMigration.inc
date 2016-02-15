@@ -22,7 +22,6 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('language')->defaultValue('en');
     $this->addFieldMapping('field_available_in', 'availableIn');
     $this->addFieldMapping('field_entry_into_force', 'entryIntoForceDate');
-    // @ToDo: create terms programmatically or map them with the existing ones
     $this->addFieldMapping('field_field_of_application', 'fieldOfApplication');
     $this->addFieldMapping('field_field_of_application:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_obsolete', 'obsolete');
@@ -32,9 +31,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_title_abbreviation:language', 'titleAbbreviation_languages');
     $this->addFieldMapping('field_type_of_text', 'typeOfText');
     $this->addFieldMapping('field_type_of_text:source_type')->defaultValue('tid');
-//    $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
-//    $this->addFieldMapping('field_jurisdiction:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_jurisdiction:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
+    $this->addFieldMapping('field_jurisdiction:source_type')->defaultValue('tid');
 //    $this->addFieldMapping('field_region', 'region');
 //    $this->addFieldMapping('field_region:create_term')->defaultValue(FALSE);
 //    $this->addFieldMapping('field_region:ignore_case')->defaultValue(TRUE);
@@ -69,7 +67,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_faolex_url:attributes', 'field_faolex_url:language',
       'field_internet_reference',
       'field_internet_reference:language', 'field_is_protocol',
-      'field_jurisdiction:source_type', 'field_logo', 'field_logo:file_class',
+      'field_jurisdiction:create_term', 'field_jurisdiction:ignore_case', 'field_logo', 'field_logo:file_class',
       'field_logo:language', 'field_logo:preserve_files', 'field_logo:destination_dir',
       'field_logo:destination_file', 'field_logo:file_replace', 'field_logo:source_dir',
       'field_logo:urlencode', 'field_logo:alt', 'field_logo:title', 'field_number_of_pages',
@@ -119,6 +117,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->prepare_term_reference_field($row, 'subject', 'thesaurus_ecolex');
     $this->prepare_term_reference_field($row, 'typeOfText', 'type_of_text');
     $this->prepare_term_reference_field($row, 'fieldOfApplication', 'field_of_application');
+    $this->prepare_term_reference_field($row, 'jurisdiction', 'jurisdiction');
   }
 
 }
