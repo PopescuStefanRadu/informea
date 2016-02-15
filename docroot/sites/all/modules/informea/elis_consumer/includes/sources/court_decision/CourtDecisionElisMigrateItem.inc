@@ -8,10 +8,4 @@ class CourtDecisionElisMigrateItem extends ElisMigrateItem {
     $this->taxonomy_term_fields = $taxonomy_term_fields;
   }
 
-  public function getItem($id) {
-    $ob = new stdClass();
-    $vq_query = sprintf('ID:"%s"', $id);
-    $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
-    return $ob;
-  }
 }
