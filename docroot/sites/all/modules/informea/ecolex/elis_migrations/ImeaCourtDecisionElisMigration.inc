@@ -1,6 +1,6 @@
 <?php
 
-define('DRUPAL_TYPE_COURT_DECISION', 'court_decision');
+define('DRUPAL_TYPE_COURT_DECISION', 'court_decisions');
 
 class ImeaCourtDecisionElisMigration extends CourtDecisionElisMigration {
 
