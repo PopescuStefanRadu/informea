@@ -29,7 +29,6 @@ class ImeaCourtDecisionElisMigration extends CourtDecisionElisMigration {
     $this->addFieldMapping('field_court_name', 'courtName');
     $this->addFieldMapping('field_number_of_pages', 'numberOfPages');
     $this->addFieldMapping('field_abstract', 'abstract');
-    // @ToDo: Map country by name
     $this->addFieldMapping('field_country', 'country');
     $this->addFieldMapping('field_reference_number', 'referenceNumber');
     $this->addFieldMapping('field_source_language', 'languageOfDocument');
@@ -79,4 +78,14 @@ class ImeaCourtDecisionElisMigration extends CourtDecisionElisMigration {
     ));
   }
 
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $this->prepare_term_reference_field($row, 'keyword', 'keywords');
+    $this->prepare_term_reference_field($row, 'subject', 'thesaurus_ecolex');
+    $this->prepare_term_reference_field($row, 'typeOfText', 'type_of_text');
+
+    if (property_exists($row, 'country')) {
+      $row->country = $this->map_nodes_by_title($row->country, 'country');
+    }
+  }
 }
