@@ -33,9 +33,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_type_of_text:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_jurisdiction', 'jurisdiction');
     $this->addFieldMapping('field_jurisdiction:source_type')->defaultValue('tid');
-//    $this->addFieldMapping('field_region', 'region');
-//    $this->addFieldMapping('field_region:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_region:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_region', 'region');
+    $this->addFieldMapping('field_region:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_place_of_adoption', 'placeOfAdoption');
     // @ToDo: map countries by name
     $this->addFieldMapping('field_country', 'depository');
@@ -50,7 +49,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_ecolex_tags:source_type')->defaultValue('tid');
     $this->addUnmigratedSources(array(
       'sortFieldOfApplication', 'languageOfDocument',
-      'languageOfTranslation', 'dateOfText', 'searchDate', 'parties', 'abstract'
+      'languageOfTranslation', 'dateOfText', 'searchDate', 'parties', 'abstract',
+      'linkToFullText_languages', 'abstract_languages',
     ));
 
     $this->addUnmigratedDestinations(array(
@@ -84,7 +84,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_treaty_website_url', 'field_treaty_website_url:title', 'field_treaty_website_url:attributes',
       'field_treaty_website_url:language', 'field_field_of_application:create_term', 'field_field_of_application:ignore_case',
       'field_informea_tags', 'field_informea_tags:source_type', 'field_informea_tags:create_term',
-      'field_informea_tags:ignore_case', 'field_keywords:create_term', 'field_keywords:ignore_case', 'field_region:source_type',
+      'field_informea_tags:ignore_case', 'field_keywords:create_term', 'field_keywords:ignore_case',
+      'field_region:create_term', 'field_region:ignore_case',
       'field_sorting_order', 'field_related_url', 'field_related_url:title', 'field_related_url:attributes',
       'field_related_url:language', 'field_treaty_article', 'field_treaty_article_paragraph',
       'field_online_course_link', 'field_online_course_link:title', 'field_online_course_link:attributes',
@@ -118,6 +119,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->prepare_term_reference_field($row, 'typeOfText', 'type_of_text');
     $this->prepare_term_reference_field($row, 'fieldOfApplication', 'field_of_application');
     $this->prepare_term_reference_field($row, 'jurisdiction', 'jurisdiction');
+    $this->prepare_term_reference_field($row, 'region', 'geographical_region');
   }
 
 }

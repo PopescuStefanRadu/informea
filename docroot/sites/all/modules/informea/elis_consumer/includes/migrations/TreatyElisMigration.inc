@@ -10,6 +10,12 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
       'region', 'languageOfDocument', 'languageOfTranslation', 'depository', 'linkToFullText',
       'subject', 'keyword',
       );
+    /*
+     * If mapped, all `taxonomy term reference` fields should be sent to
+     * prepare_term_reference_field() method within prepareRow() method.
+     *
+     * E.g. $this->prepare_term_reference_field($row, 'subject', 'thesaurus_ecolex');
+     */
     $this->taxonomy_term_fields = array('subject', 'keyword', 'fieldOfApplication', 'jurisdiction', 'region');
 
     $this->source = new TreatyElisMigrateSourceList(
