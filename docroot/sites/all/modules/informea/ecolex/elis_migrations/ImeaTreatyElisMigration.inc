@@ -122,6 +122,14 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     if (property_exists($row, 'depository')) {
       $row->depository = $this->map_nodes_by_title($row->depository, 'country');
     }
+    if (property_exists($row, 'amendsTreaty')) {
+      // Migration needs to run twice so this could work for all nodes.
+      $op = is_array($row->amendsTreaty) ? 'IN' : '=';
+      $q = db_select('migrate_map_elis_treaties', 'm')
+        ->fields('m', array('destid1'))
+        ->condition('m.sourceid1', $row->amendsTreaty, $op);
+      $row->amendsTreaty = $q->execute()->fetchCol();
+    }
   }
 
 }
