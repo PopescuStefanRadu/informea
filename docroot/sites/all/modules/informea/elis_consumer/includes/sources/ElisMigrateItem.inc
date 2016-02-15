@@ -40,8 +40,13 @@ abstract class ElisMigrateItem extends MigrateItem {
     $vq_query = sprintf('ID:"%s"', $id);
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
     $parties = array();
+    $abstract = '';
     foreach ($xml->document[0] as $field_name => $value) {
-      if ($field_name == 'party') {
+      if ($field_name == 'abstract') {
+        $abstract .= (string) $value . PHP_EOL;
+        continue;
+      }
+      elseif ($field_name == 'party') {
         $parties[] = $value;
         continue;
       }
@@ -60,6 +65,7 @@ abstract class ElisMigrateItem extends MigrateItem {
         $ob->{$field_name} = (string) $value;
       }
     }
+    $ob->abstract = $abstract;
     $ob->parties = $parties;
     if (property_exists($ob, 'obsolete')) {
       $ob->obsolete = (int) $ob->obsolete;
