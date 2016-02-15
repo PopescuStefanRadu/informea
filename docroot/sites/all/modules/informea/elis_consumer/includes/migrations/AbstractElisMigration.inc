@@ -152,10 +152,14 @@ abstract class AbstractElisMigration extends Migration {
    *  An array of nids.
    */
   public function map_nodes_by_title($titles = array(), $type) {
+    $op = 'IN';
+    if (!is_array($titles)) {
+      $op = '=';
+    }
     $q = db_select('node', 'n')
       ->fields('n', array('nid'))
       ->condition('n.type', $type)
-      ->condition('n.title', $titles, 'IN');
+      ->condition('n.title', $titles, $op);
     return $q->execute()->fetchCol();
   }
 }

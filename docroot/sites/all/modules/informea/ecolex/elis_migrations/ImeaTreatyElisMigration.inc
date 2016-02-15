@@ -42,7 +42,6 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->addFieldMapping('field_keywords:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_related_website', 'relatedWebSite');
     $this->addFieldMapping('field_treaty_text_url', 'linkToFullText');
-    // @ToDo: map treaties by RecID
     $this->addFieldMapping('field_amends_treaty', 'amendsTreaty');
     $this->addFieldMapping('field_ecolex_tags', 'subject');
     $this->addFieldMapping('field_ecolex_tags:source_type')->defaultValue('tid');
@@ -120,7 +119,9 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     $this->prepare_term_reference_field($row, 'jurisdiction', 'jurisdiction');
     $this->prepare_term_reference_field($row, 'region', 'geographical_region');
 
-    $row->depository = $this->map_nodes_by_title($row->depository, 'country');
+    if (property_exists($row, 'depository')) {
+      $row->depository = $this->map_nodes_by_title($row->depository, 'country');
+    }
   }
 
 }
