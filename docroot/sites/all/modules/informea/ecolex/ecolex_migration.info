@@ -10,3 +10,4 @@ files[] = ecolex_migration.legislation.migrate.inc
 files[] = ecolex_migration.literature.migrate.inc
 files[] = ecolex_migration.treaties.migrate.inc
 files[] = elis_migrations/ImeaTreatyElisMigration.inc
+files[] = elis_migrations/ImeaCourtDecisionElisMigration.inc

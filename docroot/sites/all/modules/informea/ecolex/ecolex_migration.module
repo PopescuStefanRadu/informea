@@ -46,6 +46,10 @@ function ecolex_migration_migrate_api() {
     'class_name' => 'ImeaTreatyElisMigration',
     'group_name' => 'elis_consumer',
   );
+  $ret['migrations']['elis_court_decisions'] = array(
+    'class_name' => 'ImeaCourtDecisionElisMigration',
+    'group_name' => 'elis_consumer',
+  );
   return $ret;
 }
 
