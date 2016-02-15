@@ -44,9 +44,8 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     // @ToDo: map countries by name
     $this->addFieldMapping('field_country', 'depository');
     $this->addFieldMapping('field_official_publication', 'officialPublication');
-//    $this->addFieldMapping('field_keywords', 'keyword');
-//    $this->addFieldMapping('field_keywords:create_term')->defaultValue(FALSE);
-//    $this->addFieldMapping('field_keywords:ignore_case')->defaultValue(TRUE);
+    $this->addFieldMapping('field_keywords', 'keyword');
+    $this->addFieldMapping('field_keywords:source_type')->defaultValue('tid');
     $this->addFieldMapping('field_related_website', 'relatedWebSite');
     $this->addFieldMapping('field_treaty_text_url', 'linkToFullText');
     // @ToDo: map treaties by RecID
@@ -85,11 +84,11 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_secondary_topic:create_term', 'field_secondary_topic:ignore_case',
       'field_treaty_parties_url', 'field_treaty_parties_url:title', 'field_treaty_parties_url:attributes',
       'field_treaty_parties_url:language', 'field_treaty_text_url:title', 'field_treaty_text_url:attributes',
-      'field_treaty_text_url:language',
+      'field_treaty_text_url:language', 'body', 'body:language',
       'field_treaty_website_url', 'field_treaty_website_url:title', 'field_treaty_website_url:attributes',
       'field_treaty_website_url:language', 'field_type_of_text:source_type',
       'field_informea_tags', 'field_informea_tags:source_type', 'field_informea_tags:create_term',
-      'field_informea_tags:ignore_case', 'field_keywords:source_type', 'field_region:source_type',
+      'field_informea_tags:ignore_case', 'field_keywords:create_term', 'field_keywords:ignore_case', 'field_region:source_type',
       'field_sorting_order', 'field_related_url', 'field_related_url:title', 'field_related_url:attributes',
       'field_related_url:language', 'field_treaty_article', 'field_treaty_article_paragraph',
       'field_online_course_link', 'field_online_course_link:title', 'field_online_course_link:attributes',
@@ -113,6 +112,24 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
     parent::prepare($entity, $row);
     if (!empty($row->linkToFullText)) {
       $this->fix_link_field_multilingual_data($entity, 'field_treaty_text_url', $row->linkToFullText, $row->linkToFullText_languages, 'url');
+    }
+  }
+
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+
+    if (!empty($row->keyword)) {
+      foreach($row->keyword as $term_key => $keyword) {
+        $tid = $this->get_taxonomy_term_tid($keyword, 'keywords');
+        if ($tid === NULL) {
+          $term_translations = array();
+          foreach ($row->keyword_languages as $lang_key => $lang) {
+            $term_translations[$lang] = $row->keyword_translations[$lang_key][$term_key];
+          }
+          $tid = $this->create_taxonomy_term($keyword, 'keywords', $term_translations);
+        }
+        $row->keyword[$term_key] = $tid;
+      }
     }
   }
 

@@ -14,11 +14,11 @@ abstract class AbstractElisMigration extends Migration {
     return array_unique($translate_in);
   }
 
-  public function setTranslation($entity, $translations = array()) {
-    $migration   = Migration::currentMigration();
+  public function translate_entity($entity_type, $entity, $translations = array()) {
+    if (empty($translations)) {
+      return;
+    }
     $languages   = array_keys(language_list());
-    $entity_type = $migration->getDestination()->getEntityType();
-
     $translation_handler  = entity_translation_get_handler($entity_type, $entity);
     $translation_handler->setOriginalLanguage('en');
     $translation_handler->initTranslations();
@@ -35,6 +35,12 @@ abstract class AbstractElisMigration extends Migration {
         ));
       }
     }
+  }
+
+  public function setTranslation($entity, $translations = array()) {
+    $migration   = Migration::currentMigration();
+    $entity_type = $migration->getDestination()->getEntityType();
+    $this->translate_entity($entity_type, $entity, $translations);
   }
 
   function prepare($entity, $row) {
@@ -60,5 +66,21 @@ abstract class AbstractElisMigration extends Migration {
   public function get_taxonomy_term_tid($name, $vocabulary = NULL) {
     $term = taxonomy_get_term_by_name($name, $vocabulary);
     return empty($term) ? NULL : reset($term)->tid;
+  }
+
+  public function create_taxonomy_term($name, $vocabulary_machine_name, $name_translations = array(), $multilingual_name_field = 'name_field') {
+    $voc = taxonomy_vocabulary_machine_name_load($vocabulary_machine_name);
+    $term = new stdClass();
+    $term->name = $name;
+    $term->vid = $voc->vid;
+    if (!empty($name_translations)) {
+      $term->{$multilingual_name_field} = array();
+      foreach ($name_translations as $lang => $value) {
+        $term->{$multilingual_name_field}[$lang][0]['value'] = $value;
+      }
+    }
+    taxonomy_term_save($term);
+    $this->translate_entity('taxonomy_term', $term, array_keys($name_translations));
+    return $term->tid;
   }
 }
