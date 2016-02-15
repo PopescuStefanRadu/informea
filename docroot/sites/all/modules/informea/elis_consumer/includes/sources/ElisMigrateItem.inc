@@ -2,6 +2,7 @@
 
 abstract class ElisMigrateItem extends MigrateItem {
 
+  protected $item_url;
   private $allowed_languages = array(
     'en' => 'EN',
     'fr' => 'FR',
