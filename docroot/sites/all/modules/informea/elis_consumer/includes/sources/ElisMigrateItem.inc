@@ -6,6 +6,7 @@ abstract class ElisMigrateItem extends MigrateItem {
     'en' => 'EN',
     'fr' => 'FR',
     'es' => 'ES',
+    'sp' => 'SP',
   );
   protected $translatable_fields = array();
 
@@ -23,6 +24,9 @@ abstract class ElisMigrateItem extends MigrateItem {
         $property = sprintf('%s_%s_%s', $field_name, $lang, $LANG);
       }
       if (property_exists($item, $property)) {
+        if ($lang == 'sp') {
+          $lang = 'es';
+        }
         $item->{$field_name}[] = $item->{$property};
         $item->{$field_name . '_languages'}[] = $lang;
       }

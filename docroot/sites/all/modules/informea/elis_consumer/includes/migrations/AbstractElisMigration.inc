@@ -41,4 +41,8 @@ abstract class AbstractElisMigration extends Migration {
     $translate_in = $this->getTranslationLanguages($row);
     $this->setTranslation($entity, $translate_in);
   }
+
+  public function fix_link_field_multilingual_data(&$entity, $row, $field_name, $translations) {
+
+  }
 }

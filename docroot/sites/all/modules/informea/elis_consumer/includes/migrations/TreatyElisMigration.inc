@@ -7,9 +7,7 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
 
     $this->translatable_fields = array(
       'abstract', 'titleOfText', 'titleAbbreviation','typeOfText', 'jurisdiction', 'fieldOfApplication',
-      'region', 'languageOfDocument', 'languageOfTranslation', 'depository',
-      // @ToDo: fix the problem with translations of link field
-      // 'linkToFullText',
+      'region', 'languageOfDocument', 'languageOfTranslation', 'depository', 'linkToFullText',
       );
 
     $this->source = new TreatyElisMigrateSourceList(

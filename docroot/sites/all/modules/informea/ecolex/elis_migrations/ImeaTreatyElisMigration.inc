@@ -49,7 +49,6 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
 //    $this->addFieldMapping('field_keywords:ignore_case')->defaultValue(TRUE);
     $this->addFieldMapping('field_related_website', 'relatedWebSite');
     $this->addFieldMapping('field_treaty_text_url', 'linkToFullText');
-    $this->addFieldMapping('field_treaty_text_url:language', 'linkToFullText_languages');
     // @ToDo: map treaties by RecID
     $this->addFieldMapping('field_amends_treaty', 'amendsTreaty');
 //    $this->addFieldMapping('field_ecolex_tags', 'subject');
@@ -86,6 +85,7 @@ class ImeaTreatyElisMigration extends TreatyElisMigration {
       'field_secondary_topic:create_term', 'field_secondary_topic:ignore_case',
       'field_treaty_parties_url', 'field_treaty_parties_url:title', 'field_treaty_parties_url:attributes',
       'field_treaty_parties_url:language', 'field_treaty_text_url:title', 'field_treaty_text_url:attributes',
+      'field_treaty_text_url:language',
       'field_treaty_website_url', 'field_treaty_website_url:title', 'field_treaty_website_url:attributes',
       'field_treaty_website_url:language', 'field_type_of_text:source_type',
       'field_informea_tags', 'field_informea_tags:source_type', 'field_informea_tags:create_term',
