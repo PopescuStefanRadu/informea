@@ -18,9 +18,10 @@ abstract class TreatyElisMigration extends AbstractElisMigration {
      */
     $this->taxonomy_term_fields = array('subject', 'keyword', 'fieldOfApplication', 'jurisdiction', 'region');
 
-    $this->source = new TreatyElisMigrateSourceList(
-      new TreatyElisMigrateList('Recid'),
-      new TreatyElisMigrateItem($this->translatable_fields, $this->taxonomy_term_fields)
+    $this->source = new TreatyElisMigrateSource(
+      'Recid',
+      $this->translatable_fields,
+      $this->taxonomy_term_fields
     );
 
     $this->map = new MigrateSQLMap($this->machineName,
