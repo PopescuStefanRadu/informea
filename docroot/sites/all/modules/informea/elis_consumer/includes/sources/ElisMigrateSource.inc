@@ -177,6 +177,7 @@ abstract class ElisMigrateSource extends MigrateSource {
       while ($xml != NULL && ($numberResultsFound = intval($xml->attributes()['numberResultsFound'])) > $spage_first) {
         if ($numberResultsFound > 300 && $period_type == 'year') {
           $this->pullRemoteData('month', FALSE);
+          break;
         }
         else {
           foreach ($xml->document as $doc) {
