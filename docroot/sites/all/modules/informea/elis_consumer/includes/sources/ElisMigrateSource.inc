@@ -31,7 +31,7 @@ abstract class ElisMigrateSource extends MigrateSource {
     return reset($unpack);
   }
 
-  public function get_date_period() {
+  public function get_date_period($format = 'Y') {
     $return = array();
     $begin = new DateTime($this->start_date);
     $end = new DateTime();
@@ -40,7 +40,7 @@ abstract class ElisMigrateSource extends MigrateSource {
     $period = new DatePeriod($begin, $interval, $end);
 
     foreach ($period as $p) {
-      $return[] = $p->format('Ym');
+      $return[] = $p->format($format);
     }
 
     return $return;
@@ -156,29 +156,42 @@ abstract class ElisMigrateSource extends MigrateSource {
   /**
    * Query the remote source and pull the data.
    */
-  protected function pullRemoteData() {
-    $this->data = array();
-    $query = $this->spage_query_default_string . ' AND DE:' . current($this->date_period);
-    $spage_query = $this->hexadecimally_encode_string($query);
-    $spage_first = 0;
-    $url = str_replace(
-      array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
-      array($spage_query,$spage_first),
-      $this->generic_url
-    );
-    $xml = elis_consumer_get_xml_data_from_url($url);
-    while ($xml != NULL && intval($xml->attributes()['numberResultsFound']) > $spage_first) {
-      foreach ($xml->document as $doc) {
-        $this->data[(string) $doc->{$this->key_field}] = $this->getItem($doc);
-      }
-      $spage_first += ELIS_ITEMS_PER_PAGE;
-      if ($spage_first < intval($xml->attributes()['numberResultsFound'])) {
-        $url = str_replace(
-          array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
-          array($spage_query,$spage_first),
-          $this->generic_url
-        );
-        $xml = elis_consumer_get_xml_data_from_url($url);
+  protected function pullRemoteData($period_type = 'year', $clear_data = TRUE) {
+    if ($clear_data) {
+      $this->data = array();
+    }
+    $months = array('*');
+    if ($period_type != 'year') {
+      $months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
+    }
+    foreach ($months as $month) {
+      $query = $this->spage_query_default_string . ' AND DE:' . current($this->date_period) . $month;
+      $spage_query = $this->hexadecimally_encode_string($query);
+      $spage_first = 0;
+      $url = str_replace(
+        array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+        array($spage_query,$spage_first),
+        $this->generic_url
+      );
+      $xml = elis_consumer_get_xml_data_from_url($url);
+      while ($xml != NULL && ($numberResultsFound = intval($xml->attributes()['numberResultsFound'])) > $spage_first) {
+        if ($numberResultsFound > 300 && $period_type == 'year') {
+          $this->pullRemoteData('month', FALSE);
+        }
+        else {
+          foreach ($xml->document as $doc) {
+            $this->data[(string) $doc->{$this->key_field}] = $this->getItem($doc);
+          }
+          $spage_first += ELIS_ITEMS_PER_PAGE;
+          if ($spage_first < $numberResultsFound) {
+            $url = str_replace(
+              array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+              array($spage_query,$spage_first),
+              $this->generic_url
+            );
+            $xml = elis_consumer_get_xml_data_from_url($url);
+          }
+        }
       }
     }
     next($this->date_period);
