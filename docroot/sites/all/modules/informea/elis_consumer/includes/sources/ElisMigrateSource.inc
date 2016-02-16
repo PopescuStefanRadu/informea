@@ -31,12 +31,12 @@ abstract class ElisMigrateSource extends MigrateSource {
     return reset($unpack);
   }
 
-  public function get_date_period($format = 'Y') {
+  public function get_date_period($format = 'Y', $interval = '1 year') {
     $return = array();
     $begin = new DateTime($this->start_date);
     $end = new DateTime();
 
-    $interval = DateInterval::createFromDateString('1 month');
+    $interval = DateInterval::createFromDateString($interval);
     $period = new DatePeriod($begin, $interval, $end);
 
     foreach ($period as $p) {
@@ -77,7 +77,7 @@ abstract class ElisMigrateSource extends MigrateSource {
    */
   public function getNextRow() {
     $item = current($this->data);
-    while ($item === FALSE && key($this->date_period) < count($this->date_period)) {
+    while ($item === FALSE && key($this->date_period) != NULL) {
       $this->pullRemoteData();
       $item = reset($this->data);
     }
