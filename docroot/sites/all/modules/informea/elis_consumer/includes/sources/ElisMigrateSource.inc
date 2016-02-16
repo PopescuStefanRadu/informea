@@ -165,7 +165,7 @@ abstract class ElisMigrateSource extends MigrateSource {
       $months = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
     }
     foreach ($months as $month) {
-      $query = $this->spage_query_default_string . ' AND DE:' . current($this->date_period) . $month;
+      $query = $this->spage_query_default_string . ' AND DM:' . current($this->date_period) . $month;
       $spage_query = $this->hexadecimally_encode_string($query);
       $spage_first = 0;
       $url = str_replace(
