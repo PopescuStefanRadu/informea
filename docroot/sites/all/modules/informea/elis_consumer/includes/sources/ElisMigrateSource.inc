@@ -172,12 +172,14 @@ abstract class ElisMigrateSource extends MigrateSource {
         $this->data[(string) $doc->{$this->key_field}] = $this->getItem($doc);
       }
       $spage_first += ELIS_ITEMS_PER_PAGE;
-      $url = str_replace(
-        array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
-        array($spage_query,$spage_first),
-        $this->generic_url
-      );
-      $xml = elis_consumer_get_xml_data_from_url($url);
+      if ($spage_first < intval($xml->attributes()['numberResultsFound'])) {
+        $url = str_replace(
+          array('SPAGE_QUERY_VALUE', 'SPAGE_FIRST_VALUE'),
+          array($spage_query,$spage_first),
+          $this->generic_url
+        );
+        $xml = elis_consumer_get_xml_data_from_url($url);
+      }
     }
     next($this->date_period);
   }
