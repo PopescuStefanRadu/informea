@@ -39,6 +39,9 @@ abstract class ElisMigrateItem extends MigrateItem {
     $ob = new stdClass();
     $vq_query = sprintf('ID:"%s"', $id);
     $xml = elis_consumer_get_xml_data_from_url($this->item_url . $vq_query);
+    if (empty($xml)) {
+      return $ob;
+    }
     $parties = array();
     $abstract = '';
     foreach ($xml->document[0] as $field_name => $value) {
