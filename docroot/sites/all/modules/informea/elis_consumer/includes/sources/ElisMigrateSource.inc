@@ -77,7 +77,7 @@ abstract class ElisMigrateSource extends MigrateSource {
    */
   public function getNextRow() {
     $item = current($this->data);
-    while ($item === FALSE && key($this->date_period) != NULL) {
+    while ($item === FALSE && key($this->date_period) !== NULL) {
       $this->pullRemoteData();
       $item = reset($this->data);
     }
