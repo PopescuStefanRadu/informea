@@ -16,9 +16,10 @@ abstract class CourtDecisionElisMigration extends AbstractElisMigration {
      */
     $this->taxonomy_term_fields = array('subject', 'keyword',);
 
-    $this->source = new CourtDecisionElisMigrateSourceList(
-      new CourtDecisionElisMigrateList('id'),
-      new CourtDecisionElisMigrateItem($this->translatable_fields, $this->taxonomy_term_fields)
+    $this->source = new CourtDecisionElisMigrateSource(
+      'id',
+      $this->translatable_fields,
+      $this->taxonomy_term_fields
     );
 
     $this->map = new MigrateSQLMap($this->machineName,
