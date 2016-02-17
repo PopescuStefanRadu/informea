@@ -17,4 +17,5 @@ files[] = includes/sources/treaty/TreatyElisMigrateSource.inc
 files[] = includes/sources/treaty/TreatyElisMigrateSourceList.inc
 files[] = includes/sources/court_decision/CourtDecisionElisMigrateItem.inc
 files[] = includes/sources/court_decision/CourtDecisionElisMigrateList.inc
+files[] = includes/sources/court_decision/CourtDecisionElisMigrateSource.inc
 files[] = includes/sources/court_decision/CourtDecisionElisMigrateSourceList.inc
