@@ -1,7 +1,5 @@
 <?php
 
-define('ELIS_ITEMS_PER_PAGE', 20);
-
 /**
  * Class ElisMigrateList. See MigrateSourceList pattern.
  *
