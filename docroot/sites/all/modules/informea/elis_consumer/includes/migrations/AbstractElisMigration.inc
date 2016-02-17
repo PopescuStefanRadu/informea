@@ -131,6 +131,7 @@ abstract class AbstractElisMigration extends Migration {
     }
     $row->{$field_name} = array();
     foreach($data as $term) {
+      $term['name'] = trim($term['name']);
       $tid = $this->get_taxonomy_term_tid($term['name'], $vocabulary);
       if ($tid === NULL) {
         $tid = $this->create_taxonomy_term($term['name'], $vocabulary, $term['translations']);
