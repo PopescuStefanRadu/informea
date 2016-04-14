@@ -16,5 +16,5 @@
 # For syntax checking, see:
 # http://www.frobee.com/robots-txt-check
 
-UMser-agent: *
+User-agent: *
 Disallow: /
