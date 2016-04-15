@@ -67,6 +67,14 @@ function leo_migrate_migrate_api() {
       'translatable_name' => TRUE,
       'translatable_description' => TRUE,
     ),
+    'thesaurus_ecolex' => array(
+      'description' => t('Migration of ECOLEX Thesaurus from LEO'),
+      'source_vocabulary' => 'thesaurus_ecolex',
+      'destination_vocabulary' => 'thesaurus_ecolex',
+      'class_name' => 'LeoDefaultTaxonomyMigration',
+      'translatable_name' => TRUE,
+      'translatable_description' => TRUE,
+    ),
   );
 
   foreach ($vocabulary_arguments as $migration_name => $arguments) {
