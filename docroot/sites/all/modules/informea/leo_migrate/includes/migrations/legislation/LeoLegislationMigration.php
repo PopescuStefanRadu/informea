@@ -55,26 +55,4 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
       'field_data_source' => 'data_source',
     ];
   }
-
-  function prepareRow($row) {
-    parent::prepareRow($row);
-    /**
-     * Fix LINK fields:
-     *  - field_avaiable_web_site (just LANGUAGE_NONE in LEO)
-     *  - field_url (needs translation)
-     *  - field_ecolex_url (just english in LEO)
-     *  - field_faolex_url (just english in LEO)
-     *  - field_internet_reference_url (just english in LEO)
-     */
-    $fields = array('field_avaiable_web_site', 'field_ecolex_url', 'field_faolex_url', 'field_internet_reference_url');
-    foreach ($fields as $field) {
-      if (!empty($row->{"{$field}:language"})) {
-        $row->{"{$field}:language"} = reset($row->{"{$field}:language"});
-      }
-    }
-    if (!empty($row->{"field_url:language"})) {
-      //@Todo: fix multilingual LINK field
-//      $row->{"field_url:language"} = reset($row->{"field_url:language"});
-    }
-  }
 }
