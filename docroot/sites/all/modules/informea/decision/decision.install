@@ -1,0 +1,26 @@
+<?php
+
+
+/**
+ * Delete old CBD decisions
+ */
+function decision_update_7001() {
+  /*
+   SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+    WHERE
+      AND b.field_treaty_target_id IN (255, 262, 263, 318)
+      AND a.type = 'decision'
+      AND a.nid NOT IN (SELECT destid1 FROM migrate_map_odata_cbd_decisions);
+   */
+  $q = db_query("
+    SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+    WHERE
+      b.field_treaty_target_id IN (255, 262, 263, 318)
+      AND a.type = 'decision'
+      AND a.nid NOT IN (SELECT destid1 FROM migrate_map_odata_cbd_decisions);
+  ");
+  $nids = $q->fetchCol();
+  node_delete_multiple($nids);
+}

@@ -127,36 +127,38 @@ class DecisionsODataMigration extends AbstractODataMigration {
     $row->files = array();
     $row->files_language = array();
     $row->filename = array();
-    foreach($files as $file) {
-      if (empty($file->url)) {
-        ws_consumer_odata_log('Invalid file for Decision id=' . $row->id, MigrationBase::MESSAGE_WARNING);
-        continue;
-      }
+    if (!empty($files)) {
+      foreach ($files as $file) {
+        if (empty($file->url)) {
+          ws_consumer_odata_log('Invalid file for Decision id=' . $row->id, MigrationBase::MESSAGE_WARNING);
+          continue;
+        }
 
-      // Filename validation
-      $filename = NULL;
-      if (!empty($row->filename)) {
-        $filename = $row->filename;
-      }
-      else {
-        $filename = ODataMigrationUtil::filenameFromURL($file->url);
-      }
-      if (empty($filename)) {
-        ws_consumer_odata_log('Invalid filename for Decision id=' . $row->id . '. File URL: ' . $file->url, MigrationBase::MESSAGE_WARNING);
-        continue;
-      }
+        // Filename validation
+        $filename = NULL;
+        if (!empty($row->filename)) {
+          $filename = $row->filename;
+        }
+        else {
+          $filename = ODataMigrationUtil::filenameFromURL($file->url);
+        }
+        if (empty($filename)) {
+          ws_consumer_odata_log('Invalid filename for Decision id=' . $row->id . '. File URL: ' . $file->url, MigrationBase::MESSAGE_WARNING);
+          continue;
+        }
 
-      // File language handling
-      if (empty($file->language)) {
-        ws_consumer_odata_log('Missing language for file, Decision id=' . $row->id . '. File URL: ' . $file->url, MigrationBase::MESSAGE_WARNING);
-        continue;
-      }
-      $language = $file->language;
-      $all_languages[] = $language;
+        // File language handling
+        if (empty($file->language)) {
+          ws_consumer_odata_log('Missing language for file, Decision id=' . $row->id . '. File URL: ' . $file->url, MigrationBase::MESSAGE_WARNING);
+          continue;
+        }
+        $language = $file->language;
+        $all_languages[] = $language;
 
-      $row->files[] = $file->url;
-      $row->filename[] = $filename;
-      $row->files_language[] = $language;
+        $row->files[] = $file->url;
+        $row->filename[] = $filename;
+        $row->files_language[] = $language;
+      }
     }
     $row->languages = array_unique($all_languages);
 

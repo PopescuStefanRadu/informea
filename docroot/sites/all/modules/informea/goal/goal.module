@@ -1,0 +1,135 @@
+<?php
+/**
+ * @file
+ * Code for the goal feature.
+ */
+
+include_once 'goal.features.inc';
+
+function goal_theme() {
+  return array(
+    'goals_listing' => array(
+      'render element' => 'element',
+      'template' => 'templates/goals-listing',
+      'variables' => array('goals'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
+    'goal_text_tags' => array(
+      'render element' => 'element',
+      'template' => 'templates/goal-text-tags',
+      'variables' => array('tags'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
+    'goal_text' => array(
+      'render element' => 'element',
+      'template' => 'templates/goal-text',
+      'variables' => array('goal', 'base_goal_url'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
+    'goal_target' => array(
+      'render element' => 'element',
+      'template' => 'templates/goal-target',
+      'variables' => array('goal', 'target', 'base_goal_url'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
+    'goal_target_indicator' => array(
+      'render element' => 'element',
+      'template' => 'templates/goal-target-indicator',
+      'variables' => array('goal', 'target', 'indicator', 'base_goal_url'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
+  );
+}
+
+function _get_goal_source_goals($source, $type_of_goals) {
+  $query = new EntityFieldQuery();
+
+  $goal_type_tid = NULL;
+  if ($goal_type = taxonomy_get_term_by_name($type_of_goals, 'type_of_goal')) {
+    $goal_type_tid = reset($goal_type)->tid;
+  }
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'goal')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('field_goal_source', 'tid', $source->tid)
+    ->fieldCondition('field_goal_type', 'tid', $goal_type_tid)
+    ->propertyOrderBy('title', 'ASC');
+
+  $result = $query->execute();
+  $nodes = $result['node'];
+
+  return $nodes;
+}
+
+function _get_goal_children($source, $parent, $type_of_goals) {
+  $nodes = array();
+  $query = new EntityFieldQuery();
+
+  $goal_type_tid = NULL;
+  if ($goal_type = taxonomy_get_term_by_name($type_of_goals, 'type_of_goal')) {
+    $goal_type_tid = reset($goal_type)->tid;
+  }
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'goal')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('field_goal_source', 'tid', $source->tid)
+    ->fieldCondition('field_goal_type', 'tid', $goal_type_tid)
+    ->fieldCondition('field_parent_goal', 'target_id', $parent->nid)
+    ->propertyOrderBy('title', 'ASC');
+
+  if ($result = $query->execute()) {
+    $nodes = $result['node'];
+  }
+
+  return $nodes;
+}
+
+function goal_taxonomy_term_view($term, $view_mode, $langcode) {
+  if ($term->vocabulary_machine_name == 'goal_sources' && $view_mode == 'full') {
+    drupal_add_js(drupal_get_path('module', 'goal') . '/js/goal.js');
+    drupal_add_library('informea', 'scrollto');
+    drupal_add_library('informea', 'smallipop');
+    drupal_add_css(drupal_get_path('module', 'goal') . '/styles/goal.css');
+    switch ($term->tid) {
+      case '1732':
+        //Aichi Biodiversity Targets
+        $goal_type = 'Strategic goal';
+        $target_type = 'Aichi Target';
+        break;
+      case '1733':
+        //For GEG we only show the view
+        unset($term->content);
+        $goal_type = '';
+        $target_type = '';
+        break;
+      case '1740':
+        //MDG's
+        $goal_type = 'Goal';
+        $target_type = 'Target';
+        break;
+    }
+    $goals = _get_goal_source_goals($term, $goal_type);
+    foreach ($goals as $goal) {
+      $targets = _get_goal_children($term, $goal, $target_type);
+      foreach ($targets as $target) {
+        $target->indicators = _get_goal_children($term, $target, 'Indicator');
+      }
+      $goal->targets = $targets;
+    }
+    $term->content['goals'] = array(
+      '#type' => 'item',
+      '#weight' => 10,
+      '#markup' => theme(
+        'goals_listing', array('term' => $term, 'goals' => $goals)
+      ),
+    );
+  }
+}
+
+function goal_link($node, $suffix = '') {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $goal = $wrapper->field_goal_source->value();
+  return url('taxonomy/term/' . $goal->tid . $suffix);
+}

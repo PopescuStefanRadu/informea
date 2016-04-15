@@ -10,7 +10,7 @@
 function feeds_news_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-feed-field_image'
+  // Exported field_instance: 'node-feed-field_image'.
   $field_instances['node-feed-field_image'] = array(
     'bundle' => 'feed',
     'deleted' => 0,
@@ -73,7 +73,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed-field_mea_topic'
+  // Exported field_instance: 'node-feed-field_mea_topic'.
   $field_instances['node-feed-field_mea_topic'] = array(
     'bundle' => 'feed',
     'default_value' => NULL,
@@ -134,7 +134,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed-field_treaty'
+  // Exported field_instance: 'node-feed-field_treaty'.
   $field_instances['node-feed-field_treaty'] = array(
     'bundle' => 'feed',
     'default_value' => NULL,
@@ -195,7 +195,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_feed_item_description'
+  // Exported field_instance: 'node-feed_item-field_feed_item_description'.
   $field_instances['node-feed_item-field_feed_item_description'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,
@@ -265,7 +265,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_image'
+  // Exported field_instance: 'node-feed_item-field_image'.
   $field_instances['node-feed_item-field_image'] = array(
     'bundle' => 'feed_item',
     'deleted' => 0,
@@ -328,7 +328,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_mea_topic'
+  // Exported field_instance: 'node-feed_item-field_mea_topic'.
   $field_instances['node-feed_item-field_mea_topic'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,
@@ -389,7 +389,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_parent_feed'
+  // Exported field_instance: 'node-feed_item-field_parent_feed'.
   $field_instances['node-feed_item-field_parent_feed'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,
@@ -447,7 +447,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_tags'
+  // Exported field_instance: 'node-feed_item-field_tags'.
   $field_instances['node-feed_item-field_tags'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,
@@ -507,7 +507,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_treaty'
+  // Exported field_instance: 'node-feed_item-field_treaty'.
   $field_instances['node-feed_item-field_treaty'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,
@@ -568,7 +568,7 @@ function feeds_news_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-feed_item-field_url'
+  // Exported field_instance: 'node-feed_item-field_url'.
   $field_instances['node-feed_item-field_url'] = array(
     'bundle' => 'feed_item',
     'default_value' => NULL,

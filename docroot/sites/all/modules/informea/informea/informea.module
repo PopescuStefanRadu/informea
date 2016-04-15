@@ -542,6 +542,9 @@ function informea_block_view_block_4_alter(&$data, $block) {
  * Implements hook_page_alter().
  */
 function informea_page_alter(&$page) {
+  if (!module_exists('anlytics_integration')) {
+    return;
+  }
   if ($ga_informea_key = variable_get('ga_informea_key')) {
     analytics_integration_add_google_analytics_library($ga_informea_key);
     $current_path = url($_GET['q'], array('absolute' => TRUE));

@@ -10,7 +10,7 @@
 function feeds_news_field_default_field_bases() {
   $field_bases = array();
 
-  // Exported field_base: 'field_feed_item_description'
+  // Exported field_base: 'field_feed_item_description'.
   $field_bases['field_feed_item_description'] = array(
     'active' => 1,
     'cardinality' => 1,
@@ -31,7 +31,7 @@ function feeds_news_field_default_field_bases() {
     'type' => 'text_with_summary',
   );
 
-  // Exported field_base: 'field_parent_feed'
+  // Exported field_base: 'field_parent_feed'.
   $field_bases['field_parent_feed'] = array(
     'active' => 1,
     'cardinality' => 1,

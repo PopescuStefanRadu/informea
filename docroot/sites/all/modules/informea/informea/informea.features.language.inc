@@ -33,7 +33,7 @@ function informea_locale_default_languages() {
     'plurals' => 0,
     'formula' => '',
     'domain' => '',
-    'prefix' => '',
+    'prefix' => 'en',
     'weight' => -10,
   );
   // Exported language: es.

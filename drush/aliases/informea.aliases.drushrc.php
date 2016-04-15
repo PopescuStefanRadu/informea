@@ -3,12 +3,13 @@ $aliases['prod'] = array(
   'uri' => 'http://www.informea.org',
 );
 
-$aliases['dev'] = array(
-  'uri' => 'http://informea.edw.ro',
-  'root' => '/var/www/html/informea/informea.edw.ro/project/docroot',
-  'remote-host' => 'php-prod1.edw.lan',
+$aliases['staging'] = array(
+  'uri' => 'http://informea-staging.edw.ro',
+  'root' => '/var/www/html/informea-staging.edw.ro/docroot',
+  'remote-host' => 'php-devel1.edw.ro',
   'remote-user' => 'php',
 );
+
 
 // Add your local aliases.
 if (file_exists(dirname(__FILE__) . '/aliases.local.php')) {

@@ -1,0 +1,60 @@
+.panel {
+    border: none!important;
+}
+.panel-collapse {
+    padding-left: 20px;
+}
+.panel-title::before {
+    line-height: 22px;
+}
+.panel-title-target {
+    font-size: 16px !important;
+}
+.panel-title-target::before {
+    line-height: 18px;
+}
+.panel-title-target .title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.actions {
+    text-align: right;
+    color: #777;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.actions:hover {
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.actions li {
+    font-size: 13px;
+}
+.target h4 {
+    font-size: 16px;
+    font-weight: bold;
+}
+.target {
+    margin-left: 20px;
+}
+.indicator {
+    margin-left: 10px;
+}
+
+/* GEG page only */
+.page-taxonomy-term-1552 .views-widget,
+.page-taxonomy-term-1552 .views-exposed-widget.views-submit-button {
+    float: right;
+}
+
+.page-taxonomy-term-1552 .views-field-field-geg-theme .views-label,
+.page-taxonomy-term-1552 .views-field-field-geg-theme .field-content,
+.page-taxonomy-term-1552 .views-field-field-geographical-scope .views-label,
+.page-taxonomy-term-1552 .views-field-field-geographical-scope .field-content {
+    display: inline-block !important;
+}
+
+.page-taxonomy-term-1552 .views-field-body {
+    margin-top: 5px;
+}

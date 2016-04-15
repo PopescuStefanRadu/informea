@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file leo_migrate.module
+ */
+
+/**
+ * Log system for the leo_migrate migrations.
+ *
+ * @param string $message
+ *   Log message
+ * @param int $severity
+ *    See MigrationBase::MESSAGE_* constants
+ */
+function leo_migrate_log($message, $severity = MigrationBase::MESSAGE_INFORMATIONAL) {
+  if (function_exists('drush_log')) {
+    $status = 'status';
+    switch($severity) {
+      case MigrationBase::MESSAGE_ERROR:
+        $status = 'error';
+        break;
+      case MigrationBase::MESSAGE_WARNING:
+        $status = 'warning';
+        break;
+      case MigrationBase::MESSAGE_NOTICE:
+        $status = 'notice';
+        break;
+    }
+    drush_log($message, $status);
+    return;
+  }
+}

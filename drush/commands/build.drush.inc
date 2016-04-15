@@ -11,12 +11,6 @@
 function build_drush_command() {
 	$items = array();
 
-	$items['build'] = array(
-		'description' => 'Runs database updates, reverts features and clears caches.',
-		'callback' => '_drush_build',
-		'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
-	);
-
 	$items['devify'] = array(
 		'description' => 'Configures the current database for development.',
 		'callback' => '_drush_devify',
@@ -37,29 +31,6 @@ function build_drush_command() {
 	);
 
 	return $items;
-}
-
-/**
- * Executes the build commands.
- */
-function _drush_build() {
-	variable_set('maintenance_mode', 1);
-	// Enable modules.
-	$modules = drush_get_option('init-modules', array());
-	foreach($modules as $module) {
-		if (!module_exists($module)) {
-			drush_log('Enabling ' . $module, 'status');
-			module_enable($modules);
-		}
-	}
-	drush_invoke('updatedb');
-	drush_invoke_process('@self', 'features-revert-all', array(), array(
-		'force' => TRUE,
-		'yes' => TRUE,
-	));
-	drush_invoke('cc', array('type' => 'all'));
-	drush_log(dt('Built!'), 'success');
-	variable_set('maintenance_mode', 0);
 }
 
 /**
@@ -100,10 +71,12 @@ function _drush_devify() {
 
 	// Reset variables.
 	$variables = drush_get_option('reset-variables', array(
+		'block_cache' => 0,
 		'preprocess_css' => 0,
 		'preprocess_js' => 0,
 		'cache' => 0,
 		'page_compression' => 0,
+		'error_level' => 2,
 	));
 	if (is_string($variables)) {
 		// Explode a=b,c=d into an associative array.
@@ -122,8 +95,7 @@ function _drush_devify() {
 
 	// Sanitize database.
 	// @see sql_drush_sql_sync_sanitize() to add your sanitize queries.
-	drush_sql_sanitize();
-
+	drush_invoke_process('@self', 'sql-sanitize', array(), array('sanitize-password' => 'no'));
 	drush_log(dt('Devified!'), 'success');
 }
 

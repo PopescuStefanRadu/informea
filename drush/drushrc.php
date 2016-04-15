@@ -251,7 +251,7 @@ $command_specific['sql-sync'] = array(
   'structure-tables-list' => 'cache*,history,sessions,watchdog,ctools_css_cache,ctools_object_cache',
 );
 
-$options['disable-modules'] = array('varnish', 'update');
+$options['disable-modules'] = array('varnish', 'update', 'analytics_integration');
 
 $options['init-modules'] = array(
   'ctools',

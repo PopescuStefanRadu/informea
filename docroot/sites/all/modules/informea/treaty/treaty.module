@@ -174,8 +174,6 @@ EOT
     }
     $breadcrumbs = array(l(t('Treaties'),'treaties'),l($node->title, 'node/' . $node->nid));
 
-    $google_analytics_keys = analytics_integration_get_node_keys($node, 'field_treaty', 'Google Analytics');
-    $piwik_keys = analytics_integration_get_node_keys($node, 'field_treaty', 'Piwik');
     $node_w = entity_metadata_wrapper('node', $node);
     $informea_url = 'http://www.informea.org/treaties/' . $node_w->field_odata_identifier->value();
     $ga_informea_key = variable_get('ga_informea_key');
@@ -287,22 +285,25 @@ EOT
           );
         }
 
-        /* Insert GA code to execute when user clicks on decision */
-        $url = $informea_url . '/decisions';
-        analytics_integration_google_analytics_send_hit($ga_informea_key, $url, 'informea', $node_w->label());
-        $script =
-          <<<EOT
-          (function ($) {
+        if (module_exists('analytics_integration')) {
+          /* Insert GA code to execute when user clicks on decision */
+          $url = $informea_url . '/decisions';
+          analytics_integration_google_analytics_send_hit($ga_informea_key, $url, 'informea', $node_w->label());
+          $script =
+            <<<EOT
+            (function ($) {
           $('#dialog-modal-ajax').on('shown.bs.modal', function() {
             analytics_integration_google_analytics_send_hit('$ga_informea_key', '$url', 'informea', $('#dialog-modal-ajax h4.modal-title').text());
           });
         })(jQuery)
 EOT;
-        drupal_add_js($script, array(
-          'scope' => 'footer',
-          'type' => 'inline',
-          'weight' => 130
-        ));
+          drupal_add_js($script, array(
+            'scope' => 'footer',
+            'type' => 'inline',
+            'weight' => 130
+          ));
+        }
+
         break;
 
       case 'parties':
@@ -429,12 +430,17 @@ EOT;
         break;
     }
     informea_theme_set_page_breadcrumb($breadcrumbs);
-    analytics_integration_google_analytics_send_hit($ga_informea_key, $informea_url, 'informea', $node_w->label());
-    if (!empty($google_analytics_keys)) {
-      treaty_ga_send_pageview($node, $google_analytics_keys, $context);
-    }
-    if (!empty($piwik_keys)) {
-      treaty_piwik_send_pageview($node, $piwik_keys, $context);
+
+    if (module_exists('analytics_integration')) {
+      $google_analytics_keys = analytics_integration_get_node_keys($node, 'field_treaty', 'Google Analytics');
+      $piwik_keys = analytics_integration_get_node_keys($node, 'field_treaty', 'Piwik');
+      analytics_integration_google_analytics_send_hit($ga_informea_key, $informea_url, 'informea', $node_w->label());
+      if (!empty($google_analytics_keys)) {
+        treaty_ga_send_pageview($node, $google_analytics_keys, $context);
+      }
+      if (!empty($piwik_keys)) {
+        treaty_piwik_send_pageview($node, $piwik_keys, $context);
+      }
     }
   }
 }
