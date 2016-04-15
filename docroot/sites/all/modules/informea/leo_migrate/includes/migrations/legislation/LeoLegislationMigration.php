@@ -8,10 +8,21 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
     $this->addSimpleMappings(array_keys($this->taxonomyFields()));
 
     $this->addSimpleMappings(array(
+      'field_abstract', 'field_alternative_record_id', 'field_amends', 'field_avaiable_web_site',
+      'field_avaiable_web_site:title', 'field_avaiable_web_site:attributes',
+      'field_avaiable_web_site:language', 'field_date_of_consolidation', 'field_date_of_original_text',
+      'field_ecolex_url', 'field_ecolex_url:title', 'field_ecolex_url:attributes', 'field_ecolex_url:language',
+      'field_faolex_url', 'field_faolex_url:title', 'field_faolex_url:attributes', 'field_faolex_url:language',
+      'field_files', 'field_files:display', 'field_files:description', 'field_files:language',
+      'field_original_id', 'field_original_id:language',
     ));
 
     $this->addUnmigratedSources(array(
-      'uid', 'revision', 'log', 'revision_uid',
+      'uid', 'revision', 'log', 'revision_uid', 'field_abstract:language',
+    ));
+    $this->addUnmigratedDestinations(array(
+      'field_date_of_original_text:timezone', 'field_date_of_original_text:rrule', 'field_date_of_original_text:to',
+      'field_date_of_consolidation:timezone', 'field_date_of_consolidation:rrule', 'field_date_of_consolidation:to',
     ));
   }
 
