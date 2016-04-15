@@ -63,6 +63,28 @@ class LeoDefaultNodeMigration extends DrupalNode7Migration {
     }
   }
 
+  /**
+  * Set translations to entity when content is available in multiple languages.
+  *
+  * @param $entity
+  * @param $row
+  */
+  function prepare($entity, $row) {
+    $languages = [];
+    foreach ($row as $key => $value) {
+      if (strpos($key, ':language') !== FALSE) {
+        if (is_array($value)) {
+          $languages = array_merge($languages, $value);
+        }
+        else {
+          $languages[] = $value;
+        }
+      }
+    }
+    $languages = array_unique($languages);
+    $this->setTranslation($entity, $languages);
+  }
+
   public function setTranslation($entity, $translations = array()) {
     if (empty($translations)) {
       $translations = array();
