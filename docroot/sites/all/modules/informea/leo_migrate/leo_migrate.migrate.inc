@@ -51,6 +51,14 @@ function leo_migrate_migrate_api() {
       'translatable_name' => TRUE,
       'translatable_description' => TRUE,
     ),
+    'type_of_text' => array(
+      'description' => t('Migration of \'Type of text\' terms from LEO'),
+      'source_vocabulary' => 'type_of_text',
+      'destination_vocabulary' => 'type_of_text',
+      'class_name' => 'LeoDefaultTaxonomyMigration',
+      'translatable_name' => TRUE,
+      'translatable_description' => TRUE,
+    ),
   );
 
   foreach ($vocabulary_arguments as $migration_name => $arguments) {
