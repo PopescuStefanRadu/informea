@@ -14,7 +14,7 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
       'field_ecolex_url', 'field_ecolex_url:title', 'field_ecolex_url:attributes', 'field_ecolex_url:language',
       'field_faolex_url', 'field_faolex_url:title', 'field_faolex_url:attributes', 'field_faolex_url:language',
       'field_url', 'field_url:title', 'field_url:attributes', 'field_url:language',
-      'field_files', 'field_files:display', 'field_files:description', 'field_files:language',
+      'field_files:display', 'field_files:description', 'field_files:language',
       'field_original_id', 'title_field', 'title_field:language', 'field_date_of_modification',
       'field_date_of_entry', 'field_entry_into_force_notes', 'field_faolex_id',
       'field_internet_reference_url', 'field_internet_reference_url:title', 'field_internet_reference_url:attributes', 'field_internet_reference_url:language',
@@ -62,5 +62,10 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
       'field_informea_tags' => 'thesaurus_informea',
       'field_data_source' => 'data_source',
     ];
+  }
+
+  public function prepareRow($row) {
+    parent::prepareRow($row);
+    $row->field_country = $this->map_souce_node($row->field_country, 'country');
   }
 }

@@ -28,6 +28,31 @@ class LeoDefaultNodeMigration extends DrupalNode7Migration {
     return array();
   }
 
+  public function map_souce_node($nid, $type = NULL) {
+    if (is_array($nid)) {
+      $nid = reset($nid);
+    }
+    $query = Database::getConnection('default', $this->sourceConnection)
+      ->select('node', 'n')
+      ->fields('n', array('title'))
+      ->condition('nid', $nid);
+    if ($type) {
+      $query->condition('type', $type);
+    }
+    $title = $query->execute()->fetchField();
+
+    if ($title) {
+      $query = db_select('node', 'n')
+        ->fields('n', array('nid'))
+        ->condition('title', $title);
+      if ($type) {
+        $query->condition('type', $type);
+      }
+      return $query->execute()->fetchField();
+    }
+    return NULL;
+  }
+
   public function map_source_term($source_tid, $taxonomy) {
     $mappings = array();
     $voc = taxonomy_vocabulary_machine_name_load($taxonomy);
