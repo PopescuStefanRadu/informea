@@ -59,13 +59,22 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
   function prepareRow($row) {
     parent::prepareRow($row);
     /**
-     * @Todo: field_url is multilingual for LEGISLATIONS. FIX THIS
-     * Error:
-     * Illegal offset type
-     * File modules/contrib/link/link.migrate.inc, line 112
+     * Fix LINK fields:
+     *  - field_avaiable_web_site (just LANGUAGE_NONE in LEO)
+     *  - field_url (needs translation)
+     *  - field_ecolex_url (just english in LEO)
+     *  - field_faolex_url (just english in LEO)
+     *  - field_internet_reference_url (just english in LEO)
      */
-//    if (!empty($row->{'field_url:language'})) {
-//      $row->{'field_url:language'} = reset($row->{'field_url:language'});
-//    }
+    $fields = array('field_avaiable_web_site', 'field_ecolex_url', 'field_faolex_url', 'field_internet_reference_url');
+    foreach ($fields as $field) {
+      if (!empty($row->{"{$field}:language"})) {
+        $row->{"{$field}:language"} = reset($row->{"{$field}:language"});
+      }
+    }
+    if (!empty($row->{"field_url:language"})) {
+      //@Todo: fix multilingual LINK field
+//      $row->{"field_url:language"} = reset($row->{"field_url:language"});
+    }
   }
 }
