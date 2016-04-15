@@ -109,6 +109,7 @@ features[field_instance][] = node-legislation-field_ecolex_url
 features[field_instance][] = node-legislation-field_entry_into_force_notes
 features[field_instance][] = node-legislation-field_faolex_id
 features[field_instance][] = node-legislation-field_faolex_url
+features[field_instance][] = node-legislation-field_files
 features[field_instance][] = node-legislation-field_implements
 features[field_instance][] = node-legislation-field_informea_tags
 features[field_instance][] = node-legislation-field_internet_reference_url

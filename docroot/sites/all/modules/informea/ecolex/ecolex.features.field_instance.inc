@@ -2904,6 +2904,61 @@ function ecolex_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-legislation-field_files'.
+  $field_instances['node-legislation-field_files'] = array(
+    'bundle' => 'legislation',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'ajax' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'default' => array(
+        'label' => 'above',
+        'module' => 'file',
+        'settings' => array(),
+        'type' => 'file_default',
+        'weight' => 36,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_files',
+    'label' => 'Attached files',
+    'required' => 0,
+    'settings' => array(
+      'description_field' => 0,
+      'entity_translation_sync' => 0,
+      'file_directory' => 'legislation',
+      'file_extensions' => 'txt doc docx rtf pdf htm html xls xlsx odt ods',
+      'max_filesize' => '',
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'file',
+      'settings' => array(
+        'progress_indicator' => 'throbber',
+      ),
+      'type' => 'file_generic',
+      'weight' => 44,
+    ),
+  );
+
   // Exported field_instance: 'node-legislation-field_implements'.
   $field_instances['node-legislation-field_implements'] = array(
     'bundle' => 'legislation',
@@ -5835,6 +5890,7 @@ function ecolex_field_default_field_instances() {
   t('Abstract');
   t('Alternative Record ID');
   t('Amends');
+  t('Attached files');
   t('Author');
   t('Author Institution');
   t('Avaiable web site');
