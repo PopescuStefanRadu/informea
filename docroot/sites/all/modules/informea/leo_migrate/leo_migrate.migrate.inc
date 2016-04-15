@@ -43,6 +43,14 @@ function leo_migrate_migrate_api() {
       'destination_vocabulary' => 'geg_theme',
       'class_name' => 'LeoDefaultTaxonomyMigration',
     ),
+    'territorial_subdivision' => array(
+      'description' => t('Migration of \'Territorial subdivision\' terms from LEO'),
+      'source_vocabulary' => 'territorial_subdivision',
+      'destination_vocabulary' => 'territorial_subdivision',
+      'class_name' => 'LeoDefaultTaxonomyMigration',
+      'translatable_name' => TRUE,
+      'translatable_description' => TRUE,
+    ),
   );
 
   foreach ($vocabulary_arguments as $migration_name => $arguments) {
