@@ -30,6 +30,8 @@ function leo_migrate_migrate_api() {
       'source_vocabulary' => 'type_of_goal',
       'destination_vocabulary' => 'type_of_goal',
       'class_name' => 'LeoDefaultTaxonomyMigration',
+      'translatable_name' => TRUE,
+      'translatable_description' => TRUE,
     ),
     'goal_sources' => array(
       'description' => t('Migration of \'Goal sources\' terms from LEO.'),
@@ -71,6 +73,14 @@ function leo_migrate_migrate_api() {
       'description' => t('Migration of ECOLEX Thesaurus from LEO'),
       'source_vocabulary' => 'thesaurus_ecolex',
       'destination_vocabulary' => 'thesaurus_ecolex',
+      'class_name' => 'LeoDefaultTaxonomyMigration',
+      'translatable_name' => TRUE,
+      'translatable_description' => TRUE,
+    ),
+    'data_source' => array(
+      'description' => t('Migration of Data sources from LEO'),
+      'source_vocabulary' => 'data_source',
+      'destination_vocabulary' => 'data_source',
       'class_name' => 'LeoDefaultTaxonomyMigration',
       'translatable_name' => TRUE,
       'translatable_description' => TRUE,
