@@ -1,7 +1,7 @@
 name = ecolex
 core = 7.x
 package = InforMEA
-version = 7.x-0.4
+version = 7.x-0.5
 project = ecolex
 dependencies[] = ctools
 dependencies[] = date
@@ -99,6 +99,7 @@ features[field_instance][] = node-legislation-field_alternative_record_id
 features[field_instance][] = node-legislation-field_amends
 features[field_instance][] = node-legislation-field_avaiable_web_site
 features[field_instance][] = node-legislation-field_country
+features[field_instance][] = node-legislation-field_data_source
 features[field_instance][] = node-legislation-field_date_of_consolidation
 features[field_instance][] = node-legislation-field_date_of_entry
 features[field_instance][] = node-legislation-field_date_of_modification
