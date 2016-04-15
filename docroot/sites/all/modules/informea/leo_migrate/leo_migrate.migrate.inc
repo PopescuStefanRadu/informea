@@ -100,6 +100,13 @@ function leo_migrate_migrate_api() {
       'destination_type' => 'goal',
       'dependencies' => array('type_of_goal', 'goal_sources', 'geg_theme'),
     ),
+    'legislation' => array(
+      'class_name' => 'LeoLegislationMigration',
+      'description' => t('Migration of legislation nodes from LEO.'),
+      'source_type' => 'legislation',
+      'destination_type' => 'legislation',
+      'dependencies' => array('territorial_subdivision', 'type_of_text', 'keywords', 'thesaurus_ecolex', 'data_source'),
+    ),
   );
 
   foreach ($node_arguments as $migration_name => $arguments) {
