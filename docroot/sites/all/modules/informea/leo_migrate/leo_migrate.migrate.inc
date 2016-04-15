@@ -105,7 +105,7 @@ function leo_migrate_migrate_api() {
       'description' => t('Migration of legislation nodes from LEO.'),
       'source_type' => 'legislation',
       'destination_type' => 'legislation',
-      'dependencies' => array('territorial_subdivision', 'type_of_text', 'keywords', 'thesaurus_ecolex', 'data_source'),
+      'dependencies' => array('territorial_subdivision', 'type_of_text', 'keywords', 'thesaurus_ecolex', 'data_source', 'legislation_files'),
     ),
   );
 
@@ -114,5 +114,19 @@ function leo_migrate_migrate_api() {
     $api['migrations'][$migration_name] = $arguments;
   }
 
+  $file_arguments = array(
+    'legislation_files' => array(
+      'class_name' => 'LeoLegislationFilesMigration',
+      'description' => t('Import legislation files from LEO.'),
+      'default_uid' => 1,
+      'source_dir' => 'http://leo.informea.org/sites/default/files',
+    ),
+  );
+
+  foreach ($file_arguments as $migration_name => $arguments) {
+    $arguments += $common_arguments;
+    $api['migrations'][$migration_name] = $arguments;
+  }
+  
   return $api;
 }
