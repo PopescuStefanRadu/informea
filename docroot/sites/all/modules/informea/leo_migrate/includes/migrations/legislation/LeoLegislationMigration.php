@@ -8,7 +8,7 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
     $this->addSimpleMappings(array_keys($this->taxonomyFields()));
 
     $this->addSimpleMappings(array(
-      'field_abstract', 'field_alternative_record_id', 'field_amends', 'field_avaiable_web_site',
+      'field_abstract', 'field_alternative_record_id', 'field_avaiable_web_site',
       'field_avaiable_web_site:title', 'field_avaiable_web_site:attributes',
       'field_avaiable_web_site:language', 'field_date_of_consolidation', 'field_date_of_original_text',
       'field_ecolex_url', 'field_ecolex_url:title', 'field_ecolex_url:attributes', 'field_ecolex_url:language',
@@ -16,16 +16,20 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
       'field_url', 'field_url:title', 'field_url:attributes', 'field_url:language',
       'field_files', 'field_files:display', 'field_files:description', 'field_files:language',
       'field_original_id', 'title_field', 'title_field:language', 'field_date_of_modification',
-      'field_date_of_entry', 'field_entry_into_force_notes', 'field_faolex_id', 'field_implements',
+      'field_date_of_entry', 'field_entry_into_force_notes', 'field_faolex_id',
       'field_internet_reference_url', 'field_internet_reference_url:title', 'field_internet_reference_url:attributes', 'field_internet_reference_url:language',
       'field_isis_number', 'field_notes', 'field_reference_number', 'field_repealed',
-      'field_repeals', 'field_serial_imprint', 'field_source_language', 'field_sorting_date',
+      'field_serial_imprint', 'field_source_language', 'field_sorting_date',
       'field_country',
     ));
     $this->addFieldMapping('field_files:preserve_files')->defaultValue(FALSE);
     $this->addFieldMapping('field_files', 'field_files')->sourceMigration('legislation_files');
     $this->addFieldMapping('field_files:source_dir')->defaultValue('/legislation');
     $this->addFieldMapping('field_files:file_class')->defaultValue('MigrateFileFid');
+
+    $this->addFieldMapping('field_amends', 'field_amends')->sourceMigration(array('legislation'));
+    $this->addFieldMapping('field_implements', 'field_implements')->sourceMigration(array('legislation'));
+    $this->addFieldMapping('field_repeals', 'field_repeals')->sourceMigration(array('legislation'));
 
     $this->addUnmigratedSources(array(
       'uid', 'revision', 'log', 'revision_uid', 'field_abstract:language', 'field_original_id:language',
