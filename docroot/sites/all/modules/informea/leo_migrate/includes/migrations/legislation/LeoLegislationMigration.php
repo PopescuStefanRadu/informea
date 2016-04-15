@@ -22,6 +22,10 @@ class LeoLegislationMigration extends LeoDefaultNodeMigration {
       'field_repeals', 'field_serial_imprint', 'field_source_language', 'field_sorting_date',
       'field_country',
     ));
+    $this->addFieldMapping('field_files:preserve_files')->defaultValue(FALSE);
+    $this->addFieldMapping('field_files', 'field_files')->sourceMigration('legislation_files');
+    $this->addFieldMapping('field_files:source_dir')->defaultValue('/legislation');
+    $this->addFieldMapping('field_files:file_class')->defaultValue('MigrateFileFid');
 
     $this->addUnmigratedSources(array(
       'uid', 'revision', 'log', 'revision_uid', 'field_abstract:language', 'field_original_id:language',
