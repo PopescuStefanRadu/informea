@@ -982,11 +982,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['description'] = 'Enter few words from the title';
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
-  $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
@@ -999,11 +1005,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
   $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
   $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['status']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: User: Name (raw) */
   $handler->display->display_options['filters']['name']['id'] = 'name';
@@ -1031,11 +1043,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Content type';
   $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-  $handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: Content: Data source (field_data_source) */
   $handler->display->display_options['filters']['field_data_source_tid']['id'] = 'field_data_source_tid';
@@ -1047,9 +1065,16 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['operator'] = 'field_data_source_tid_op';
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['identifier'] = 'field_data_source_tid';
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   $handler->display->display_options['filters']['field_data_source_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_data_source_tid']['vocabulary'] = 'data_source';
@@ -1063,13 +1088,16 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['operator'] = 'field_treaty_target_id_op';
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['identifier'] = 'field_treaty_target_id';
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
     4 => 0,
     5 => 0,
     6 => 0,
     7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
 
   /* Display: Page */

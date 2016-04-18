@@ -85,6 +85,12 @@ function leo_migrate_migrate_api() {
       'translatable_name' => TRUE,
       'translatable_description' => TRUE,
     ),
+    'declaration_paragraph_type' => array(
+      'description' => t('Migration of \'Declaration paragraph type\' terms from LEO'),
+      'source_vocabulary' => 'declaration_paragraph_type',
+      'destination_vocabulary' => 'declaration_paragraph_type',
+      'class_name' => 'LeoDefaultTaxonomyMigration',
+    ),
   );
 
   foreach ($vocabulary_arguments as $migration_name => $arguments) {
@@ -106,6 +112,26 @@ function leo_migrate_migrate_api() {
       'source_type' => 'legislation',
       'destination_type' => 'legislation',
       'dependencies' => array('territorial_subdivision', 'type_of_text', 'keywords', 'thesaurus_ecolex', 'data_source', 'legislation_files'),
+    ),
+    'declaration' => array(
+      'class_name' => 'LeoDeclarationMigration',
+      'description' => t('Migration of declaration nodes from LEO.'),
+      'source_type' => 'declaration',
+      'destination_type' => 'declaration',
+    ),
+    'declaration_section' => array(
+      'class_name' => 'LeoDeclarationSectionMigration',
+      'description' => t('Migration of declaration section nodes from LEO.'),
+      'source_type' => 'declaration_section',
+      'destination_type' => 'declaration_section',
+      'dependencies' => array('declaration'),
+    ),
+    'declaration_paragraph' => array(
+      'class_name' => 'LeoDeclarationParagraphMigration',
+      'description' => t('Migration of declaration paragraph nodes from LEO.'),
+      'source_type' => 'declaration_paragraph',
+      'destination_type' => 'declaration_paragraph',
+      'dependencies' => array('declaration', 'declaration_section', 'declaration_paragraph_type'),
     ),
   );
 
