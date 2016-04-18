@@ -1,0 +1,23 @@
+.panel {
+    border: none!important;
+}
+.panel-collapse {
+    padding-left: 20px;
+    margin-top: -10px;
+}
+.panel-title::before {
+    line-height: 22px;
+}
+.actions {
+    text-align: right;
+    color: #777;
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.actions:hover {
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.actions li {
+    font-size: 13px;
+}

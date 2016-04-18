@@ -7,9 +7,13 @@ version = "7.x-0.1"
 dependencies[] = migrate
 dependencies[] = migrate_d2d
 dependencies[] = goal
+dependencies[] = declaration
 
 files[] = leo_migrate.migrate.inc
 files[] = includes/migrations/LeoDefaultTaxonomyMigration.php
 files[] = includes/migrations/LeoDefaultNodeMigration.php
 files[] = includes/migrations/goal/LeoGoalSourcesMigration.php
 files[] = includes/migrations/goal/LeoGoalMigration.php
+files[] = includes/migrations/declaration/LeoDeclarationMigration.php
+files[] = includes/migrations/declaration/LeoDeclarationSectionMigration.php
+files[] = includes/migrations/declaration/LeoDeclarationParagraphMigration.php

@@ -849,7 +849,7 @@ function goal_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 1,
+      'weight' => 3,
     ),
   );
 
@@ -862,7 +862,7 @@ function goal_field_default_field_instances() {
       ),
     ),
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Wether the text legally-binding or not',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -896,7 +896,7 @@ function goal_field_default_field_instances() {
     'bundle' => 'goal_sources',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Link to source website where relevant information can be found',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -926,7 +926,7 @@ function goal_field_default_field_instances() {
       'enable_tokens' => 1,
       'entity_translation_sync' => FALSE,
       'rel_remove' => 'default',
-      'title' => 'optional',
+      'title' => 'none',
       'title_label_use_field_label' => 0,
       'title_maxlength' => 128,
       'title_value' => '',
@@ -978,7 +978,7 @@ function goal_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => -5,
+      'weight' => 2,
     ),
   );
 
@@ -1015,7 +1015,7 @@ function goal_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => -5,
+      'weight' => 1,
     ),
   );
 
@@ -1030,6 +1030,7 @@ function goal_field_default_field_instances() {
   t('Geographical scope');
   t('Goal Type');
   t('InforMEA tags');
+  t('Link to source website where relevant information can be found');
   t('Name');
   t('Official order');
   t('Parent goal');
@@ -1042,6 +1043,7 @@ function goal_field_default_field_instances() {
   t('Type of goal (Goal, Target or Indicator)');
   t('URL');
   t('URL to the data source');
+  t('Wether the text legally-binding or not');
 
   return $field_instances;
 }

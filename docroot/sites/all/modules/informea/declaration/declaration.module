@@ -1,0 +1,123 @@
+<?php
+/**
+ * @file
+ * Code for the Declaration feature.
+ */
+
+include_once 'declaration.features.inc';
+
+/**
+ * Implement hook_theme().
+ *
+ * {@inheritdoc}
+ */
+function declaration_theme() {
+  return array(
+    'declaration_text' => array(
+      'render element' => 'element',
+      'template' => 'templates/declaration-text',
+      'variables' => array('declaration', 'text'),
+      'path' => drupal_get_path('module', 'declaration'),
+    ),
+    'declaration_section' => array(
+      'render element' => 'element',
+      'template' => 'templates/declaration-section',
+      'variables' => array('section', 'parents_nids', 'base_declaration_url'),
+      'path' => drupal_get_path('module', 'declaration'),
+    ),
+    'declaration_paragraph' => array(
+      'render element' => 'element',
+      'template' => 'templates/declaration-paragraph',
+      'variables' => array('paragraph', 'parents_nids', 'base_declaration_url'),
+      'path' => drupal_get_path('module', 'declaration'),
+    ),
+    'declaration_text_tags' => array(
+      'render element' => 'element',
+      'template' => 'templates/declaration-text-tags',
+      'variables' => array('tags'),
+      'path' => drupal_get_path('module', 'declaration'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function declaration_node_view($node, $view_mode, $langcode) {
+  if ($node->type == 'declaration' && $view_mode == 'full') {
+    drupal_add_js(drupal_get_path('module', 'declaration') . '/js/declaration.js');
+    drupal_add_library('informea', 'scrollto');
+    drupal_add_library('informea', 'smallipop');
+    drupal_add_css(drupal_get_path('module', 'declaration') . '/styles/declaration.css');
+    $text = declaration_get_declaration_text($node->nid);
+    $node->content['context'] = array(
+      '#type' => 'item',
+      '#weight' => 10,
+      '#markup' => theme(
+        'declaration_text', array('declaration' => $node, 'text' => $text)
+      ),
+    );
+  }
+}
+
+function declaration_get_declaration_text($id) {
+  //Get root sections
+  $query = db_select('field_data_field_parent_declaration', 'a');
+  $query->leftJoin('draggableviews_structure', 'b', 'a.entity_id = b.entity_id');
+  $query->leftJoin('field_data_field_declaration_parent_section', 'c', 'a.entity_id = c.entity_id');
+  $query->fields('a', array('entity_id'))
+    ->condition('a.field_parent_declaration_target_id', $id, '=')
+    ->condition('c.field_declaration_parent_section_target_id') //is NULL
+    ->condition('a.bundle', 'declaration_section', '=')
+    ->orderBy('b.weight')
+    ->orderBy('a.entity_id');
+  $sections_nids = $query->execute()->fetchCol();
+  $sections = node_load_multiple($sections_nids);
+
+  //Populate sections
+  foreach ($sections as $nid => &$section) {
+    declaration_populate_section($section);
+  }
+
+  return $sections;
+}
+
+function declaration_populate_section(&$section) {
+  if (!property_exists($section, 'children')) {
+    $section->children = array();
+  }
+
+  $query = db_select('field_data_field_declaration_parent_section', 'a');
+  $query->leftJoin('draggableviews_structure', 'b', 'a.entity_id = b.entity_id');
+  $query->fields('a', array('entity_id'))
+    ->condition('a.field_declaration_parent_section_target_id', $section->nid, '=')
+    ->orderBy('b.weight')
+    ->orderBy('a.entity_id');
+  $children_nids = $query->execute()->fetchCol();
+  $children = node_load_multiple($children_nids);
+
+  foreach ($children as $child) {
+    $section->children[] = $child;
+    if ($child->type == 'declaration_section') {
+      end($section->children); //Point to the last element of the array
+      $refrence_to_child = &$section->children[key($section->children)];
+      declaration_populate_section($refrence_to_child);
+    }
+  }
+}
+
+function declaration_link($node, $suffix = '') {
+  $wrapper = entity_metadata_wrapper('node', $node);
+  $declaration = $wrapper->field_parent_declaration->value();
+  $declarationw = entity_metadata_wrapper('node', $declaration);
+  return url('node/' . $declarationw->getIdentifier()) . $suffix;
+}
+
+function get_declaration_section_parents(&$parents, $section) {
+  $wrapper = entity_metadata_wrapper('node', $section);
+  $parent_section = $wrapper->field_declaration_parent_section->value();
+  if ($parent_section) {
+    $parents[] = $parent_section->nid;
+    get_declaration_section_parents($parents, $parent_section);
+  }
+}

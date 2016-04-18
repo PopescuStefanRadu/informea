@@ -16,6 +16,9 @@ class LeoGoalMigration extends LeoDefaultNodeMigration {
 
     $this->addFieldMapping('field_parent_goal', 'field_parent_goal')->sourceMigration(array('goal'));
 
+    $this->removeFieldMapping('body:language');
+    $this->addFieldMapping('body:language')->defaultValue('en');
+
     $this->addUnmigratedSources(array(
       'uid', 'revision', 'log', 'revision_uid',
     ));
