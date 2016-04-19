@@ -81,7 +81,7 @@ function taxonomy_external_sync_taxonomy_form_element($form, $form_state) {
           '#type' => 'select',
           '#options' => $options,
           '#title' => $label,
-          '#select2' => array('width' => '150')
+          '#attributes' => array('class' => array('select2-excluded')),
         );
       }
     }
