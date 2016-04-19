@@ -10,12 +10,13 @@ class VocBenchRDFSource implements \Drupal\taxonomy_external_sync\plugin\SourceI
   }
 
   /** @inheritdoc */
-  function getConfigurationForm() {
+  function getConfigurationForm($vocabulary, $form_state) {
     return array(
       'url' => array(
         '#title' => t('Enter RDF URL'),
         '#type' => 'textfield',
-        '#size' => 100
+        '#size' => 100,
+        '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
       )
     );
   }

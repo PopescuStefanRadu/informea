@@ -13,7 +13,7 @@ interface SourceInterface {
    * @return array
    *   Plugin configuration form
    */
-  function getConfigurationForm();
+  function getConfigurationForm($vocabulary, $form_state);
 
   /**
    * Get plugin human name.
@@ -50,7 +50,7 @@ class DummySourcePlugin implements SourceInterface {
     // TODO: Implement setConfiguration() method.
   }
 
-  function getConfigurationForm() {
+  function getConfigurationForm($vocabulary, $form_state) {
     // TODO: Implement getConfigurationForm() method.
   }
 

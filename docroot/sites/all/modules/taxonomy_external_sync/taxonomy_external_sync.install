@@ -1,0 +1,29 @@
+<?php
+
+
+/**
+ * Implements hook_schema().
+ */
+function taxonomy_external_sync_schema() {
+  $schema = array();
+  $schema['taxonomy_external_sync'] = array(
+    'description' => 'External synchronization configurations',
+    'fields' => array(
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'The name of the bundle a mapping applies to.',
+      ),
+      'configuration' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+        'description' => 'Serialized configuration',
+        'translatable' => TRUE,
+      ),
+    ),
+    'primary key' => array('bundle'),
+  );
+  return $schema;
+}

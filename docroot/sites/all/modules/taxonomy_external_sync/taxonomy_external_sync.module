@@ -11,8 +11,34 @@ require_once 'taxonomy_external_sync.admin.inc';
  */
 function taxonomy_external_sync_form_taxonomy_form_vocabulary_alter(&$form, &$form_state) {
   $form += taxonomy_external_sync_taxonomy_form_element($form, $form_state);
+  $form['#validate'][] = 'taxonomy_external_sync_form_taxonomy_form_vocabulary_validate';
+  $form['#submit'][] = 'taxonomy_external_sync_form_taxonomy_form_vocabulary_submit';
 }
 
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function taxonomy_external_sync_entity_info_alter(&$entity_info) {
+  $info = taxonomy_external_sync_config_load();
+  foreach ($entity_info['taxonomy_term']['bundles'] as $bundle => &$config) {
+    if (!empty($info[$bundle])) {
+      $config['tes'] = $info[$bundle];
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_load().
+ */
+function taxonomy_external_sync_entity_load($entities, $type) {
+  $config = taxonomy_external_sync_config_load();
+  foreach ($entities as $entity) {
+    if (!empty($entity->machine_name) && !empty($config[$entity->machine_name])) {
+      $entity->tes = $config[$entity->machine_name];
+    }
+  }
+}
 
 function taxonomy_external_sync_source_plugins() {
   $ret = array();
@@ -37,12 +63,12 @@ function taxonomy_external_sync_taxonomy_external_sync_source_plugin() {
 }
 
 
-function taxonomy_external_sync_get_taxonomy_fields($voc) {
+function taxonomy_external_sync_get_taxonomy_fields($bundle) {
   $ret = array();
   foreach (field_info_fields() as $field_name => $field) {
-    if (!empty($field['bundles']['taxonomy_term']
-      && in_array($voc->machine_name, $field['bundles']['taxonomy_term']))) {
-      $info = field_info_instance('taxonomy_term', $field_name, $voc->machine_name);
+    if (!empty($field['bundles']['taxonomy_term'])
+      && in_array($bundle, $field['bundles']['taxonomy_term'])) {
+      $info = field_info_instance('taxonomy_term', $field_name, $bundle);
       $ret[$field_name] = $info['label'] . ' (' . $field_name . ')';
     }
   }
@@ -51,4 +77,67 @@ function taxonomy_external_sync_get_taxonomy_fields($voc) {
 
 function taxonomy_external_sync_get_configuration($voc) {
  //
+}
+
+function taxonomy_external_sync_form_taxonomy_form_vocabulary_validate($form, $form_state) {
+  ///
+}
+
+function taxonomy_external_sync_form_taxonomy_form_vocabulary_submit($form, $form_state) {
+  if ($bundle = $form_state['values']['machine_name']) {
+    if ($tes_enable = !empty($form_state['values']['tes_enable'])) {
+      $config = array(
+        'enable' => $tes_enable,
+        'plugin' => $form_state['values']['tes_plugin'],
+        'mappings' => array()
+      );
+      // Mappings
+      $destination_fields = taxonomy_external_sync_get_taxonomy_fields($bundle);
+      foreach ($destination_fields as $field_name => $label) {
+        if (!empty($form_state['values']['tes_' . $field_name])) {
+          $config['mappings'][$field_name] = $form_state['values']['tes_' . $field_name];
+        }
+      }
+      // Plugin config
+      foreach($form_state['values'] as $k => $v) {
+        if (preg_match('/tes\_plugin\_config\_/', $k)) {
+          $key = substr($k, 18);
+          $config['plugin_config'][$key] = $v;
+        }
+      }
+      taxonomy_external_sync_config_save($bundle, $config);
+    }
+    else {
+      taxonomy_external_sync_config_save($bundle, array());
+    }
+  }
+}
+
+function taxonomy_external_sync_config_load() {
+  $mappings = db_select('taxonomy_external_sync')
+    ->fields(NULL, array('bundle', 'configuration'))
+    ->execute()
+    ->fetchAllKeyed();
+  foreach ($mappings as $bundle => $mapping) {
+    $mappings[$bundle] = unserialize($mapping);
+  }
+  return $mappings;
+}
+
+/**
+ * Saves an taxonomy configuration to the database.
+ *
+ * @param string $bundle
+ *   Bundle to save configuration
+ *
+ * @return
+ *   Status flag indicating the outcome of the operation.
+ */
+function taxonomy_external_sync_config_save($bundle, $config) {
+  $status = db_merge('taxonomy_external_sync')
+    ->key(array('bundle' => $bundle))
+    ->fields(array('configuration' => serialize($config),))
+    ->execute();
+  entity_info_cache_clear();
+  return $status;
 }
