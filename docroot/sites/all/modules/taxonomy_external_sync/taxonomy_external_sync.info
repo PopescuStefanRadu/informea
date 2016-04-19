@@ -1,0 +1,9 @@
+name = taxonomy_external_sync
+description = Synchronise regularly a taxonomy with an external service
+core = 7.x
+package = taxonomy
+version = 7.x-1.0
+
+files[] = taxonomy_external_sync.admin.inc
+files[] = includes/SourceInterface.inc
+files[] = includes/VocBenchRDFSource.inc

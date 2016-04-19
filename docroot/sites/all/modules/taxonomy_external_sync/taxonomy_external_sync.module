@@ -1,0 +1,54 @@
+<?php
+
+use Drupal\taxonomy_external_sync\plugin\source\VocBenchRDFSource;
+
+require_once 'includes/SourceInterface.inc';
+require_once 'includes/VocBenchRDFSource.inc';
+require_once 'taxonomy_external_sync.admin.inc';
+
+/**
+ * Implements hook_form_alter().
+ */
+function taxonomy_external_sync_form_taxonomy_form_vocabulary_alter(&$form, &$form_state) {
+  $form += taxonomy_external_sync_taxonomy_form_element($form, $form_state);
+}
+
+
+function taxonomy_external_sync_source_plugins() {
+  $ret = array();
+  $plugins = module_invoke_all('taxonomy_external_sync_source_plugin');
+  foreach($plugins as $plugin) {
+    if ($plugin && is_object($plugin)) {
+      $ret[get_class($plugin)] = $plugin;
+    }
+  }
+  drupal_alter('taxonomy_external_sync_source_plugin', $ret);
+  return $ret;
+}
+
+
+/**
+ * Implements hook_taxonomy_external_sync_source_plugin().
+ */
+function taxonomy_external_sync_taxonomy_external_sync_source_plugin() {
+  $vb = new VocBenchRDFSource();
+  $test = new \Drupal\taxonomy_external_sync\plugin\DummySourcePlugin();
+  return array($vb, $test);
+}
+
+
+function taxonomy_external_sync_get_taxonomy_fields($voc) {
+  $ret = array();
+  foreach (field_info_fields() as $field_name => $field) {
+    if (!empty($field['bundles']['taxonomy_term']
+      && in_array($voc->machine_name, $field['bundles']['taxonomy_term']))) {
+      $info = field_info_instance('taxonomy_term', $field_name, $voc->machine_name);
+      $ret[$field_name] = $info['label'] . ' (' . $field_name . ')';
+    }
+  }
+  return $ret;
+}
+
+function taxonomy_external_sync_get_configuration($voc) {
+ //
+}
