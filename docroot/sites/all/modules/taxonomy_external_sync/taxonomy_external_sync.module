@@ -72,6 +72,7 @@ function taxonomy_external_sync_get_taxonomy_fields($bundle) {
       $ret[$field_name] = $info['label'] . ' (' . $field_name . ')';
     }
   }
+  ksort($ret);
   return $ret;
 }
 

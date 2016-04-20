@@ -2,8 +2,9 @@
 
 namespace Drupal\taxonomy_external_sync\plugin\source;
 
-class VocBenchRDFSource implements \Drupal\taxonomy_external_sync\plugin\SourceInterface {
+use \Drupal\taxonomy_external_sync\plugin\SourceInterface;
 
+class VocBenchRDFSource implements SourceInterface {
 
   function setConfiguration(array $config) {
     // TODO: Implement setConfiguration() method.
@@ -11,7 +12,7 @@ class VocBenchRDFSource implements \Drupal\taxonomy_external_sync\plugin\SourceI
 
   /** @inheritdoc */
   function getConfigurationForm($vocabulary, $form_state) {
-    return array(
+    $ret = array(
       'url' => array(
         '#title' => t('Enter RDF URL'),
         '#type' => 'textfield',
@@ -19,6 +20,20 @@ class VocBenchRDFSource implements \Drupal\taxonomy_external_sync\plugin\SourceI
         '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
       )
     );
+    $destination_fields = taxonomy_external_sync_get_taxonomy_fields($vocabulary->machine_name);
+    $options = array('' => t('-- Please select --'));
+    foreach($destination_fields as $field_name => $label) {
+      $options[$field_name] = $label;
+    }
+    $ret['id_field'] = array(
+      '#title' => t('Identifier field'),
+      '#description' => t('Select the local field where the remote indentifier is stored to track remote subsequent updates to the terms'),
+      '#type' => 'select',
+      '#options' => $options,
+      '#required' => TRUE,
+      '#default_value' => !empty($vocabulary->tes['plugin_config']['id_field']) ? $vocabulary->tes['plugin_config']['id_field'] : NULL,
+    );
+    return $ret;
   }
 
   function getName() {

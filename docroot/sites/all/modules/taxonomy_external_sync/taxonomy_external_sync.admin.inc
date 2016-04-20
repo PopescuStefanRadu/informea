@@ -68,7 +68,6 @@ function taxonomy_external_sync_taxonomy_form_element($form, $form_state) {
       }
       // Mappings
       $destination_fields = taxonomy_external_sync_get_taxonomy_fields($vocabulary->machine_name);
-      ksort($destination_fields);
       $ret['tes']['plugin']['mappings'] = array(
         '#type' => 'fieldset',
         '#title' => t('Mappings'),
