@@ -17,6 +17,7 @@ class VocBenchRDFSource implements SourceInterface {
         '#title' => t('Enter RDF URL'),
         '#type' => 'textfield',
         '#size' => 100,
+        '#required' => TRUE,
         '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
       )
     );
