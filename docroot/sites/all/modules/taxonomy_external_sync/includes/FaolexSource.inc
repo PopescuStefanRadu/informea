@@ -11,7 +11,16 @@ class FaolexSource implements SourceInterface {
   }
 
   function getConfigurationForm($vocabulary, $form_state) {
-    // TODO: Implement getConfigurationForm() method.
+    $ret = array(
+      'url' => array(
+        '#title' => t('Enter RDF URL'),
+        '#type' => 'textfield',
+        '#size' => 300,
+        '#required' => TRUE,
+        '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
+      )
+    );
+    return $ret;
   }
 
   function getName() {
@@ -23,7 +32,13 @@ class FaolexSource implements SourceInterface {
   }
 
   function getFieldNames() {
-    // TODO: Implement getFieldNames() method.
+    return array(
+      'ValID' => 'Source ID',
+      'Classification_Sec_Area' => 'Classification_Sec_Area',
+      'Code' => 'Code',
+      'Name' => 'Name',
+      'Variants' => 'Synonyms',
+    );
   }
 
   function getTerms() {
