@@ -13,7 +13,7 @@ class FaolexSource implements SourceInterface {
   function getConfigurationForm($vocabulary, $form_state) {
     $ret = array(
       'url' => array(
-        '#title' => t('Enter RDF URL'),
+        '#title' => t('Enter XML URL'),
         '#type' => 'textfield',
         '#size' => 300,
         '#required' => TRUE,
@@ -34,7 +34,7 @@ class FaolexSource implements SourceInterface {
   function getFieldNames() {
     return array(
       'ValID' => 'Source ID',
-      'Classification_Sec_Area' => 'Classification_Sec_Area',
+      'Classification_Sec_Area' => 'Classification Sec Area',
       'Code' => 'Code',
       'Name' => 'Name',
       'Variants' => 'Synonyms',
