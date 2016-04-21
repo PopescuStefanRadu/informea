@@ -1,9 +1,11 @@
 <?php
 
 use Drupal\taxonomy_external_sync\plugin\source\VocBenchRDFSource;
+use Drupal\taxonomy_external_sync\plugin\source\FaolexSource;
 
 require_once 'includes/SourceInterface.inc';
 require_once 'includes/VocBenchRDFSource.inc';
+require_once 'includes/FaolexSource.inc';
 require_once 'taxonomy_external_sync.admin.inc';
 
 /**
@@ -59,7 +61,12 @@ function taxonomy_external_sync_source_plugins() {
 function taxonomy_external_sync_taxonomy_external_sync_source_plugin() {
   $vb = new VocBenchRDFSource();
   $test = new \Drupal\taxonomy_external_sync\plugin\DummySourcePlugin();
-  return array($vb, $test);
+  $faolex = new FaolexSource();
+  return array(
+    $vb,
+    $test,
+    $faolex,
+  );
 }
 
 
