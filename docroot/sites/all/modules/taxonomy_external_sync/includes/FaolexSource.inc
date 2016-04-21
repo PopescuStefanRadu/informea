@@ -69,6 +69,14 @@ class FaolexSource implements SourceInterface {
           $term->Name = [$lang => (string) $value];
         }
       }
+      elseif (preg_match('/Region\_(..)\_../', $field, $matches) && array_key_exists($lang = $matches[1], $this->available_languages)) {
+        if (isset($term->Region)) {
+          $term->Region[$lang] = (string) $value;
+        }
+        else {
+          $term->Region = [$lang => (string) $value];
+        }
+      }
       elseif (preg_match('/(.*)\_Variants/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
         $lang = array_search($matches[1], $this->available_languages);
         if (isset($term->Variants)) {
@@ -76,6 +84,15 @@ class FaolexSource implements SourceInterface {
         }
         else {
           $term->Variants = [$lang => (string) $value];
+        }
+      }
+      elseif (preg_match('/(.*)\_Scope\_Note/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
+        $lang = array_search($matches[1], $this->available_languages);
+        if (isset($term->Scope_Note)) {
+          $term->Scope_Note[$lang] = (string) $value;
+        }
+        else {
+          $term->Scope_Note = [$lang => (string) $value];
         }
       }
       elseif (is_array($value)) {
