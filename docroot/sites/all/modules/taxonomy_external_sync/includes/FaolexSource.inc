@@ -6,11 +6,12 @@ use \Drupal\taxonomy_external_sync\plugin\SourceInterface;
 
 class FaolexSource implements SourceInterface {
 
-  private $available_languages = ['en', 'fr', 'es', 'ar', 'zh'];
-  private $variants_languages = [
+  private $available_languages = [
     'en' => 'English',
     'fr' => 'French',
     'es' => 'Spanish',
+    'ar' => 'Arabic',
+    'zh' => 'Chinese',
   ];
 
   function setConfiguration(array $config) {
@@ -60,7 +61,7 @@ class FaolexSource implements SourceInterface {
   function parseTerm($dictionary_term) {
     $term = new \stdClass();
     foreach ($dictionary_term as $field => $value) {
-      if (preg_match('/Name\_(..)\_../', $field, $matches) && in_array($lang = $matches[1], $this->available_languages)) {
+      if (preg_match('/Name\_(..)\_../', $field, $matches) && array_key_exists($lang = $matches[1], $this->available_languages)) {
         if (isset($term->Name)) {
           $term->Name[$lang] = (string) $value;
         }
@@ -68,8 +69,8 @@ class FaolexSource implements SourceInterface {
           $term->Name = [$lang => (string) $value];
         }
       }
-      elseif (preg_match('/(.*)\_Variants/', $field, $matches) && in_array($matches[1], $this->variants_languages)) {
-        $lang = array_search($matches[1], $this->variants_languages);
+      elseif (preg_match('/(.*)\_Variants/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
+        $lang = array_search($matches[1], $this->available_languages);
         if (isset($term->Variants)) {
           $term->Variants[$lang] = (string) $value;
         }
