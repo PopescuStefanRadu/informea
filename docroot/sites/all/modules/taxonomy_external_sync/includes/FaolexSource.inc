@@ -61,38 +61,23 @@ class FaolexSource implements SourceInterface {
   function parseTerm($dictionary_term) {
     $term = new \stdClass();
     foreach ($dictionary_term as $field => $value) {
-      if (preg_match('/Name\_(..)\_../', $field, $matches) && array_key_exists($lang = $matches[1], $this->available_languages)) {
-        if (isset($term->Name)) {
-          $term->Name[$lang] = (string) $value;
+      if (preg_match('/(.*)\_(..)\_.*/', $field, $matches) && array_key_exists($lang = $matches[2], $this->available_languages)) {
+        $field_name = $matches[1];
+        if (isset($term->{$field_name})) {
+          $term->{$field_name}[$lang] = (string) $value;
         }
         else {
-          $term->Name = [$lang => (string) $value];
+          $term->{$field_name} = [$lang => (string) $value];
         }
       }
-      elseif (preg_match('/Region\_(..)\_../', $field, $matches) && array_key_exists($lang = $matches[1], $this->available_languages)) {
-        if (isset($term->Region)) {
-          $term->Region[$lang] = (string) $value;
-        }
-        else {
-          $term->Region = [$lang => (string) $value];
-        }
-      }
-      elseif (preg_match('/(.*)\_Variants/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
+      elseif (preg_match('/([a-zA-Z]*)\_(.*)/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
         $lang = array_search($matches[1], $this->available_languages);
-        if (isset($term->Variants)) {
-          $term->Variants[$lang] = (string) $value;
+        $field_name = $matches[2];
+        if (isset($term->{$field_name})) {
+          $term->{$field_name}[$lang] = (string) $value;
         }
         else {
-          $term->Variants = [$lang => (string) $value];
-        }
-      }
-      elseif (preg_match('/(.*)\_Scope\_Note/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
-        $lang = array_search($matches[1], $this->available_languages);
-        if (isset($term->Scope_Note)) {
-          $term->Scope_Note[$lang] = (string) $value;
-        }
-        else {
-          $term->Scope_Note = [$lang => (string) $value];
+          $term->{$field_name} = [$lang => (string) $value];
         }
       }
       elseif (is_array($value)) {
