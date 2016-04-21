@@ -45,32 +45,36 @@ class FaolexSource implements SourceInterface {
       'Code' => 'Code',
       'Name' => 'Name',
       'Variants' => 'Synonyms',
+      'Scope_Note' => 'Scope note',
+      'Exclude_from_External_Faolex' => 'Exclude from External Faolex',
+      'Country_ISO_Code' => 'Country ISO Code',
+      'Country_ISO2_Code' => 'Country ISO2 Code',
+      'Country_ISO3_Code' => 'Country ISO3 Code',
+      'Region' => 'Region',
+      'Region_Countries' => 'Region Countries',
+      'Exclude_from_Ecolex' => 'Exclude from Ecolex',
+      'Language_ISO_Code' => 'Language ISO Code',
     );
   }
 
   function parseTerm($dictionary_term) {
     $term = new \stdClass();
     foreach ($dictionary_term as $field => $value) {
-      if (preg_match('/Name\_(..)\_../', $field, $matches)) {
-        $lang = $matches[1];
-        if (in_array($lang, $this->available_languages)) {
-          if (isset($term->Name)) {
-            $term->Name[$lang] = (string) $value;
-          }
-          else {
-            $term->Name = [$lang => (string) $value];
-          }
+      if (preg_match('/Name\_(..)\_../', $field, $matches) && in_array($lang = $matches[1], $this->available_languages)) {
+        if (isset($term->Name)) {
+          $term->Name[$lang] = (string) $value;
+        }
+        else {
+          $term->Name = [$lang => (string) $value];
         }
       }
-      elseif (preg_match('/(.*)\_Variants/', $field, $matches)) {
-        if (in_array($matches[1], $this->variants_languages)) {
-          $lang = array_search($matches[1], $this->variants_languages);
-          if (isset($term->Variants)) {
-            $term->Variants[$lang] = (string) $value;
-          }
-          else {
-            $term->Variants = [$lang => (string) $value];
-          }
+      elseif (preg_match('/(.*)\_Variants/', $field, $matches) && in_array($matches[1], $this->variants_languages)) {
+        $lang = array_search($matches[1], $this->variants_languages);
+        if (isset($term->Variants)) {
+          $term->Variants[$lang] = (string) $value;
+        }
+        else {
+          $term->Variants = [$lang => (string) $value];
         }
       }
       elseif (is_array($value)) {
