@@ -165,3 +165,20 @@ function taxonomy_external_sync_config_save($bundle, $config) {
   entity_info_cache_clear();
   return $status;
 }
+
+/**
+ * Synchronizes a vocabulary if TES is configured.
+ *
+ * @param $vocabulary
+ *  Vocabulary machine name.
+ */
+function taxonomy_external_sync_migrate_vocabulary($vocabulary) {
+  $config = taxonomy_external_sync_get_configuration($vocabulary);
+  if ($config == FALSE) {
+    watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $vocabulary)), NULL, WATCHDOG_ERROR);
+    return;
+  }
+  if ($config['enable'] == FALSE) {
+    return;
+  }
+}
