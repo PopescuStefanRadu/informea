@@ -169,16 +169,38 @@ function taxonomy_external_sync_config_save($bundle, $config) {
 /**
  * Synchronizes a vocabulary if TES is configured.
  *
- * @param $vocabulary
+ * @param $bundle
  *  Vocabulary machine name.
  */
-function taxonomy_external_sync_migrate_vocabulary($vocabulary) {
-  $config = taxonomy_external_sync_get_configuration($vocabulary);
+function taxonomy_external_sync_migrate_vocabulary($bundle) {
+  $vocabulary = taxonomy_vocabulary_machine_name_load($bundle);
+  $config = taxonomy_external_sync_get_configuration($bundle);
   if ($config == FALSE) {
-    watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $vocabulary)), NULL, WATCHDOG_ERROR);
+    watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
     return;
   }
   if ($config['enable'] == FALSE) {
     return;
+  }
+  try {
+    /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
+    $plugin = new $config['plugin']($config['plugin_config']);
+    if (empty($config['mappings'][$plugin->getIdField()])) {
+      watchdog('taxonomy_external_sync', t('Mapping of ID field missing for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
+      return;
+    }
+    $terms = $plugin->getTerms();
+
+    $table = 'field_data_' . $plugin->getIdField();
+    $q = db_select($table, 't')
+      ->fields('t', array($plugin->getIdField() . '_value', 'entity_id'))
+      ->condition('t.entity_type', 'taxonomy_term')
+      ->condition('t.bundle', $bundle);
+    $drupal_terms = $q->execute()->fetchAllKeyed();
+    foreach ($terms as $term) {
+    }
+  }
+  catch (\Exception $e) {
+    watchdog_exception('taxonomy_external_sync', $e);
   }
 }
