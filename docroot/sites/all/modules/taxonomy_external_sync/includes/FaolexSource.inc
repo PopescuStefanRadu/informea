@@ -22,8 +22,12 @@ class FaolexSource implements SourceInterface {
   }
 
   function setConfiguration(array $config) {
-    $this->url = $config['url'];
-    $this->id_field = $config['id_field'];
+    if (!empty($config['url'])) {
+      $this->url = $config['url'];
+    }
+    if (!empty($config['id_field'])) {
+      $this->id_field = $config['id_field'];
+    }
   }
 
   function getConfigurationForm($vocabulary, $form_state) {
