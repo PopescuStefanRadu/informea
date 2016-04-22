@@ -82,11 +82,10 @@ class VocBenchRDFSource implements SourceInterface {
   }
 
   function getTerms() {
-    // TODO: Implement getTerms() method.
+    $terms = $this->loadCachedRDF($this->url);
   }
 
-  private function loadCachedRDF() {
-    $rdf = $this->url;
+  private function loadCachedRDF($rdf) {
     $thesaurus = NULL;
     $data = array();
     if ($cache = cache_get(__FUNCTION__, 'cache')) {
@@ -96,7 +95,7 @@ class VocBenchRDFSource implements SourceInterface {
       return $data[$rdf];
     }
     else {
-      $thesaurus = thesaurus_load_from_rdf($rdf);
+      $thesaurus = $this->loadRDF($rdf);
       if ($thesaurus) {
         $data[$rdf] = $thesaurus;
         cache_set(__FUNCTION__, $data, 'cache', time() + 3600);
@@ -105,8 +104,7 @@ class VocBenchRDFSource implements SourceInterface {
     return $thesaurus;
   }
 
-  private function loadRDF() {
-    $rdf = $this->url;
+  private function loadRDF($rdf) {
     if (!easyrdf()) {
       drupal_set_message(t('EasyRdf library is not available.'), 'error');
       return FALSE;
