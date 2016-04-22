@@ -166,15 +166,24 @@ function taxonomy_external_sync_config_save($bundle, $config) {
   return $status;
 }
 
+function taxonomy_external_sync_migrate_all_vocabularies() {
+  $configs = taxonomy_external_sync_config_load();
+  foreach ($configs as $bundle => $config) {
+    taxonomy_external_sync_migrate_vocabulary($bundle, $config);
+  }
+}
+
 /**
  * Synchronizes a vocabulary if TES is configured.
  *
  * @param $bundle
  *  Vocabulary machine name.
  */
-function taxonomy_external_sync_migrate_vocabulary($bundle) {
+function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   $vocabulary = taxonomy_vocabulary_machine_name_load($bundle);
-  $config = taxonomy_external_sync_get_configuration($bundle);
+  if ($config == NULL) {
+    $config = taxonomy_external_sync_get_configuration($bundle);
+  }
   $mappings = $config['mappings'];
   if ($config == FALSE) {
     watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
