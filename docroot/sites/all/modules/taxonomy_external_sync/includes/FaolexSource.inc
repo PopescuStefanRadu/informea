@@ -14,6 +14,7 @@ class FaolexSource implements SourceInterface {
     'zh' => 'Chinese',
   ];
 
+  private $id_field = NULL;
   private $url = NULL;
 
   public function __construct($config = array()) {
@@ -21,9 +22,8 @@ class FaolexSource implements SourceInterface {
   }
 
   function setConfiguration(array $config) {
-    if (!empty($config['url'])) {
-      $this->url = $config['url'];
-    }
+    $this->url = $config['url'];
+    $this->id_field = $config['id_field'];
   }
 
   function getConfigurationForm($vocabulary, $form_state) {
