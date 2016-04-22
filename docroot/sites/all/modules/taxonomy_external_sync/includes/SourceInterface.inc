@@ -30,6 +30,13 @@ interface SourceInterface {
   function getDescription();
 
   /**
+   * Get the destination identifier field.
+   *
+   * @return string
+   */
+  function getIdField();
+
+  /**
    * Array of field names as keys and description as values.
    *
    * @return array
@@ -60,6 +67,10 @@ class DummySourcePlugin implements SourceInterface {
 
   function getDescription() {
     return 'Sample plugin doing nothing';
+  }
+
+  function getIdField() {
+    // TODO: Implement getIdField() method.
   }
 
   function getFieldNames() {

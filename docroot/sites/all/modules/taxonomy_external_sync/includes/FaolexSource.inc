@@ -61,6 +61,10 @@ class FaolexSource implements SourceInterface {
     return t('Imports terms from the XML provided by FAOLEX.');
   }
 
+  public function getIdField() {
+    return $this->id_field;
+  }
+
   function getFieldNames() {
     return array(
       'ValID' => 'Source ID',

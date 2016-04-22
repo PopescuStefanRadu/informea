@@ -45,6 +45,10 @@ class VocBenchRDFSource implements SourceInterface {
     return t('Imports terms from XML RDF containing reified labels');
   }
 
+  function getIdField() {
+    // TODO: Implement getIdField() method.
+  }
+
   function getFieldNames() {
     return array(
       'prefLabel' => 'skos:prefLabel - multilingual',
