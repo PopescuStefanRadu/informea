@@ -200,6 +200,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
       ->condition('t.bundle', $bundle);
     $drupal_terms = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
+      $translations = array();
       if (!property_exists($term, $mappings[$id_field]) ||
         (empty($term->{$mappings[$id_field]}['en']) && empty($term->{$mappings[$id_field]}[LANGUAGE_NONE]))) {
         // TODO: Maybe log an warning message here?
@@ -231,6 +232,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
               );
             }
             foreach ($term->{$source_field} as $lang => $value) {
+              $translations[] = $lang;
               $drupal_term->{$destination_field}[$lang] = array(
                 array(
                   'value' => $value,
@@ -241,6 +243,24 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
           else {
             $drupal_term->{$destination_field} = $term->{$source_field};
           }
+        }
+      }
+      $translations = array_unique($translations);
+      $languages   = array_keys(language_list());
+      // Set term translations
+      $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
+      $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
+      $translation_handler->initTranslations();
+      $entity->translations = $translation_handler->getTranslations();
+      foreach ($languages as $language) {
+        if (in_array($language, $translations)) {
+          $translation_handler->setTranslation(array(
+            'translate' => 0,
+            'status' => 1,
+            'uid' => 1,
+            'language' => $language,
+            'source' => LANGUAGE_NONE,
+          ));
         }
       }
       taxonomy_term_save($drupal_term);
