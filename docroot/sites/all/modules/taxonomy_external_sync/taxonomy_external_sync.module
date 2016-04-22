@@ -206,7 +206,12 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
         // TODO: Maybe log an warning message here?
         continue;
       }
-      $id_field_value = !empty($term->{$mappings[$id_field]}['en']) ? $term->{$mappings[$id_field]}['en'] : $term->{$mappings[$id_field]}[LANGUAGE_NONE];
+      if (is_array($term->{$mappings[$id_field]})) {
+        $id_field_value = !empty($term->{$mappings[$id_field]}['en']) ? $term->{$mappings[$id_field]}['en'] : $term->{$mappings[$id_field]}[LANGUAGE_NONE];
+      }
+      else {
+        $id_field_value = $term->{$mappings[$id_field]};
+      }
       if (array_key_exists($id_field_value, $drupal_terms)) {
         // Term already exists.
         $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
