@@ -23,7 +23,8 @@ class FaolexSource implements SourceInterface {
       'url' => array(
         '#title' => t('Enter XML URL'),
         '#type' => 'textfield',
-        '#size' => 300,
+        '#maxlength'=> 255,
+        '#size' => 100,
         '#required' => TRUE,
         '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
       )
