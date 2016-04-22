@@ -175,6 +175,7 @@ function taxonomy_external_sync_config_save($bundle, $config) {
 function taxonomy_external_sync_migrate_vocabulary($bundle) {
   $vocabulary = taxonomy_vocabulary_machine_name_load($bundle);
   $config = taxonomy_external_sync_get_configuration($bundle);
+  $mappings = $config['mappings'];
   if ($config == FALSE) {
     watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
     return;
@@ -185,19 +186,52 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
-    if (empty($config['mappings'][$plugin->getIdField()])) {
+    $id_field = $plugin->getIdField();
+    if (empty($mappings[$id_field])) {
       watchdog('taxonomy_external_sync', t('Mapping of ID field missing for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
       return;
     }
     $terms = $plugin->getTerms();
 
-    $table = 'field_data_' . $plugin->getIdField();
+    $table = 'field_data_' . $id_field;
     $q = db_select($table, 't')
-      ->fields('t', array($plugin->getIdField() . '_value', 'entity_id'))
+      ->fields('t', array($id_field . '_value', 'entity_id'))
       ->condition('t.entity_type', 'taxonomy_term')
       ->condition('t.bundle', $bundle);
     $drupal_terms = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
+      if (!property_exists($term, $mappings[$id_field]) ||
+        (empty($term->{$mappings[$id_field]}['en']) && empty($term->{$mappings[$id_field]}[LANGUAGE_NONE]))) {
+        // TODO: Maybe log an warning message here?
+        continue;
+      }
+      $id_field_value = !empty($term->{$mappings[$id_field]}['en']) ? $term->{$mappings[$id_field]}['en'] : $term->{$mappings[$id_field]}[LANGUAGE_NONE];
+      if (array_key_exists($id_field_value, $drupal_terms)) {
+        // Term already exists.
+        $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
+        $drupal_term->name = $id_field_value;
+        foreach ($mappings as $destination_field => $source_field) {
+          // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
+          if (property_exists($term, $source_field)) {
+            if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
+              foreach ($term->{$source_field} as $lang => $value) {
+                $drupal_term->{$destination_field}[$lang] = array(
+                  array(
+                    'value' => $value,
+                  )
+                );
+              }
+            }
+            else {
+              $drupal_term->{$destination_field} = $term->{$source_field};
+            }
+          }
+        }
+        taxonomy_term_save($drupal_term);
+      }
+      else {
+
+      }
     }
   }
   catch (\Exception $e) {
