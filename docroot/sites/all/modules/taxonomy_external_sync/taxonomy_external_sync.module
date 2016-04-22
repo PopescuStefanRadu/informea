@@ -209,29 +209,33 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
       if (array_key_exists($id_field_value, $drupal_terms)) {
         // Term already exists.
         $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
-        $drupal_term->name = $id_field_value;
-        foreach ($mappings as $destination_field => $source_field) {
-          // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
-          if (property_exists($term, $source_field)) {
-            if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
-              foreach ($term->{$source_field} as $lang => $value) {
-                $drupal_term->{$destination_field}[$lang] = array(
-                  array(
-                    'value' => $value,
-                  )
-                );
-              }
-            }
-            else {
-              $drupal_term->{$destination_field} = $term->{$source_field};
-            }
-          }
-        }
-        taxonomy_term_save($drupal_term);
       }
       else {
-
+        $drupal_term = new \stdClass();
       }
+      $drupal_term->name = $id_field_value;
+      $drupal_term->vid = $vocabulary->vid;
+      foreach ($mappings as $destination_field => $source_field) {
+        // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
+        if (property_exists($term, $source_field)) {
+          if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
+            if (!property_exists($drupal_term, $destination_field)) {
+              $drupal_term->{$destination_field} = array();
+            }
+            foreach ($term->{$source_field} as $lang => $value) {
+              $drupal_term->{$destination_field}[$lang] = array(
+                array(
+                  'value' => $value,
+                )
+              );
+            }
+          }
+          else {
+            $drupal_term->{$destination_field} = $term->{$source_field};
+          }
+        }
+      }
+      taxonomy_term_save($drupal_term);
     }
   }
   catch (\Exception $e) {
