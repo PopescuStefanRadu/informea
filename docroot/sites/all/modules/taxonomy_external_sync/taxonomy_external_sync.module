@@ -198,6 +198,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
     $id_field = $plugin->getIdField();
+    $id_field_info = field_info_field($id_field);
     if (empty($mappings[$id_field])) {
       watchdog('taxonomy_external_sync', t('Mapping of ID field missing for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
       return;
@@ -205,15 +206,21 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $terms = $plugin->getTerms();
 
     $table = 'field_data_' . $id_field;
+    switch ($id_field_info['type']) {
+      case 'link_field':
+        $table_field = $id_field . '_url';
+        break;
+      default:
+        $table_field = $id_field . '_value';
+    }
     $q = db_select($table, 't')
-      ->fields('t', array($id_field . '_value', 'entity_id'))
+      ->fields('t', array($table_field, 'entity_id'))
       ->condition('t.entity_type', 'taxonomy_term')
       ->condition('t.bundle', $bundle);
     $drupal_terms = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
       $translations = array();
-      if (!property_exists($term, $mappings[$id_field]) ||
-        (empty($term->{$mappings[$id_field]}['en']) && empty($term->{$mappings[$id_field]}[LANGUAGE_NONE]))) {
+      if (!property_exists($term, $mappings[$id_field])) {
         // TODO: Maybe log an warning message here?
         continue;
       }
