@@ -212,6 +212,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
       }
       else {
         $drupal_term = new \stdClass();
+        watchdog('taxonomy_external_sync', t('Creating new term \'@term\' within \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_INFO);
       }
       $drupal_term->name = $id_field_value;
       $drupal_term->vid = $vocabulary->vid;
@@ -221,6 +222,13 @@ function taxonomy_external_sync_migrate_vocabulary($bundle) {
           if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
             if (!property_exists($drupal_term, $destination_field)) {
               $drupal_term->{$destination_field} = array();
+            }
+            if (!array_key_exists(LANGUAGE_NONE, $term->{$source_field})) {
+              $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
+                array(
+                  'value' => $term->{$source_field}['en'],
+                )
+              );
             }
             foreach ($term->{$source_field} as $lang => $value) {
               $drupal_term->{$destination_field}[$lang] = array(
