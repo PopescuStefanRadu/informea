@@ -184,7 +184,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   if ($config == NULL) {
     $config = taxonomy_external_sync_get_configuration($bundle);
   }
-  $mappings = $config['mappings'];
   if ($config == FALSE) {
     watchdog('taxonomy_external_sync', t('Could not find TES configuration for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
     return;
@@ -192,6 +191,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   if ($config['enable'] == FALSE) {
     return;
   }
+  $mappings = $config['mappings'];
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
