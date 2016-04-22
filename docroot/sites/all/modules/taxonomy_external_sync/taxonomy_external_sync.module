@@ -83,8 +83,24 @@ function taxonomy_external_sync_get_taxonomy_fields($bundle) {
   return $ret;
 }
 
-function taxonomy_external_sync_get_configuration($voc) {
- //
+/**
+ * Get the configuration for a single vocabulary.
+ *
+ * @param $vocabulary
+ *  Vocabulary machine name.
+ *
+ * @return mixed
+ *  Array containing the configuration or FALSE if the configuration doesn't
+ * exist.
+ */
+function taxonomy_external_sync_get_configuration($vocabulary) {
+  $q = db_select('taxonomy_external_sync')
+    ->fields(NULL, array('configuration'))
+    ->condition('bundle', $vocabulary)
+    ->execute()
+    ->fetchField();
+  $config = unserialize($q);
+  return $config;
 }
 
 function taxonomy_external_sync_form_taxonomy_form_vocabulary_validate($form, $form_state) {
