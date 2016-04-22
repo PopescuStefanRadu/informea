@@ -6,8 +6,29 @@ use \Drupal\taxonomy_external_sync\plugin\SourceInterface;
 
 class VocBenchRDFSource implements SourceInterface {
 
+  // The configuration part should be refactored because it is the same as in FaolexSource
+  private $available_languages = [
+    'en' => 'English',
+    'fr' => 'French',
+    'es' => 'Spanish',
+    'ar' => 'Arabic',
+    'zh' => 'Chinese',
+  ];
+
+  private $id_field = NULL;
+  private $url = NULL;
+
+  public function __construct($config = array()) {
+    $this->setConfiguration($config);
+  }
+
   function setConfiguration(array $config) {
-    // TODO: Implement setConfiguration() method.
+    if (!empty($config['url'])) {
+      $this->url = $config['url'];
+    }
+    if (!empty($config['id_field'])) {
+      $this->id_field = $config['id_field'];
+    }
   }
 
   /** @inheritdoc */
@@ -46,7 +67,7 @@ class VocBenchRDFSource implements SourceInterface {
   }
 
   function getIdField() {
-    // TODO: Implement getIdField() method.
+    return $this->id_field;
   }
 
   function getFieldNames() {
