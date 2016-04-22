@@ -221,63 +221,70 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
       else {
         $id_field_value = $term->{$mappings[$id_field]};
       }
-      if (array_key_exists($id_field_value, $drupal_terms)) {
-        // Term already exists.
-        $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
-      }
-      else {
-        $drupal_term = new \stdClass();
-        watchdog('taxonomy_external_sync', t('Creating new term \'@term\' within \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_INFO);
-      }
-      $drupal_term->name = $id_field_value;
-      $drupal_term->vid = $vocabulary->vid;
-      foreach ($mappings as $destination_field => $source_field) {
-        // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
-        if (property_exists($term, $source_field)) {
-          if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
-            if (!property_exists($drupal_term, $destination_field)) {
-              $drupal_term->{$destination_field} = array();
+      try {
+        if (array_key_exists($id_field_value, $drupal_terms)) {
+          // Term already exists.
+          $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
+        }
+        else {
+          $drupal_term = new \stdClass();
+          watchdog('taxonomy_external_sync', t('Creating new term \'@term\' within \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_INFO);
+        }
+        $drupal_term->name = $id_field_value;
+        $drupal_term->vid = $vocabulary->vid;
+        foreach ($mappings as $destination_field => $source_field) {
+          // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
+          if (property_exists($term, $source_field)) {
+            if (is_array($term->{$source_field}) && !is_numeric(key($term->{$source_field}))) {
+              if (!property_exists($drupal_term, $destination_field)) {
+                $drupal_term->{$destination_field} = array();
+              }
+              if (!array_key_exists(LANGUAGE_NONE, $term->{$source_field})) {
+                $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
+                  array(
+                    'value' => $term->{$source_field}['en'],
+                  )
+                );
+              }
+              foreach ($term->{$source_field} as $lang => $value) {
+                $translations[] = $lang;
+                $drupal_term->{$destination_field}[$lang] = array(
+                  array(
+                    'value' => $value,
+                  )
+                );
+              }
             }
-            if (!array_key_exists(LANGUAGE_NONE, $term->{$source_field})) {
-              $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
-                array(
-                  'value' => $term->{$source_field}['en'],
-                )
-              );
-            }
-            foreach ($term->{$source_field} as $lang => $value) {
-              $translations[] = $lang;
-              $drupal_term->{$destination_field}[$lang] = array(
-                array(
-                  'value' => $value,
-                )
-              );
+            else {
+              $drupal_term->{$destination_field} = $term->{$source_field};
             }
           }
-          else {
-            $drupal_term->{$destination_field} = $term->{$source_field};
+        }
+        taxonomy_term_save($drupal_term);
+
+        $translations = array_unique($translations);
+        $languages   = array_keys(language_list());
+        // Set term translations
+        $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
+        $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
+        $translation_handler->initTranslations();
+        $drupal_term->translations = $translation_handler->getTranslations();
+        foreach ($languages as $language) {
+          if (in_array($language, $translations)) {
+            $translation_handler->setTranslation(array(
+              'translate' => 0,
+              'status' => 1,
+              'uid' => 1,
+              'language' => $language,
+              'source' => LANGUAGE_NONE,
+            ));
           }
         }
       }
-      $translations = array_unique($translations);
-      $languages   = array_keys(language_list());
-      // Set term translations
-      $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
-      $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
-      $translation_handler->initTranslations();
-      $entity->translations = $translation_handler->getTranslations();
-      foreach ($languages as $language) {
-        if (in_array($language, $translations)) {
-          $translation_handler->setTranslation(array(
-            'translate' => 0,
-            'status' => 1,
-            'uid' => 1,
-            'language' => $language,
-            'source' => LANGUAGE_NONE,
-          ));
-        }
+      catch (\Exception $e) {
+        watchdog('taxonomy_external_sync', t('Error migrating term \'@term\' in \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_ERROR);
+        watchdog_exception('taxonomy_external_sync', $e);
       }
-      taxonomy_term_save($drupal_term);
     }
   }
   catch (\Exception $e) {
