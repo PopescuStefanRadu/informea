@@ -181,6 +181,8 @@ function taxonomy_external_sync_migrate_all_vocabularies() {
  */
 function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   $vocabulary = taxonomy_vocabulary_machine_name_load($bundle);
+  $languages   = array_keys(language_list());
+  $terms_created = $terms_processed = 0;
   if ($config == NULL) {
     $config = taxonomy_external_sync_get_configuration($bundle);
   }
@@ -192,7 +194,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     return;
   }
   $mappings = $config['mappings'];
-  $terms_created = $terms_updated = 0;
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
@@ -226,12 +227,12 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         if (array_key_exists($id_field_value, $drupal_terms)) {
           // Term already exists.
           $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
-          $terms_updated++;
         }
         else {
           $drupal_term = new \stdClass();
           $terms_created++;
         }
+        $original_sha1 = sha1(json_encode($drupal_term));
         $drupal_term->name = $id_field_value;
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
@@ -242,19 +243,31 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 $drupal_term->{$destination_field} = array();
               }
               if (!array_key_exists(LANGUAGE_NONE, $term->{$source_field})) {
-                $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
-                  array(
-                    'value' => $term->{$source_field}['en'],
-                  )
-                );
+                if (is_array($drupal_term->{$destination_field}[LANGUAGE_NONE])) {
+                  $drupal_term->{$destination_field}[LANGUAGE_NONE][0]['value'] = $term->{$source_field}['en'];
+                }
+                else {
+                  $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
+                    array(
+                      'value' => $term->{$source_field}['en'],
+                    )
+                  );
+                }
               }
               foreach ($term->{$source_field} as $lang => $value) {
-                $translations[] = $lang;
-                $drupal_term->{$destination_field}[$lang] = array(
-                  array(
-                    'value' => $value,
-                  )
-                );
+                if (in_array($lang, $languages)) {
+                  $translations[] = $lang;
+                  if (is_array($drupal_term->{$destination_field}[$lang])) {
+                    $drupal_term->{$destination_field}[$lang][0]['value'] = $value;
+                  }
+                  else {
+                    $drupal_term->{$destination_field}[$lang] = array(
+                      array(
+                        'value' => $value,
+                      )
+                    );
+                  }
+                }
               }
             }
             else {
@@ -262,25 +275,29 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
             }
           }
         }
-        taxonomy_term_save($drupal_term);
 
-        $translations = array_unique($translations);
-        $languages   = array_keys(language_list());
-        // Set term translations
-        $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
-        $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
-        $translation_handler->initTranslations();
-        $drupal_term->translations = $translation_handler->getTranslations();
-        foreach ($languages as $language) {
-          if (in_array($language, $translations)) {
-            $translation_handler->setTranslation(array(
-              'translate' => 0,
-              'status' => 1,
-              'uid' => 1,
-              'language' => $language,
-              'source' => LANGUAGE_NONE,
-            ));
+        $sha1 = sha1(json_encode($drupal_term));
+        if ($original_sha1 != $sha1) {
+          taxonomy_term_save($drupal_term);
+
+          $translations = array_unique($translations);
+          // Set term translations
+          $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
+          $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
+          $translation_handler->initTranslations();
+          $drupal_term->translations = $translation_handler->getTranslations();
+          foreach ($languages as $language) {
+            if (in_array($language, $translations)) {
+              $translation_handler->setTranslation(array(
+                'translate' => 0,
+                'status' => 1,
+                'uid' => 1,
+                'language' => $language,
+                'source' => LANGUAGE_NONE,
+              ));
+            }
           }
+          $terms_processed++;
         }
       }
       catch (\Exception $e) {
@@ -294,7 +311,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   }
   watchdog(
     'taxonomy_external_sync',
-    t('Successfully synchronized \'@voc\' vocabulary. Created @nc terms and updated @nu terms',array('@voc' => $bundle, '@nc' => $terms_created, '@nu' => $terms_updated)),
+    t('Successfully synchronized \'@voc\' vocabulary. Processed @np terms: @nc created, @nu updated',array('@voc' => $bundle, '@np' => $terms_processed, '@nc' => $terms_created, '@nu' => ($terms_processed - $terms_created))),
     NULL,
     WATCHDOG_INFO
   );
