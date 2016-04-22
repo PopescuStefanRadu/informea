@@ -192,6 +192,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     return;
   }
   $mappings = $config['mappings'];
+  $terms_created = $terms_updated = 0;
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
@@ -225,10 +226,11 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         if (array_key_exists($id_field_value, $drupal_terms)) {
           // Term already exists.
           $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
+          $terms_updated++;
         }
         else {
           $drupal_term = new \stdClass();
-          watchdog('taxonomy_external_sync', t('Creating new term \'@term\' within \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_INFO);
+          $terms_created++;
         }
         $drupal_term->name = $id_field_value;
         $drupal_term->vid = $vocabulary->vid;
@@ -290,4 +292,10 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   catch (\Exception $e) {
     watchdog_exception('taxonomy_external_sync', $e);
   }
+  watchdog(
+    'taxonomy_external_sync',
+    t('Succesfully synchronized \'@voc\' vocabulary. Created @nc terms and updated @nu terms',array('@voc' => $bundle, '@nc' => $terms_created, '@nu' => $terms_updated)),
+    NULL,
+    WATCHDOG_INFO
+  );
 }
