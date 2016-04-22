@@ -13,9 +13,17 @@ class FaolexSource implements SourceInterface {
     'ar' => 'Arabic',
     'zh' => 'Chinese',
   ];
+  
+  private $url = NULL;
+
+  public function __construct($config = array()) {
+    $this->setConfiguration($config);
+  }
 
   function setConfiguration(array $config) {
-    // TODO: Implement setConfiguration() method.
+    if (!empty($config['url'])) {
+      $this->url = $config['url'];
+    }
   }
 
   function getConfigurationForm($vocabulary, $form_state) {
@@ -94,10 +102,8 @@ class FaolexSource implements SourceInterface {
 
   function getTerms() {
     $terms = array();
-    // TODO: Get URL from configuration
-    $url = 'http://faolex.fao.org/cgi-bin/xml.exe?database=valid&search_type=query&table=all&query=T:des&format_name=@VALXML&lang=xmlf&page_header=@EXMLH&page_footer=@EXMLF&sort_name=@SNAME';
     try {
-      $xml = simplexml_load_file($url);
+      $xml = simplexml_load_file($this->url);
       foreach ($xml->dictionary_term as $dictionary_term) {
         $terms[] = $this->parseTerm($dictionary_term);
       }
