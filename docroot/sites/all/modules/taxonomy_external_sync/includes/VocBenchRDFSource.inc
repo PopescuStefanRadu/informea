@@ -77,12 +77,15 @@ class VocBenchRDFSource implements SourceInterface {
       'definition' => 'skos:definition - multilingual',
       'related' => 'skos:related',
       'status' => 'skos:status',
-      'relatedMatch' => 'skos:relatedMatch - External term URI'
+      'relatedMatch' => 'skos:relatedMatch - External term URI',
+      'broader' => 'skos:broader',
+      'uri' => 'Term URI',
     );
   }
 
   function getTerms() {
     $terms = $this->loadCachedRDF($this->url);
+    return $terms;
   }
 
   private function loadCachedRDF($rdf) {
@@ -109,13 +112,14 @@ class VocBenchRDFSource implements SourceInterface {
       drupal_set_message(t('EasyRdf library is not available.'), 'error');
       return FALSE;
     }
-    EasyRdf_Namespace::set('vb', 'http://art.uniroma2.it/ontologies/vocbench#');
+    \EasyRdf_Namespace::set('vb', 'http://art.uniroma2.it/ontologies/vocbench#');
 
     try {
-      $graph = EasyRdf_Graph::newAndLoad($rdf);
+      var_dump($rdf);
+      $graph = \EasyRdf_Graph::newAndLoad($rdf);
       $resources = $graph->resources();
     }
-    catch(Exception $e) {
+    catch(\Exception $e) {
       drupal_set_message("Failed to parse RDF file $rdf");
       return NULL;
     }
@@ -123,12 +127,11 @@ class VocBenchRDFSource implements SourceInterface {
     $terms = array();
     /**
      * @var string $key
-     * @var EasyRdf_Resource $resource
+     * @var \EasyRdf_Resource $resource
      */
     foreach ($resources as $key => $resource) {
       if ($resource->type() == 'skos:Concept') {
-        $term = new stdClass();
-        $term->name = NULL;
+        $term = new \stdClass();
         $term->broader = NULL;
         $term->uri = $key;
         $term->prefLabel = array();
@@ -154,9 +157,6 @@ class VocBenchRDFSource implements SourceInterface {
 
         if (empty($term->prefLabel['en'])) {
           watchdog('thesaurus', 'Invalid VB term without english preffered label: !uri', array('!uri' => $key), WATCHDOG_WARNING);
-        }
-        else {
-          $term->name = $term->prefLabel['en'];
         }
 
         // skos:altLabel
@@ -199,17 +199,7 @@ class VocBenchRDFSource implements SourceInterface {
           $term->status = (string) $status;
         }
 
-
-        if (empty($term->name) && !empty($term->altLabel['en'])) {
-          $term->name = current($term->altLabel['en']);
-        }
-
-        if (!empty($term->name)) {
-          $terms[$key] = $term;
-        }
-        else {
-          watchdog('thesaurus', $key . ': Ignoring concept without name');
-        }
+        $terms[$key] = $term;
       }
     }
 
