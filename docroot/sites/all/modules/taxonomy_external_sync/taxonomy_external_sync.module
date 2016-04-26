@@ -225,6 +225,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $term_mappings = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
       $translations = array();
+      $is_new = FALSE;
       if (!property_exists($term, $id_field)) {
         // TODO: Maybe log an warning message here?
         continue;
@@ -237,6 +238,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         }
         else {
           $drupal_term = new \stdClass();
+          $is_new = TRUE;
           $terms_created++;
         }
         $original_sha1 = sha1(json_encode($drupal_term));
@@ -285,7 +287,15 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
 
         $sha1 = sha1(json_encode($drupal_term));
         if ($original_sha1 != $sha1) {
-          taxonomy_term_save($drupal_term);
+          if ($is_new) {
+            taxonomy_term_save($drupal_term);
+            db_insert('taxonomy_external_sync_map')
+              ->fields(array(
+                'source_id' => $id_field_value,
+                'destination_tid' => $drupal_term->tid,
+              ))
+              ->execute();
+          }
 
           $translations = array_unique($translations);
           // Set term translations
@@ -304,6 +314,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
               ));
             }
           }
+          taxonomy_term_save($drupal_term);
           $terms_processed++;
         }
       }
