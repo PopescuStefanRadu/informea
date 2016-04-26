@@ -43,6 +43,9 @@ class FaolexSource extends DefaultSource {
     $term = new \stdClass();
     foreach ($dictionary_term as $field => $value) {
       if (preg_match('/(.*)\_(..)\_.*/', $field, $matches) && array_key_exists($lang = $matches[2], $this->available_languages)) {
+        if ($lang == 'zh') {
+          $lang = 'zh-hans';
+        }
         $field_name = $matches[1];
         if (isset($term->{$field_name})) {
           $term->{$field_name}[$lang] = (string) $value;
@@ -53,6 +56,9 @@ class FaolexSource extends DefaultSource {
       }
       elseif (preg_match('/([a-zA-Z]*)\_(.*)/', $field, $matches) && in_array($matches[1], $this->available_languages)) {
         $lang = array_search($matches[1], $this->available_languages);
+        if ($lang == 'zh') {
+          $lang = 'zh-hans';
+        }
         $field_name = $matches[2];
         if (isset($term->{$field_name})) {
           $term->{$field_name}[$lang] = (string) $value;
