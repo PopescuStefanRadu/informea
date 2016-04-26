@@ -194,10 +194,11 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     return;
   }
   $mappings = $config['mappings'];
-  if (empty($mappings['name_field']) && empty($mappings['name'])) {
+  if (empty($source_name_field = $mappings['name_field']) && empty($source_name_field = $mappings['name'])) {
     watchdog('taxonomy_external_sync', t('NAME field mapping is not configured for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
     return;
   }
+  $destination_name_field = array_search($source_name_field, $mappings);
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
@@ -209,7 +210,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $term_mappings = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
       $translations = array();
-      if (!property_exists($term, $mappings[$id_field])) {
+      if (!property_exists($term, $id_field)) {
         // TODO: Maybe log an warning message here?
         continue;
       }
