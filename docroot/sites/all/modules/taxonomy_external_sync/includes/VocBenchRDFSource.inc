@@ -54,6 +54,14 @@ class VocBenchRDFSource implements SourceInterface {
       '#required' => TRUE,
       '#default_value' => !empty($vocabulary->tes['plugin_config']['id_field']) ? $vocabulary->tes['plugin_config']['id_field'] : NULL,
     );
+    $ret['parent_field'] = array(
+      '#title' => t('Field that indicates term parent'),
+      '#description' => t('This field should contain the source ID of parent term.'),
+      '#type' => 'select',
+      '#options' => $options,
+      '#required' => FALSE,
+      '#default_value' => !empty($vocabulary->tes['plugin_config']['parent_field']) ? $vocabulary->tes['plugin_config']['parent_field'] : NULL,
+    );
     return $ret;
   }
 
