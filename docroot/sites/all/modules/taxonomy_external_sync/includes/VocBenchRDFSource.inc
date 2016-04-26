@@ -42,13 +42,12 @@ class VocBenchRDFSource implements SourceInterface {
         '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
       )
     );
-    $destination_fields = taxonomy_external_sync_get_taxonomy_fields($vocabulary->machine_name);
-    $options = array('' => t('-- Please select --'));
-    foreach($destination_fields as $field_name => $label) {
-      $options[$field_name] = $label;
-    }
+    $options = array_merge(
+      array('' => t('-- Please select --')),
+      $this->getFieldNames()
+    );
     $ret['id_field'] = array(
-      '#title' => t('Identifier field'),
+      '#title' => t('Source identifier field'),
       '#description' => t('Select the local field where the remote indentifier is stored to track remote subsequent updates to the terms'),
       '#type' => 'select',
       '#options' => $options,
