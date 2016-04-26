@@ -233,6 +233,22 @@ function _taxonomy_external_sync_get_field_value($value, array $field_info) {
       break;
     case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
       // Multilingual and multivalue
+      if (is_array($value)) {
+        if (is_numeric(key($value))) {
+          return array(
+            LANGUAGE_NONE => $value,
+          );
+        }
+        foreach ($value as $lang => $val) {
+          if (!is_array($val)) {
+            $value[$lang] = array($val);
+          }
+        }
+        return $value;
+      }
+      return array(
+        LANGUAGE_NONE => array($value),
+      );
       break;
   }
 }
