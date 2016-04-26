@@ -25,5 +25,22 @@ function taxonomy_external_sync_schema() {
     ),
     'primary key' => array('bundle'),
   );
+  $schema['taxonomy_external_sync_map'] = array(
+    'description' => 'Store mappings of migrated terms',
+    'fields' => array(
+      'source_id' => array(
+        'type' => 'varchar',
+        'length' => 512,
+        'not null' => TRUE,
+        'description' => 'The source id field value',
+      ),
+      'destination_tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Migrated term id',
+      ),
+    ),
+  );
   return $schema;
 }

@@ -115,7 +115,6 @@ class VocBenchRDFSource implements SourceInterface {
     \EasyRdf_Namespace::set('vb', 'http://art.uniroma2.it/ontologies/vocbench#');
 
     try {
-      var_dump($rdf);
       $graph = \EasyRdf_Graph::newAndLoad($rdf);
       $resources = $graph->resources();
     }
