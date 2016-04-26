@@ -293,6 +293,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
               ->fields(array(
                 'source_id' => $id_field_value,
                 'destination_tid' => $drupal_term->tid,
+                'bundle' => $bundle,
               ))
               ->execute();
           }

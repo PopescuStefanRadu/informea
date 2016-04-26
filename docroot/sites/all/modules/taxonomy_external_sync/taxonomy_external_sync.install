@@ -40,6 +40,12 @@ function taxonomy_external_sync_schema() {
         'not null' => TRUE,
         'description' => 'Migrated term id',
       ),
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'The machine name of the vocabulary.',
+      ),
     ),
   );
   return $schema;
