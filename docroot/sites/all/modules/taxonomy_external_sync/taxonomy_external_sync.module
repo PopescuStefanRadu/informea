@@ -173,19 +173,33 @@ function taxonomy_external_sync_migrate_all_vocabularies() {
   }
 }
 
-function _taxonomy_external_sync_get_singlevalued_field_value($value) {
-  if (is_array($value)) {
-    if (array_key_exists('en', $value)) {
-      return $value['en'];
-    }
-    elseif (array_key_exists(LANGUAGE_NONE, $value)) {
-      return $value[LANGUAGE_NONE];
-    }
-    else {
-      return (reset($value));
-    }
+function _taxonomy_external_sync_get_field_value($value, $field_info) {
+  switch (TRUE) {
+    case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
+      // NO multilingual, NO multivalue
+      if (is_array($value)) {
+        if (array_key_exists('en', $value)) {
+          return $value['en'];
+        }
+        elseif (array_key_exists(LANGUAGE_NONE, $value)) {
+          return $value[LANGUAGE_NONE];
+        }
+        else {
+          return (reset($value));
+        }
+      }
+      return $value;
+      break;
+    case ($field_info['translatable'] && $field_info['cardinality'] === 1):
+      // Multilingual, but NO multivalue
+      break;
+    case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
+      // NO multilingual, but multivalue
+      break;
+    case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
+      // Multilingual and multivalue
+      break;
   }
-  return $value;
 }
 
 /**
@@ -234,7 +248,8 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         // TODO: Maybe log an warning message here?
         continue;
       }
-      $id_field_value = _taxonomy_external_sync_get_singlevalued_field_value($term->{$id_field});
+      /** @var string $id_field_value */
+      $id_field_value = _taxonomy_external_sync_get_field_value($term->{$id_field}, ['translatable' => 0, 'cardinality' => 1]);
       try {
         if (array_key_exists($id_field_value, $term_mappings)) {
           // Term already exists.
@@ -246,22 +261,22 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           $terms_created++;
         }
         $original_sha1 = sha1(json_encode($drupal_term));
-        $drupal_term->name = _taxonomy_external_sync_get_singlevalued_field_value($term->{$source_name_field});
+        $drupal_term->name = _taxonomy_external_sync_get_field_value($term->{$source_name_field}, ['translatable' => 0, 'cardinality' => 1]);
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
           if (property_exists($term, $source_field)) {
             $field_info = $fields_info[$destination_field];
             switch (TRUE) {
-              case (!$field_info['translatable'] && $fields_info['cardinality'] === 1):
+              case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
                 // NO multilingual, NO multivalue
                 break;
-              case ($field_info['translatable'] && $fields_info['cardinality'] === 1):
+              case ($field_info['translatable'] && $field_info['cardinality'] === 1):
                 // Multilingual, but NO multivalue
                 break;
-              case (!$field_info['translatable'] && $fields_info['cardinality'] !== 1):
+              case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // NO multilingual, but multivalue
                 break;
-              case ($field_info['translatable'] && $fields_info['cardinality'] !== 1):
+              case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // Multilingual and multivalue
                 break;
             }
@@ -276,7 +291,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
 //                // Source field is multilingual
 //                if (!$fields_info[$destination_field['translatable']]) {
 //                  // Destination field is not multilingual so we store just one language
-//                  $field_value = _taxonomy_external_sync_get_singlevalued_field_value($term->{$source_field});
+//                  $field_value = _taxonomy_external_sync_get_field_value($term->{$source_field}, ['translatable' => 0, 'cardinality' => 1]);
 //                }
 //                else {
 //                  $multilingual_field = TRUE;
