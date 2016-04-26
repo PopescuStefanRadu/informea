@@ -328,6 +328,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           $terms_created++;
         }
         $drupal_term->name = _taxonomy_external_sync_get_field_value($term->{$source_name_field}, ['translatable' => 0, 'cardinality' => 1]);
+        if (empty($drupal_term->name)) {
+          continue;
+        }
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
           if (property_exists($term, $source_field)) {
