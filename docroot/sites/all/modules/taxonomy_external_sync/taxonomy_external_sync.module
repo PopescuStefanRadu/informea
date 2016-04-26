@@ -173,6 +173,21 @@ function taxonomy_external_sync_migrate_all_vocabularies() {
   }
 }
 
+function _taxonomy_external_sync_get_singlevalued_field_value($value) {
+  if (is_array($value)) {
+    if (array_key_exists('en', $value)) {
+      return $value['en'];
+    }
+    elseif (array_key_exists(LANGUAGE_NONE, $value)) {
+      return $value[LANGUAGE_NONE];
+    }
+    else {
+      return (reset($value));
+    }
+  }
+  return $value;
+}
+
 /**
  * Synchronizes a vocabulary if TES is configured.
  *
@@ -214,20 +229,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         // TODO: Maybe log an warning message here?
         continue;
       }
-      if (is_array($term->{$id_field})) {
-        if (array_key_exists('en', $term->{$id_field})) {
-          $id_field_value = $term->{$id_field}['en'];
-        }
-        elseif (array_key_exists(LANGUAGE_NONE, $term->{$id_field})) {
-          $id_field_value = $term->{$id_field}[LANGUAGE_NONE];
-        }
-        else {
-          $id_field_value = reset($term->{$id_field});
-        }
-      }
-      else {
-        $id_field_value = $term->{$id_field};
-      }
+      $id_field_value = _taxonomy_external_sync_get_singlevalued_field_value($term->{$id_field});
       try {
         if (array_key_exists($id_field_value, $term_mappings)) {
           // Term already exists.
@@ -238,7 +240,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           $terms_created++;
         }
         $original_sha1 = sha1(json_encode($drupal_term));
-        $drupal_term->name = $id_field_value;
+        $drupal_term->name = _taxonomy_external_sync_get_singlevalued_field_value($term->{$source_name_field});
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
           // TODO: Check field values setting on multivalued fields!!!!!!!!!!!!!
