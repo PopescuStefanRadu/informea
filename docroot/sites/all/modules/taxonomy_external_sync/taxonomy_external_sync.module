@@ -198,42 +198,27 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
     $id_field = $plugin->getIdField();
-    $id_field_info = field_info_field($id_field);
-    if (empty($mappings[$id_field])) {
-      watchdog('taxonomy_external_sync', t('Mapping of ID field missing for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
-      return;
-    }
     $terms = $plugin->getTerms();
 
-    $table = 'field_data_' . $id_field;
-    switch ($id_field_info['type']) {
-      case 'link_field':
-        $table_field = $id_field . '_url';
-        break;
-      default:
-        $table_field = $id_field . '_value';
-    }
-    $q = db_select($table, 't')
-      ->fields('t', array($table_field, 'entity_id'))
-      ->condition('t.entity_type', 'taxonomy_term')
-      ->condition('t.bundle', $bundle);
-    $drupal_terms = $q->execute()->fetchAllKeyed();
+    $q = db_select('taxonomy_external_sync_map', 't')
+      ->fields('t', array('source_id', 'destination_tid'))
+    $term_mappings = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
       $translations = array();
       if (!property_exists($term, $mappings[$id_field])) {
         // TODO: Maybe log an warning message here?
         continue;
       }
-      if (is_array($term->{$mappings[$id_field]})) {
-        $id_field_value = !empty($term->{$mappings[$id_field]}['en']) ? $term->{$mappings[$id_field]}['en'] : $term->{$mappings[$id_field]}[LANGUAGE_NONE];
+      if (is_array($term->{$id_field})) {
+        $id_field_value = !empty($term->{$id_field}['en']) ? $term->{$id_field}['en'] : $term->{$id_field}[LANGUAGE_NONE];
       }
       else {
-        $id_field_value = $term->{$mappings[$id_field]};
+        $id_field_value = $term->{$id_field};
       }
       try {
-        if (array_key_exists($id_field_value, $drupal_terms)) {
+        if (array_key_exists($id_field_value, $term_mappings)) {
           // Term already exists.
-          $drupal_term = taxonomy_term_load($drupal_terms[$id_field_value]);
+          $drupal_term = taxonomy_term_load($term_mappings[$id_field_value]);
         }
         else {
           $drupal_term = new \stdClass();
