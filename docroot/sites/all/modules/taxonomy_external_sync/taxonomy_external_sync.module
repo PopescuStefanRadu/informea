@@ -194,6 +194,10 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     return;
   }
   $mappings = $config['mappings'];
+  if (empty($mappings['name_field']) && empty($mappings['name'])) {
+    watchdog('taxonomy_external_sync', t('NAME field mapping is not configured for \'@voc\' vocabulary', array('@voc' => $bundle)), NULL, WATCHDOG_ERROR);
+    return;
+  }
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
@@ -201,7 +205,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $terms = $plugin->getTerms();
 
     $q = db_select('taxonomy_external_sync_map', 't')
-      ->fields('t', array('source_id', 'destination_tid'))
+      ->fields('t', array('source_id', 'destination_tid'));
     $term_mappings = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
       $translations = array();
