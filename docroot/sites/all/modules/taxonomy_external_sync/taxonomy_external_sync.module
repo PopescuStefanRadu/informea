@@ -332,16 +332,26 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         foreach ($mappings as $destination_field => $source_field) {
           if (property_exists($term, $source_field)) {
             $field_info = $fields_info[$destination_field];
+            switch ($field_info['type']) {
+              case 'link_field':
+                $colname = 'url';
+                break;
+              default:
+                $colname = 'value';
+            }
             $value = _taxonomy_external_sync_get_field_value($term->{$source_field}, $field_info);
             switch (_taxonomy_external_sync_get_field_type($field_info)) {
               case 0:
                 // NO multilingual, NO multivalue
                 if ($drupal_term->{$destination_field} != $value) {
-                  $changed = TRUE;
+                  $changed = $field_info['field_name'];
                 }
                 break;
               case 1:
                 // Multilingual, but NO multivalue
+                if (empty($value[LANGUAGE_NONE])) {
+                  $value[LANGUAGE_NONE] = !empty($value['en']) ? $value['en'] : reset($value);
+                }
                 if (count($value) != count($drupal_term->{$destination_field})) {
                   $drupal_term->{$destination_field} = array();
                 }
@@ -349,11 +359,11 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                   $translations[] = $lang;
                   $value[$lang] = array(
                     0 => array(
-                      'value' => $val,
+                      $colname => $val,
                     ),
                   );
-                  if (empty($drupal_term->{$destination_field}[$lang]) || $drupal_term->{$destination_field}[$lang][0]['value'] != $val) {
-                    $changed = TRUE;
+                  if (empty($drupal_term->{$destination_field}[$lang]) || $drupal_term->{$destination_field}[$lang][0][$colname] != $val) {
+                    $changed = $field_info['field_name'];
                   }
                 }
                 break;
@@ -364,15 +374,18 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 }
                 foreach ($value as $key => $val) {
                   $value[$key] = array(
-                    'value' => $val,
+                    $colname => $val,
                   );
-                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key]['value'] != $val) {
-                    $changed = TRUE;
+                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key][$colname] != $val) {
+                    $changed = $field_info['field_name'];
                   }
                 }
                 break;
               case 3:
                 // Multilingual and multivalue
+                if (empty($value[LANGUAGE_NONE])) {
+                  $value[LANGUAGE_NONE] = !empty($value['en']) ? $value['en'] : reset($value);
+                }
                 if (count($value) != count($drupal_term->{$destination_field})) {
                   $drupal_term->{$destination_field} = array();
                 }
@@ -383,10 +396,10 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                   }
                   foreach ($val as $k => $v) {
                     $value[$lang][$k] = array(
-                      'value' => $v,
+                      $colname => $v,
                     );
-                    if (empty($drupal_term->{$destination_field}[$lang]) || empty($drupal_term->{$destination_field}[$lang][$k]) || $drupal_term->{$destination_field}[$lang][$k]['value'] != $v) {
-                      $changed = TRUE;
+                    if (empty($drupal_term->{$destination_field}[$lang]) || empty($drupal_term->{$destination_field}[$lang][$k]) || $drupal_term->{$destination_field}[$lang][$k][$colname] != $v) {
+                      $changed = $field_info['field_name'];
                     }
                   }
                 }
