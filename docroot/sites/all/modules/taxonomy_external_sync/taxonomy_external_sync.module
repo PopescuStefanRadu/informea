@@ -316,7 +316,8 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
           if (property_exists($term, $source_field)) {
-            $value = _taxonomy_external_sync_get_field_value($source_field, $fields_info[$destination_field]);
+            $field_info = $fields_info[$destination_field];
+            $value = _taxonomy_external_sync_get_field_value($term->{$source_field}, $field_info);
 
             switch (TRUE) {
               case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
@@ -324,13 +325,32 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 break;
               case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // NO multilingual, but multivalue
+                foreach ($value as $key => $val) {
+                  $value[$key] = array(
+                    'value' => $val,
+                  );
+                }
                 break;
               case ($field_info['translatable'] && $field_info['cardinality'] === 1):
                 // Multilingual, but NO multivalue
+                foreach ($value as $lang => $val) {
+                  $translations[] = $lang;
+                  $value[$lang] = array(
+                    0 => array(
+                      'value' => $val,
+                    ),
+                  );
+                }
+                break;
               case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // Multilingual and multivalue
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
+                  foreach ($val as $k => $v) {
+                    $value[$lang][$k] = array(
+                      'value' => $v,
+                    );
+                  }
                 }
                 break;
             }
