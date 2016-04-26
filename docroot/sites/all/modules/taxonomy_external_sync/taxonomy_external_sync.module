@@ -473,3 +473,32 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     WATCHDOG_INFO
   );
 }
+
+/**
+ * Delete all terms migrated in a sepcified vocabulary.
+ *
+ * @param $bundle
+ * @return int
+ *  Number of deleted terms.
+ */
+function taxonomy_external_sync_rollback_vocabulary($bundle) {
+  $q = db_select('taxonomy_external_sync_map', 't')
+    ->condition('t.bundle', $bundle)
+    ->fields('t', array('source_id', 'destination_tid'));
+  $term_mappings = $q->execute()->fetchAllKeyed();
+  $deleted = [];
+  foreach ($term_mappings as $source => $destination) {
+    try {
+      taxonomy_term_delete($destination);
+      $deleted[] = $destination;
+    }
+    catch (\Exception $e) {
+      watchdog('taxonomy_external_sync', t('Could not delete term with tid \'@term\' in \'@voc\' vocabulary', array('@term' => $destination, '@voc' => $bundle)), NULL, WATCHDOG_ERROR);
+    }
+  }
+  $num_deleted = db_delete('taxonomy_external_sync_map')
+    ->condition('destination_tid', $deleted, 'IN')
+    ->condition('bundle', $bundle)
+    ->execute();
+  return $num_deleted;
+}
