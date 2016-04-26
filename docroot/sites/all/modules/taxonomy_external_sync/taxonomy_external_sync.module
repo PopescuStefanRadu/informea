@@ -210,7 +210,15 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         continue;
       }
       if (is_array($term->{$id_field})) {
-        $id_field_value = !empty($term->{$id_field}['en']) ? $term->{$id_field}['en'] : $term->{$id_field}[LANGUAGE_NONE];
+        if (array_key_exists('en', $term->{$id_field})) {
+          $id_field_value = $term->{$id_field}['en'];
+        }
+        elseif (array_key_exists(LANGUAGE_NONE, $term->{$id_field})) {
+          $id_field_value = $term->{$id_field}[LANGUAGE_NONE];
+        }
+        else {
+          $id_field_value = reset($term->{$id_field});
+        }
       }
       else {
         $id_field_value = $term->{$id_field};
