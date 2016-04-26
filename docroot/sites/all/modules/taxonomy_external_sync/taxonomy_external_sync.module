@@ -304,6 +304,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
       ->condition('t.bundle', $bundle)
       ->fields('t', array('source_id', 'destination_tid'));
     $term_mappings = $q->execute()->fetchAllKeyed();
+
+    $drupal_terms = array();
+
     foreach ($terms as $term) {
       $translations = array();
       $is_new = FALSE;
@@ -425,6 +428,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           taxonomy_term_save($drupal_term);
           $terms_processed++;
         }
+        $drupal_terms[$drupal_term->tid] = $drupal_term;
       }
       catch (\Exception $e) {
         watchdog('taxonomy_external_sync', t('Error migrating term \'@term\' in \'@voc\' vocabulary', array('@term' => $id_field_value, '@voc' => $bundle)), NULL, WATCHDOG_ERROR);
@@ -432,11 +436,32 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
       }
     }
 
-    // Set parent terms
-    $q = db_select('taxonomy_external_sync_map', 't')
-      ->condition('t.bundle', $bundle)
-      ->fields('t', array('source_id', 'destination_tid'));
-    $term_mappings = $q->execute()->fetchAllKeyed();
+    if ($parent_field = $plugin->getParentField()) {
+      // Set terms parents
+      $q = db_select('taxonomy_external_sync_map', 't')
+        ->condition('t.bundle', $bundle)
+        ->fields('t', array('source_id', 'destination_tid'));
+      $term_mappings = $q->execute()->fetchAllKeyed();
+      foreach ($terms as $term) {
+        if (array_key_exists($term->{$id_field}, $term_mappings)
+          && !empty($term->{$parent_field})
+          && array_key_exists($term->{$parent_field}, $term_mappings)
+        ) {
+          $tid = $term_mappings[$term->{$id_field}];
+          $ob = $drupal_terms[$tid];
+          $wrapper = entity_metadata_wrapper('taxonomy_term', $tid);
+          $parent_tid = $term_mappings[$term->{$parent_field}];
+          $parents = $wrapper->parent->value();
+          if (empty($parents) || empty($parents[0]->tid) || $parents[0]->tid != $parent_tid) {
+            $ob->parent = $parent_tid;
+            taxonomy_term_save($ob);
+            if (function_exists('drush_log')) {
+              drush_log("Set ({$parent_tid}) parent to '{$ob->name}' ({$ob->tid})", "ok");
+            }
+          }
+        }
+      }
+    }
   }
   catch (\Exception $e) {
     watchdog_exception('taxonomy_external_sync', $e);

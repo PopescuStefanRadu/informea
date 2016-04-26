@@ -30,11 +30,18 @@ interface SourceInterface {
   function getDescription();
 
   /**
-   * Get the destination identifier field.
+   * Get the source identifier field.
    *
    * @return string
    */
   function getIdField();
+
+  /**
+   * Get the source parent id field.
+   *
+   * @return string
+   */
+  function getParentField();
 
   /**
    * Array of field names as keys and description as values.
@@ -71,6 +78,10 @@ class DummySourcePlugin implements SourceInterface {
 
   function getIdField() {
     // TODO: Implement getIdField() method.
+  }
+
+  function getParentField() {
+    // TODO: Implement getParentField() method.
   }
 
   function getFieldNames() {

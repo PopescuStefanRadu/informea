@@ -31,7 +31,7 @@ class VocBenchRDFSource implements SourceInterface {
       $this->id_field = $config['id_field'];
     }
     if (!empty($config['parent_field'])) {
-      $this->id_field = $config['parent_field'];
+      $this->parent_field = $config['parent_field'];
     }
   }
 
@@ -82,7 +82,7 @@ class VocBenchRDFSource implements SourceInterface {
   }
 
   function getParentField() {
-    return $this->parent_field
+    return $this->parent_field;
   }
 
   function getFieldNames() {
