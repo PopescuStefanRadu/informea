@@ -301,6 +301,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $terms = $plugin->getTerms();
 
     $q = db_select('taxonomy_external_sync_map', 't')
+      ->condition('t.bundle', $bundle)
       ->fields('t', array('source_id', 'destination_tid'));
     $term_mappings = $q->execute()->fetchAllKeyed();
     foreach ($terms as $term) {
@@ -430,6 +431,12 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         watchdog_exception('taxonomy_external_sync', $e);
       }
     }
+
+    // Set parent terms
+    $q = db_select('taxonomy_external_sync_map', 't')
+      ->condition('t.bundle', $bundle)
+      ->fields('t', array('source_id', 'destination_tid'));
+    $term_mappings = $q->execute()->fetchAllKeyed();
   }
   catch (\Exception $e) {
     watchdog_exception('taxonomy_external_sync', $e);
