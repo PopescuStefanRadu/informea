@@ -113,14 +113,6 @@ abstract class DefaultSource {
 
 class DummySourcePlugin extends DefaultSource {
 
-  function setConfiguration(array $config) {
-    // TODO: Implement setConfiguration() method.
-  }
-
-  function getConfigurationForm($vocabulary, $form_state) {
-    // TODO: Implement getConfigurationForm() method.
-  }
-
   function getName() {
     return 'DummySourcePlugin';
   }
