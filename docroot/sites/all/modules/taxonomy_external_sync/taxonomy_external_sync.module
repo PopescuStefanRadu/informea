@@ -316,90 +316,25 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
           if (property_exists($term, $source_field)) {
-            $field_info = $fields_info[$destination_field];
+            $value = _taxonomy_external_sync_get_field_value($source_field, $fields_info[$destination_field]);
+
             switch (TRUE) {
               case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
                 // NO multilingual, NO multivalue
                 break;
-              case ($field_info['translatable'] && $field_info['cardinality'] === 1):
-                // Multilingual, but NO multivalue
-                break;
               case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // NO multilingual, but multivalue
                 break;
+              case ($field_info['translatable'] && $field_info['cardinality'] === 1):
+                // Multilingual, but NO multivalue
               case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
                 // Multilingual and multivalue
+                foreach ($value as $lang => $val) {
+                  $translations[] = $lang;
+                }
                 break;
             }
-
-//            if (is_array($term->{$source_field})) {
-//              if (!property_exists($drupal_term, $destination_field)) {
-//                $drupal_term->{$destination_field} = array();
-//              }
-//              $multilingual_field = FALSE;
-//              $field_value = $term->{$source_field};
-//              if (!is_numeric(key($term->{$source_field}))) {
-//                // Source field is multilingual
-//                if (!$fields_info[$destination_field['translatable']]) {
-//                  // Destination field is not multilingual so we store just one language
-//                  $field_value = _taxonomy_external_sync_get_field_value($term->{$source_field}, ['translatable' => 0, 'cardinality' => 1]);
-//                }
-//                else {
-//                  $multilingual_field = TRUE;
-//                  if (!array_key_exists(LANGUAGE_NONE, $term->{$source_field})) {
-//                    if (is_array($drupal_term->{$destination_field}[LANGUAGE_NONE])) {
-//                      $drupal_term->{$destination_field}[LANGUAGE_NONE][0]['value'] = $term->{$source_field}['en'];
-//                    }
-//                    else {
-//                      $drupal_term->{$destination_field}[LANGUAGE_NONE] = array(
-//                        array(
-//                          'value' => $term->{$source_field}['en'],
-//                        )
-//                      );
-//                    }
-//                  }
-//                  foreach ($term->{$source_field} as $lang => $value) {
-//                    if (in_array($lang, $languages)) {
-//                      $translations[] = $lang;
-//                      if (is_array($drupal_term->{$destination_field}[$lang])) {
-//                        $drupal_term->{$destination_field}[$lang][0]['value'] = $value;
-//                      }
-//                      else {
-//                        $drupal_term->{$destination_field}[$lang] = array(
-//                          array(
-//                            'value' => $value,
-//                          )
-//                        );
-//                      }
-//                    }
-//                  }
-//                }
-//              }
-//              if ($multilingual_field) {
-//                foreach ($field_value as $lang => $value) {
-//                  if (is_array($value)) {
-//                    // Source field is multivalued
-//                    if ($fields_info[$destination_field['cardinality']] === 1) {
-//                      // Destination field is not multilingual so we store just one value
-//                      $field_value[$lang] = reset($value);
-//                    }
-//                  }
-//                }
-//              }
-//              else {
-//                // TODO: refactor this part
-//                if (is_array($field_value)) {
-//                  // Source field is multivalued
-//                  if ($fields_info[$destination_field['cardinality']] === 1) {
-//                    // Destination field is not multivalued so we store just one value
-//                    $field_value['und'] = reset($field_value);
-//                  }
-//                }
-//              }
-//            }
-//            else {
-//              $drupal_term->{$destination_field} = $term->{$source_field};
-//            }
+            $drupal_term->{$destination_field} = $value;
           }
         }
 
