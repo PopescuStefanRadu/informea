@@ -173,7 +173,12 @@ function taxonomy_external_sync_migrate_all_vocabularies() {
   }
 }
 
-function _taxonomy_external_sync_get_field_value($value, $field_info) {
+/**
+ * @param $value
+ * @param array $field_info
+ * @return array|mixed
+ */
+function _taxonomy_external_sync_get_field_value($value, array $field_info) {
   switch (TRUE) {
     case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
       // NO multilingual, NO multivalue
@@ -193,6 +198,22 @@ function _taxonomy_external_sync_get_field_value($value, $field_info) {
       break;
     case ($field_info['translatable'] && $field_info['cardinality'] === 1):
       // Multilingual, but NO multivalue
+      if (is_array($value)) {
+        if (is_numeric(key($value))) {
+          return array(
+            LANGUAGE_NONE => reset($value),
+          );
+        }
+        foreach ($value as $lang => $val) {
+          if (is_array($val)) {
+            $value[$lang] = reset($val);
+          }
+        }
+        return $value;
+      }
+      return array(
+        LANGUAGE_NONE => $value,
+      );
       break;
     case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
       // NO multilingual, but multivalue
