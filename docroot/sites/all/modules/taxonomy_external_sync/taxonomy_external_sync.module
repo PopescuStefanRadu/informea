@@ -338,6 +338,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 break;
               case 1:
                 // Multilingual, but NO multivalue
+                if (count($value) != count($drupal_term->{$destination_field})) {
+                  $drupal_term->{$destination_field} = array();
+                }
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
                   $value[$lang] = array(
@@ -352,6 +355,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 break;
               case 2:
                 // NO multilingual, but multivalue
+                if (count($value) != count($drupal_term->{$destination_field})) {
+                  $drupal_term->{$destination_field} = array();
+                }
                 foreach ($value as $key => $val) {
                   $value[$key] = array(
                     'value' => $val,
@@ -363,8 +369,14 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 break;
               case 3:
                 // Multilingual and multivalue
+                if (count($value) != count($drupal_term->{$destination_field})) {
+                  $drupal_term->{$destination_field} = array();
+                }
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
+                  if (count($val) != count($drupal_term->{$destination_field}[$lang])) {
+                    $drupal_term->{$destination_field}[$lang] = array();
+                  }
                   foreach ($val as $k => $v) {
                     $value[$lang][$k] = array(
                       'value' => $v,
