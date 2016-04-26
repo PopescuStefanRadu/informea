@@ -2,72 +2,7 @@
 
 namespace Drupal\taxonomy_external_sync\plugin\source;
 
-use \Drupal\taxonomy_external_sync\plugin\SourceInterface;
-
-class VocBenchRDFSource implements SourceInterface {
-
-  // The configuration part should be refactored because it is the same as in FaolexSource
-  private $available_languages = [
-    'en' => 'English',
-    'fr' => 'French',
-    'es' => 'Spanish',
-    'ar' => 'Arabic',
-    'zh' => 'Chinese',
-  ];
-
-  private $id_field = NULL;
-  private $parent_field = NULL;
-  private $url = NULL;
-
-  public function __construct($config = array()) {
-    $this->setConfiguration($config);
-  }
-
-  function setConfiguration(array $config) {
-    if (!empty($config['url'])) {
-      $this->url = $config['url'];
-    }
-    if (!empty($config['id_field'])) {
-      $this->id_field = $config['id_field'];
-    }
-    if (!empty($config['parent_field'])) {
-      $this->parent_field = $config['parent_field'];
-    }
-  }
-
-  /** @inheritdoc */
-  function getConfigurationForm($vocabulary, $form_state) {
-    $ret = array(
-      'url' => array(
-        '#title' => t('Enter RDF URL'),
-        '#type' => 'textfield',
-        '#size' => 100,
-        '#required' => TRUE,
-        '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
-      )
-    );
-    $options = array_merge(
-      array('' => t('-- Please select --')),
-      $this->getFieldNames()
-    );
-    $ret['id_field'] = array(
-      '#title' => t('Source identifier field'),
-      '#description' => t('Select the local field where the remote indentifier is stored to track remote subsequent updates to the terms'),
-      '#type' => 'select',
-      '#options' => $options,
-      '#required' => TRUE,
-      '#default_value' => !empty($vocabulary->tes['plugin_config']['id_field']) ? $vocabulary->tes['plugin_config']['id_field'] : NULL,
-    );
-    $ret['parent_field'] = array(
-      '#title' => t('Parent term'),
-      '#description' => t('This field should contain the source ID of parent term.'),
-      '#type' => 'select',
-      '#options' => $options,
-      '#required' => FALSE,
-      '#default_value' => !empty($vocabulary->tes['plugin_config']['parent_field']) ? $vocabulary->tes['plugin_config']['parent_field'] : NULL,
-    );
-    return $ret;
-  }
+class VocBenchRDFSource extends DefaultSource {
 
   function getName() {
     return 'VocBench RDF';
@@ -75,14 +10,6 @@ class VocBenchRDFSource implements SourceInterface {
 
   function getDescription() {
     return t('Imports terms from XML RDF containing reified labels');
-  }
-
-  function getIdField() {
-    return $this->id_field;
-  }
-
-  function getParentField() {
-    return $this->parent_field;
   }
 
   function getFieldNames() {
@@ -123,6 +50,7 @@ class VocBenchRDFSource implements SourceInterface {
   }
 
   private function loadRDF($rdf) {
+    var_dump($rdf);
     if (!easyrdf()) {
       drupal_set_message(t('EasyRdf library is not available.'), 'error');
       return FALSE;
@@ -163,7 +91,7 @@ class VocBenchRDFSource implements SourceInterface {
         // skos:prefLabel
         if ($prefLabels = $resource->allResources('skosxl:prefLabel')) {
           foreach($prefLabels as $prefLabel) {
-            /** @var EasyRdf_Literal $lit */
+            /** @var /EasyRdf_Literal $lit */
             $lit = $prefLabel->get('skosxl:literalForm');
             $term->prefLabel[$lit->getLang()] = $lit->getValue();
           }
@@ -176,7 +104,7 @@ class VocBenchRDFSource implements SourceInterface {
         // skos:altLabel
         if ($altLabels = $resource->allResources('skosxl:altLabel')) {
           foreach($altLabels as $altLabel) {
-            /** @var EasyRdf_Literal $lit */
+            /** @var /EasyRdf_Literal $lit */
             $lit = $altLabel->get('skosxl:literalForm');
             $term->altLabel[$lit->getLang()][] = $lit->getValue();
           }

@@ -2,9 +2,7 @@
 
 namespace Drupal\taxonomy_external_sync\plugin\source;
 
-use \Drupal\taxonomy_external_sync\plugin\SourceInterface;
-
-class FaolexSource implements SourceInterface {
+class FaolexSource extends DefaultSource {
 
   private $available_languages = [
     'en' => 'English',
@@ -14,74 +12,12 @@ class FaolexSource implements SourceInterface {
     'zh' => 'Chinese',
   ];
 
-  private $id_field = NULL;
-  private $parent_field = NULL;
-  private $url = NULL;
-
-  public function __construct($config = array()) {
-    $this->setConfiguration($config);
-  }
-
-  function setConfiguration(array $config) {
-    if (!empty($config['url'])) {
-      $this->url = $config['url'];
-    }
-    if (!empty($config['id_field'])) {
-      $this->id_field = $config['id_field'];
-    }
-    if (!empty($config['parent_field'])) {
-      $this->parent_field = $config['parent_field'];
-    }
-  }
-
-  function getConfigurationForm($vocabulary, $form_state) {
-    $ret = array(
-      'url' => array(
-        '#title' => t('Enter XML URL'),
-        '#type' => 'textfield',
-        '#maxlength'=> 255,
-        '#size' => 100,
-        '#required' => TRUE,
-        '#default_value' => !empty($vocabulary->tes['plugin_config']['url']) ? $vocabulary->tes['plugin_config']['url'] : NULL,
-      )
-    );
-    $options = array_merge(
-      array('' => t('-- Please select --')),
-      $this->getFieldNames()
-      );
-    $ret['id_field'] = array(
-      '#title' => t('Source identifier field'),
-      '#description' => t('Select the local field where the remote indentifier is stored to track remote subsequent updates to the terms'),
-      '#type' => 'select',
-      '#options' => $options,
-      '#required' => TRUE,
-      '#default_value' => !empty($vocabulary->tes['plugin_config']['id_field']) ? $vocabulary->tes['plugin_config']['id_field'] : NULL,
-    );
-    $ret['parent_field'] = array(
-      '#title' => t('Parent term'),
-      '#description' => t('This field should contain the source ID of parent term.'),
-      '#type' => 'select',
-      '#options' => $options,
-      '#required' => FALSE,
-      '#default_value' => !empty($vocabulary->tes['plugin_config']['parent_field']) ? $vocabulary->tes['plugin_config']['parent_field'] : NULL,
-    );
-    return $ret;
-  }
-
   function getName() {
     return 'FAOLEX web-service consumer';
   }
 
   function getDescription() {
     return t('Imports terms from the XML provided by FAOLEX.');
-  }
-
-  public function getIdField() {
-    return $this->id_field;
-  }
-
-  function getParentField() {
-    return $this->parent_field;
   }
 
   function getFieldNames() {

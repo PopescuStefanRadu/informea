@@ -5,6 +5,6 @@ package = taxonomy
 version = 7.x-1.0
 
 files[] = taxonomy_external_sync.admin.inc
-files[] = includes/SourceInterface.inc
+files[] = includes/DefaultSource.inc
 files[] = includes/VocBenchRDFSource.inc
 files[] = includes/FaolexSource.inc

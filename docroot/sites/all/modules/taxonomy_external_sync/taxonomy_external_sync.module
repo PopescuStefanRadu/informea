@@ -3,7 +3,7 @@
 use Drupal\taxonomy_external_sync\plugin\source\VocBenchRDFSource;
 use Drupal\taxonomy_external_sync\plugin\source\FaolexSource;
 
-require_once 'includes/SourceInterface.inc';
+require_once 'includes/DefaultSource.inc';
 require_once 'includes/VocBenchRDFSource.inc';
 require_once 'includes/FaolexSource.inc';
 require_once 'taxonomy_external_sync.admin.inc';
@@ -295,7 +295,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
     $fields_info[$destination_field] = field_info_field($destination_field);
   }
   try {
-    /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
+    /** @var \Drupal\taxonomy_external_sync\plugin\source\DefaultSource $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
     $id_field = $plugin->getIdField();
     $terms = $plugin->getTerms();
