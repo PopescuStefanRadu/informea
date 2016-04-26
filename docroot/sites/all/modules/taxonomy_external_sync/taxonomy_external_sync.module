@@ -343,9 +343,16 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
             switch (_taxonomy_external_sync_get_field_type($field_info)) {
               case 0:
                 // NO multilingual, NO multivalue
-                if ($drupal_term->{$destination_field} != $value) {
+                if ($drupal_term->{$destination_field}[LANGUAGE_NONE][0][$colname] != $value) {
                   $changed = $field_info['field_name'];
                 }
+                $value = array(
+                  LANGUAGE_NONE => array(
+                    0 => array(
+                      $colname => $value,
+                    ),
+                  ),
+                );
                 break;
               case 1:
                 // Multilingual, but NO multivalue
