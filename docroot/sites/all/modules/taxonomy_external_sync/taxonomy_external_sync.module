@@ -329,7 +329,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           if (property_exists($term, $source_field)) {
             $field_info = $fields_info[$destination_field];
             $value = _taxonomy_external_sync_get_field_value($term->{$source_field}, $field_info);
-
             switch (_taxonomy_external_sync_get_field_type($field_info)) {
               case 0:
                 // NO multilingual, NO multivalue
@@ -338,17 +337,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 }
                 break;
               case 1:
-                // NO multilingual, but multivalue
-                foreach ($value as $key => $val) {
-                  $value[$key] = array(
-                    'value' => $val,
-                  );
-                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key]['value'] != $val) {
-                    $changed = TRUE;
-                  }
-                }
-                break;
-              case 2:
                 // Multilingual, but NO multivalue
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
@@ -358,6 +346,17 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                     ),
                   );
                   if (empty($drupal_term->{$destination_field}[$lang]) || $drupal_term->{$destination_field}[$lang][0]['value'] != $val) {
+                    $changed = TRUE;
+                  }
+                }
+                break;
+              case 2:
+                // NO multilingual, but multivalue
+                foreach ($value as $key => $val) {
+                  $value[$key] = array(
+                    'value' => $val,
+                  );
+                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key]['value'] != $val) {
                     $changed = TRUE;
                   }
                 }
