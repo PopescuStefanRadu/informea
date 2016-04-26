@@ -50,7 +50,6 @@ class VocBenchRDFSource extends DefaultSource {
   }
 
   private function loadRDF($rdf) {
-    var_dump($rdf);
     if (!easyrdf()) {
       drupal_set_message(t('EasyRdf library is not available.'), 'error');
       return FALSE;
