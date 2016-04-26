@@ -180,7 +180,7 @@ function taxonomy_external_sync_migrate_all_vocabularies() {
  */
 function _taxonomy_external_sync_get_field_value($value, array $field_info) {
   switch (TRUE) {
-    case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
+    case (!$field_info['translatable'] && $field_info['cardinality'] == '1'):
       // NO multilingual, NO multivalue
       if (is_array($value)) {
         if (is_numeric(key($value))) {
@@ -196,7 +196,7 @@ function _taxonomy_external_sync_get_field_value($value, array $field_info) {
       }
       return $value;
       break;
-    case ($field_info['translatable'] && $field_info['cardinality'] === 1):
+    case ($field_info['translatable'] && $field_info['cardinality'] == '1'):
       // Multilingual, but NO multivalue
       if (is_array($value)) {
         if (is_numeric(key($value))) {
@@ -215,7 +215,7 @@ function _taxonomy_external_sync_get_field_value($value, array $field_info) {
         LANGUAGE_NONE => $value,
       );
       break;
-    case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
+    case (!$field_info['translatable'] && $field_info['cardinality'] != '1'):
       // NO multilingual, but multivalue
       if (is_array($value)) {
         if (is_numeric(key($value))) {
@@ -231,7 +231,7 @@ function _taxonomy_external_sync_get_field_value($value, array $field_info) {
       }
       return array($value);
       break;
-    case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
+    case ($field_info['translatable'] && $field_info['cardinality'] != '1'):
       // Multilingual and multivalue
       if (is_array($value)) {
         if (is_numeric(key($value))) {
@@ -282,7 +282,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
   foreach ($mappings as $destination_field => $source_field) {
     $fields_info[$destination_field] = field_info_field($destination_field);
   }
-  $destination_name_field = array_search($source_name_field, $mappings);
   try {
     /** @var \Drupal\taxonomy_external_sync\plugin\SourceInterface $plugin */
     $plugin = new $config['plugin']($config['plugin_config']);
@@ -302,6 +301,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
       /** @var string $id_field_value */
       $id_field_value = _taxonomy_external_sync_get_field_value($term->{$id_field}, ['translatable' => 0, 'cardinality' => 1]);
       try {
+        $changed = FALSE;
         if (array_key_exists($id_field_value, $term_mappings)) {
           // Term already exists.
           $drupal_term = taxonomy_term_load($term_mappings[$id_field_value]);
@@ -311,7 +311,6 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           $is_new = TRUE;
           $terms_created++;
         }
-        $original_sha1 = sha1(json_encode($drupal_term));
         $drupal_term->name = _taxonomy_external_sync_get_field_value($term->{$source_name_field}, ['translatable' => 0, 'cardinality' => 1]);
         $drupal_term->vid = $vocabulary->vid;
         foreach ($mappings as $destination_field => $source_field) {
@@ -320,18 +319,24 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
             $value = _taxonomy_external_sync_get_field_value($term->{$source_field}, $field_info);
 
             switch (TRUE) {
-              case (!$field_info['translatable'] && $field_info['cardinality'] === 1):
+              case (!$field_info['translatable'] && $field_info['cardinality'] == '1'):
                 // NO multilingual, NO multivalue
+                if ($drupal_term->{$destination_field} != $value) {
+                  $changed = TRUE;
+                }
                 break;
-              case (!$field_info['translatable'] && $field_info['cardinality'] !== 1):
+              case (!$field_info['translatable'] && $field_info['cardinality'] != '1'):
                 // NO multilingual, but multivalue
                 foreach ($value as $key => $val) {
                   $value[$key] = array(
                     'value' => $val,
                   );
+                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key]['value'] != $val) {
+                    $changed = TRUE;
+                  }
                 }
                 break;
-              case ($field_info['translatable'] && $field_info['cardinality'] === 1):
+              case ($field_info['translatable'] && $field_info['cardinality'] == '1'):
                 // Multilingual, but NO multivalue
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
@@ -340,9 +345,12 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                       'value' => $val,
                     ),
                   );
+                  if (empty($drupal_term->{$destination_field}[$lang]) || $drupal_term->{$destination_field}[$lang][0]['value'] != $val) {
+                    $changed = TRUE;
+                  }
                 }
                 break;
-              case ($field_info['translatable'] && $field_info['cardinality'] !== 1):
+              case ($field_info['translatable'] && $field_info['cardinality'] != '1'):
                 // Multilingual and multivalue
                 foreach ($value as $lang => $val) {
                   $translations[] = $lang;
@@ -350,6 +358,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                     $value[$lang][$k] = array(
                       'value' => $v,
                     );
+                    if (empty($drupal_term->{$destination_field}[$lang]) || empty($drupal_term->{$destination_field}[$lang][$k]) || $drupal_term->{$destination_field}[$lang][$k]['value'] != $v) {
+                      $changed = TRUE;
+                    }
                   }
                 }
                 break;
@@ -358,8 +369,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           }
         }
 
-        $sha1 = sha1(json_encode($drupal_term));
-        if ($original_sha1 != $sha1) {
+        if ($changed || $is_new) {
           if ($is_new) {
             taxonomy_term_save($drupal_term);
             db_insert('taxonomy_external_sync_map')
