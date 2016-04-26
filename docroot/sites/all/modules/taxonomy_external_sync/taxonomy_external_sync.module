@@ -495,7 +495,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
 }
 
 /**
- * Delete all terms migrated in a sepcified vocabulary.
+ * Delete all terms migrated in a specified vocabulary.
  *
  * @param $bundle
  * @return int
