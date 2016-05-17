@@ -9,6 +9,49 @@ require_once 'includes/FaolexSource.inc';
 require_once 'taxonomy_external_sync.admin.inc';
 
 /**
+ * Implement hook_cronapi defined by elysia_cron module.
+ *
+ * Run the elysia synchronisation task for each taxonomy individually
+ */
+function taxonomy_external_sync_cronapi($op, $job = NULL) {
+  $ret = array();
+  $configs = taxonomy_external_sync_config_load();
+  foreach ($configs as $bundle => $config) {
+    $task = 'taxonomy_sync_' . $bundle;
+    $ret[$task] = array(
+      'description' => "Sychronise the <b>$bundle</b> taxonomy using taxonomy_external_sync module",
+      'rule' => '*/30 * * * *',
+      'callback' => 'thesaurus_external_sync_cronapi_run',
+      'arguments' => array($bundle),
+    );
+    // Try to insert the job disabled on first attempt
+    try {
+      if (!db_select('elysia_cron')->fields(NULL, array('name'))->condition('name', 'taxonomy_sync_thesaurus_informea')->execute()->rowCount()) {
+        db_insert('elysia_cron')
+          ->fields(array('name' => $task, 'disable' => 1))
+          ->execute();
+      }
+    } catch (Exception $e) {}
+  }
+  return $ret;
+}
+
+
+/**
+ * Run the actual elysia synchronisation task
+ *
+ * @param string $bundle
+ *   Taxonomy to synchronise
+ */
+function thesaurus_external_sync_cronapi_run($bundle) {
+  $configs = taxonomy_external_sync_config_load();
+  if (!empty($configs[$bundle])) {
+    taxonomy_external_sync_migrate_vocabulary($bundle, $configs[$bundle]);
+  }
+}
+
+
+/**
  * Implements hook_form_alter().
  */
 function taxonomy_external_sync_form_taxonomy_form_vocabulary_alter(&$form, &$form_state) {
