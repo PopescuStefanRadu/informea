@@ -26,7 +26,7 @@ function taxonomy_external_sync_cronapi($op, $job = NULL) {
     );
     // Try to insert the job disabled on first attempt
     try {
-      if (!db_select('elysia_cron')->fields(NULL, array('name'))->condition('name', 'taxonomy_sync_thesaurus_informea')->execute()->rowCount()) {
+      if (!db_select('elysia_cron')->fields(NULL, array('name'))->condition('name', $task)->execute()->rowCount()) {
         db_insert('elysia_cron')
           ->fields(array('name' => $task, 'disable' => 1))
           ->execute();
