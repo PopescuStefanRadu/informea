@@ -525,3 +525,15 @@ function taxonomy_external_sync_rollback_vocabulary($bundle) {
     ->execute();
   return $num_deleted;
 }
+
+
+/**
+ * Implements hook_taxonomy_term_delete().
+ */
+function taxonomy_external_sync_taxonomy_term_delete($term) {
+  $q = db_delete('taxonomy_external_sync_map')->condition('destination_tid', $term->tid);
+  if ($voc = taxonomy_vocabulary_load($term->vid)) {
+    $q->condition('bundle', $voc->machine_name);
+  }
+  $q->execute();
+}
