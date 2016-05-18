@@ -367,7 +367,7 @@ function informea_views_default_views() {
   $handler->display->display_options['fields']['created']['date_format'] = 'short';
   $handler->display->display_options['fields']['created']['second_date_format'] = 'long';
   $handler->display->display_options['fields']['created']['link_to_entity'] = 0;
-  /* Field: Indexed Content: MEA topic */
+  /* Field: Indexed Content: Tags */
   $handler->display->display_options['fields']['field_mea_topic']['id'] = 'field_mea_topic';
   $handler->display->display_options['fields']['field_mea_topic']['table'] = 'search_api_index_news_search_index';
   $handler->display->display_options['fields']['field_mea_topic']['field'] = 'field_mea_topic';
@@ -407,7 +407,7 @@ function informea_views_default_views() {
     4 => 0,
     5 => 0,
   );
-  /* Filter criterion: Indexed Content: MEA topic */
+  /* Filter criterion: Indexed Content: Tags */
   $handler->display->display_options['filters']['field_mea_topic']['id'] = 'field_mea_topic';
   $handler->display->display_options['filters']['field_mea_topic']['table'] = 'search_api_index_news_search_index';
   $handler->display->display_options['filters']['field_mea_topic']['field'] = 'field_mea_topic';
@@ -536,7 +536,6 @@ function informea_views_default_views() {
     t('<a href="[field_url]" target="blank">[title]</a>'),
     t('.'),
     t(','),
-    t('Tags'),
     t('Search in news'),
     t('Show'),
     t('Page'),
