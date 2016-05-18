@@ -1430,6 +1430,41 @@ function informea_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance:
+  // 'taxonomy_term-thesaurus_informea-field_term_synonyms'
+  $field_instances['taxonomy_term-thesaurus_informea-field_term_synonyms'] = array(
+    'bundle' => 'thesaurus_informea',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 1,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_term_synonyms',
+    'label' => 'Synonyms',
+    'required' => 0,
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 32,
+    ),
+  );
+
   // Exported field_instance: 'taxonomy_term-thesaurus_informea-field_term_tag'.
   $field_instances['taxonomy_term-thesaurus_informea-field_term_tag'] = array(
     'bundle' => 'thesaurus_informea',
