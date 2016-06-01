@@ -402,34 +402,48 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                 break;
               case 1:
                 // Multilingual, but NO multivalue
-                if (empty($value[LANGUAGE_NONE])) {
-                  $value[LANGUAGE_NONE] = !empty($value['en']) ? $value['en'] : reset($value);
+                if (empty($value)) {
+                  foreach ($drupal_term->{$destination_field} as $lang => $val) {
+                    if (!empty($val) && !empty($val[$colname])) {
+                      $changed = $field_info['field_name'];
+                    }
+                  }
+                  $drupal_term->{$destination_field} = NULL;
                 }
-                if (count($value) != count($drupal_term->{$destination_field})) {
-                  $drupal_term->{$destination_field} = array();
-                }
-                foreach ($value as $lang => $val) {
-                  $translations[] = $lang;
-                  $value[$lang] = array(
-                    0 => array(
-                      $colname => $val,
-                    ),
-                  );
-                  if (empty($drupal_term->{$destination_field}[$lang]) || $drupal_term->{$destination_field}[$lang][0][$colname] != $val) {
-                    $changed = $field_info['field_name'];
+                else {
+                  if (empty($value[LANGUAGE_NONE])) {
+                    $value[LANGUAGE_NONE] = !empty($value['en']) ? $value['en'] : reset($value);
+                  }
+                  if (count($value) != count($drupal_term->{$destination_field})) {
+                    $drupal_term->{$destination_field} = array();
+                  }
+                  foreach ($value as $lang => $val) {
+                    $translations[] = $lang;
+                    $value[$lang] = array(
+                      0 => array(
+                        $colname => $val,
+                      ),
+                    );
+                    if (empty($drupal_term->{$destination_field}[$lang]) ||
+                      $drupal_term->{$destination_field}[$lang][0][$colname] != $val) {
+                      $changed = $field_info['field_name'];
+                    }
                   }
                 }
                 break;
               case 2:
                 // NO multilingual, but multivalue
-                if (count($value) != count($drupal_term->{$destination_field})) {
+                if (empty($drupal_term->{$destination_field}[LANGUAGE_NONE]) ||
+                  count($value) != count($drupal_term->{$destination_field}[LANGUAGE_NONE])) {
                   $drupal_term->{$destination_field} = array();
                 }
                 foreach ($value as $key => $val) {
                   $value[$key] = array(
                     $colname => $val,
                   );
-                  if (empty($drupal_term->{$destination_field}[$key]) || $drupal_term->{$destination_field}[$key][$colname] != $val) {
+                  if (empty($drupal_term->{$destination_field}[LANGUAGE_NONE]) ||
+                    empty($drupal_term->{$destination_field}[LANGUAGE_NONE][$key]) ||
+                    $drupal_term->{$destination_field}[LANGUAGE_NONE][$key][$colname] != $val) {
                     $changed = $field_info['field_name'];
                   }
                 }
