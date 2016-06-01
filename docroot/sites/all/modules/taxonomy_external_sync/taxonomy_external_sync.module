@@ -433,6 +433,9 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                     $changed = $field_info['field_name'];
                   }
                 }
+                $value = array(
+                  LANGUAGE_NONE => $value,
+                );
                 break;
               case 3:
                 // Multilingual and multivalue
