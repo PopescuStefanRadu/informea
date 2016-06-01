@@ -447,12 +447,14 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
                   if (count($val) != count($drupal_term->{$destination_field}[$lang])) {
                     $drupal_term->{$destination_field}[$lang] = array();
                   }
-                  foreach ($val as $k => $v) {
-                    $value[$lang][$k] = array(
-                      $colname => $v,
-                    );
-                    if (empty($drupal_term->{$destination_field}[$lang]) || empty($drupal_term->{$destination_field}[$lang][$k]) || $drupal_term->{$destination_field}[$lang][$k][$colname] != $v) {
-                      $changed = $field_info['field_name'];
+                  if (!empty($val)) {
+                    foreach ($val as $k => $v) {
+                      $value[$lang][$k] = array(
+                        $colname => $v,
+                      );
+                      if (empty($drupal_term->{$destination_field}[$lang]) || empty($drupal_term->{$destination_field}[$lang][$k]) || $drupal_term->{$destination_field}[$lang][$k][$colname] != $v) {
+                        $changed = $field_info['field_name'];
+                      }
                     }
                   }
                 }
@@ -464,6 +466,7 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
 
         if ($changed || $is_new) {
           if ($is_new) {
+            $drupal_term->language = 'en';
             taxonomy_term_save($drupal_term);
             db_insert('taxonomy_external_sync_map')
               ->fields(array(
@@ -477,17 +480,17 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
           $translations = array_unique($translations);
           // Set term translations
           $translation_handler = entity_translation_get_handler('taxonomy_term', $drupal_term);
-          $translation_handler->setOriginalLanguage(LANGUAGE_NONE);
           $translation_handler->initTranslations();
+          $translation_handler->setOriginalLanguage('en');
           $drupal_term->translations = $translation_handler->getTranslations();
           foreach ($languages as $language) {
-            if (in_array($language, $translations)) {
+            if (in_array($language, $translations) && $language != 'en') {
               $translation_handler->setTranslation(array(
                 'translate' => 0,
                 'status' => 1,
                 'uid' => 1,
                 'language' => $language,
-                'source' => LANGUAGE_NONE,
+                'source' => 'en',
               ));
             }
           }
@@ -556,6 +559,7 @@ function taxonomy_external_sync_rollback_vocabulary($bundle) {
   foreach ($term_mappings as $source => $destination) {
     try {
       taxonomy_term_delete($destination);
+      print "Deleted term {$destination}\n";
       $deleted[] = $destination;
     }
     catch (\Exception $e) {
