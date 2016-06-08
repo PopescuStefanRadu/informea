@@ -403,9 +403,11 @@ function taxonomy_external_sync_migrate_vocabulary($bundle, $config = NULL) {
               case 1:
                 // Multilingual, but NO multivalue
                 if (empty($value)) {
-                  foreach ($drupal_term->{$destination_field} as $lang => $val) {
-                    if (!empty($val) && !empty($val[$colname])) {
-                      $changed = $field_info['field_name'];
+                  if (!empty($drupal_term->{$destination_field})) {
+                    foreach ($drupal_term->{$destination_field} as $lang => $val) {
+                      if (!empty($val) && !empty($val[$colname])) {
+                        $changed = $field_info['field_name'];
+                      }
                     }
                   }
                   $drupal_term->{$destination_field} = NULL;
