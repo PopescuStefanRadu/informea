@@ -61,8 +61,7 @@ function _get_goal_source_goals($source, $type_of_goals) {
     ->entityCondition('bundle', 'goal')
     ->propertyCondition('status', NODE_PUBLISHED)
     ->fieldCondition('field_goal_source', 'tid', $source->tid)
-    ->fieldCondition('field_goal_type', 'tid', $goal_type_tid)
-    ->propertyOrderBy('title', 'ASC');
+    ->fieldCondition('field_goal_type', 'tid', $goal_type_tid);
 
   $ret = array();
   $result = $query->execute();
