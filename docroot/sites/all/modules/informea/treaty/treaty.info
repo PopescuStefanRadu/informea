@@ -115,7 +115,6 @@ features[field_instance][] = node-treaty-field_informea_tags
 features[field_instance][] = node-treaty-field_internet_reference
 features[field_instance][] = node-treaty-field_is_protocol
 features[field_instance][] = node-treaty-field_jurisdiction
-features[field_instance][] = node-treaty-field_keywords
 features[field_instance][] = node-treaty-field_logo
 features[field_instance][] = node-treaty-field_mea_topic
 features[field_instance][] = node-treaty-field_number_of_pages

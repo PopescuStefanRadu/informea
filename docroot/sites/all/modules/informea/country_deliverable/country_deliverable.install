@@ -1,0 +1,23 @@
+<?php
+
+
+/** Delete old Ramsar sites */
+function country_deliverable_update_7001() {
+  /*
+    SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+      LEFT JOIN migrate_map_odata_ramsar_sites c ON a.nid = c.destid1
+      WHERE a.type = 'geographical_site'
+        AND b.field_treaty_target_id = 272 AND c.destid1 IS NULL;
+   */
+
+  $q = db_query("
+    SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+      LEFT JOIN migrate_map_odata_ramsar_sites c ON a.nid = c.destid1
+      WHERE a.type = 'geographical_site'
+        AND b.field_treaty_target_id = 272 AND c.destid1 IS NULL;
+  ");
+  $nids = $q->fetchCol();
+  node_delete_multiple($nids);
+}

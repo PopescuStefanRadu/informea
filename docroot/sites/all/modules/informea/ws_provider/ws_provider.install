@@ -1,0 +1,16 @@
+<?php
+
+
+function ws_provider_install() {
+  ws_provider_update_7001();
+}
+
+/**
+ * Decrease module's weight to capture hook_node_view() first
+ */
+function ws_provider_update_7001() {
+  db_update('system')
+    ->fields(array('weight' => -10))
+    ->condition('name', 'osha_tmgmt', '=')
+    ->execute();
+}

@@ -64,7 +64,7 @@ function meeting_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 11,
+      'weight' => 12,
     ),
   );
 
@@ -131,7 +131,7 @@ function meeting_field_default_field_instances() {
         'year_range' => '-3:+3',
       ),
       'type' => 'date_popup',
-      'weight' => 10,
+      'weight' => 11,
     ),
   );
 
@@ -185,7 +185,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 16,
+      'weight' => 17,
     ),
   );
 
@@ -237,7 +237,7 @@ function meeting_field_default_field_instances() {
         'size' => 30,
       ),
       'type' => 'text_textfield',
-      'weight' => 8,
+      'weight' => 9,
     ),
   );
 
@@ -290,7 +290,7 @@ function meeting_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 18,
+      'weight' => 19,
     ),
   );
 
@@ -344,7 +344,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 19,
+      'weight' => 20,
     ),
   );
 
@@ -396,7 +396,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 15,
+      'weight' => 16,
     ),
   );
 
@@ -448,7 +448,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 25,
+      'weight' => 26,
     ),
   );
 
@@ -511,7 +511,7 @@ function meeting_field_default_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'image_image',
-      'weight' => 17,
+      'weight' => 18,
     ),
   );
 
@@ -563,7 +563,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 14,
+      'weight' => 15,
     ),
   );
 
@@ -615,7 +615,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 13,
+      'weight' => 14,
     ),
   );
 
@@ -676,7 +676,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 7,
+      'weight' => 8,
     ),
   );
 
@@ -736,7 +736,7 @@ function meeting_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'taxonomy_autocomplete',
-      'weight' => 23,
+      'weight' => 24,
     ),
   );
 
@@ -801,7 +801,7 @@ function meeting_field_default_field_instances() {
         'year_range' => '-3:+3',
       ),
       'type' => 'date_popup',
-      'weight' => 26,
+      'weight' => 27,
     ),
   );
 
@@ -860,7 +860,7 @@ function meeting_field_default_field_instances() {
       'module' => 'number',
       'settings' => array(),
       'type' => 'number',
-      'weight' => 21,
+      'weight' => 22,
     ),
   );
 
@@ -913,7 +913,7 @@ function meeting_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 9,
+      'weight' => 10,
     ),
   );
 
@@ -972,7 +972,7 @@ function meeting_field_default_field_instances() {
       'module' => 'number',
       'settings' => array(),
       'type' => 'number',
-      'weight' => 22,
+      'weight' => 23,
     ),
   );
 
@@ -1024,7 +1024,7 @@ function meeting_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 27,
+      'weight' => 28,
     ),
   );
 
@@ -1085,16 +1085,16 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'options_select',
-      'weight' => 20,
+      'weight' => 21,
     ),
   );
 
-  // Exported field_instance: 'node-event_calendar-field_tags'.
-  $field_instances['node-event_calendar-field_tags'] = array(
+  // Exported field_instance: 'node-event_calendar-field_related_url'.
+  $field_instances['node-event_calendar-field_related_url'] = array(
     'bundle' => 'event_calendar',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Link on the International Institute for Sustainable Development (IISD) page that covers this event',
     'display' => array(
       'ajax' => array(
         'label' => 'above',
@@ -1104,10 +1104,10 @@ function meeting_field_default_field_instances() {
       ),
       'default' => array(
         'label' => 'above',
-        'module' => 'i18n_taxonomy',
+        'module' => 'link',
         'settings' => array(),
-        'type' => 'i18n_taxonomy_term_reference_link',
-        'weight' => 19,
+        'type' => 'link_default',
+        'weight' => 24,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1123,22 +1123,39 @@ function meeting_field_default_field_instances() {
       ),
     ),
     'entity_type' => 'node',
-    'field_name' => 'field_tags',
-    'label' => 'Tags',
+    'field_name' => 'field_related_url',
+    'label' => 'IISD page',
     'required' => 0,
     'settings' => array(
+      'absolute_url' => 1,
+      'attributes' => array(
+        'class' => 'iisd external',
+        'configurable_class' => 0,
+        'configurable_title' => 0,
+        'rel' => 'nofollow',
+        'target' => '_blank',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
       'entity_translation_sync' => FALSE,
+      'rel_remove' => 'default',
+      'title' => 'value',
+      'title_label_use_field_label' => 0,
+      'title_maxlength' => 128,
+      'title_value' => 'IISD Coverage of the event',
+      'url' => 0,
       'user_register_form' => FALSE,
+      'validate_url' => 1,
     ),
     'widget' => array(
       'active' => 0,
-      'module' => 'taxonomy',
-      'settings' => array(
-        'autocomplete_path' => 'taxonomy/autocomplete',
-        'size' => 60,
-      ),
-      'type' => 'taxonomy_autocomplete',
-      'weight' => 24,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 7,
     ),
   );
 
@@ -1195,7 +1212,7 @@ function meeting_field_default_field_instances() {
         'use_select2' => FALSE,
       ),
       'type' => 'entityreference_autocomplete_tags',
-      'weight' => 12,
+      'weight' => 13,
     ),
   );
 
@@ -1559,59 +1576,6 @@ function meeting_field_default_field_instances() {
       ),
       'type' => 'taxonomy_autocomplete',
       'weight' => 4,
-    ),
-  );
-
-  // Exported field_instance: 'node-event_calendar_imported-field_tags'.
-  $field_instances['node-event_calendar_imported-field_tags'] = array(
-    'bundle' => 'event_calendar_imported',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'ajax' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'default' => array(
-        'label' => 'above',
-        'module' => 'i18n_taxonomy',
-        'settings' => array(),
-        'type' => 'i18n_taxonomy_term_reference_link',
-        'weight' => 4,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'treaty_listing' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_tags',
-    'label' => 'Tags',
-    'required' => 0,
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 0,
-      'module' => 'taxonomy',
-      'settings' => array(
-        'autocomplete_path' => 'taxonomy/autocomplete',
-        'size' => 60,
-      ),
-      'type' => 'taxonomy_autocomplete',
-      'weight' => 7,
     ),
   );
 
@@ -2195,11 +2159,13 @@ function meeting_field_default_field_instances() {
   t('Event Description');
   t('Event images');
   t('Event status');
+  t('IISD page');
   t('If the imported item is associated with a treaty');
   t('InforMEA Tags');
   t('Kind');
   t('Last update');
   t('Latitude');
+  t('Link on the International Institute for Sustainable Development (IISD) page that covers this event');
   t('Location');
   t('Longitude');
   t('Name');
@@ -2208,7 +2174,6 @@ function meeting_field_default_field_instances() {
   t('Repetition');
   t('Select the start and end dates for this event.');
   t('Status');
-  t('Tags');
   t('Title');
   t('Treaty');
   t('Type');

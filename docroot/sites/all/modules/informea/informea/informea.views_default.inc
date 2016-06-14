@@ -90,7 +90,7 @@ function informea_views_default_views() {
     'skip_safe' => 0,
     'skip_empty_values' => 0,
   );
-  /* Field: Content: InforMEA Tags */
+  /* Field: Content: InforMEA tags */
   $handler->display->display_options['fields']['field_informea_tags']['id'] = 'field_informea_tags';
   $handler->display->display_options['fields']['field_informea_tags']['table'] = 'field_data_field_informea_tags';
   $handler->display->display_options['fields']['field_informea_tags']['field'] = 'field_informea_tags';
@@ -358,15 +358,6 @@ function informea_views_default_views() {
   $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
   $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['nid']['link_to_entity'] = 0;
-  /* Field: Indexed Content: Tags */
-  $handler->display->display_options['fields']['field_tags']['id'] = 'field_tags';
-  $handler->display->display_options['fields']['field_tags']['table'] = 'search_api_index_news_search_index';
-  $handler->display->display_options['fields']['field_tags']['field'] = 'field_tags';
-  $handler->display->display_options['fields']['field_tags']['list']['mode'] = 'list';
-  $handler->display->display_options['fields']['field_tags']['list']['separator'] = '';
-  $handler->display->display_options['fields']['field_tags']['link_to_entity'] = 0;
-  $handler->display->display_options['fields']['field_tags']['view_mode'] = 'full';
-  $handler->display->display_options['fields']['field_tags']['bypass_access'] = 0;
   /* Field: Indexed Content: Date created */
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'search_api_index_news_search_index';
@@ -545,7 +536,6 @@ function informea_views_default_views() {
     t('<a href="[field_url]" target="blank">[title]</a>'),
     t('.'),
     t(','),
-    t('Tags'),
     t('Search in news'),
     t('Show'),
     t('Page'),
@@ -565,7 +555,7 @@ function informea_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Glossary mappings';
+  $handler->display->display_options['title'] = 'InforMEA Thesaurus';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['access']['perm'] = 'access content overview';
@@ -602,33 +592,42 @@ function informea_views_default_views() {
       'empty_column' => 0,
     ),
   );
+  /* Footer: Global: Result summary */
+  $handler->display->display_options['footer']['result']['id'] = 'result';
+  $handler->display->display_options['footer']['result']['table'] = 'views';
+  $handler->display->display_options['footer']['result']['field'] = 'result';
+  $handler->display->display_options['footer']['result']['content'] = 'Displaying @total terms';
+  /* Relationship: Taxonomy term: Entity translation: translations */
+  $handler->display->display_options['relationships']['entity_translations']['id'] = 'entity_translations';
+  $handler->display->display_options['relationships']['entity_translations']['table'] = 'taxonomy_term_data';
+  $handler->display->display_options['relationships']['entity_translations']['field'] = 'entity_translations';
+  /* Relationship: Taxonomy term: Parent term */
+  $handler->display->display_options['relationships']['parent']['id'] = 'parent';
+  $handler->display->display_options['relationships']['parent']['table'] = 'taxonomy_term_hierarchy';
+  $handler->display->display_options['relationships']['parent']['field'] = 'parent';
   /* Field: Taxonomy term: Term ID */
   $handler->display->display_options['fields']['tid']['id'] = 'tid';
   $handler->display->display_options['fields']['tid']['table'] = 'taxonomy_term_data';
   $handler->display->display_options['fields']['tid']['field'] = 'tid';
   $handler->display->display_options['fields']['tid']['label'] = 'ID';
+  $handler->display->display_options['fields']['tid']['exclude'] = TRUE;
   /* Field: Taxonomy term: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'taxonomy_term_data';
   $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['link_to_taxonomy'] = TRUE;
-  /* Field: Field: Keyword(s) */
-  $handler->display->display_options['fields']['field_keywords']['id'] = 'field_keywords';
-  $handler->display->display_options['fields']['field_keywords']['table'] = 'field_data_field_keywords';
-  $handler->display->display_options['fields']['field_keywords']['field'] = 'field_keywords';
-  $handler->display->display_options['fields']['field_keywords']['label'] = 'ECOLEX keywords';
-  $handler->display->display_options['fields']['field_keywords']['delta_offset'] = '0';
-  /* Field: Taxonomy term: ECOLEX terms */
-  $handler->display->display_options['fields']['field_thesaurus_map_ecolex']['id'] = 'field_thesaurus_map_ecolex';
-  $handler->display->display_options['fields']['field_thesaurus_map_ecolex']['table'] = 'field_data_field_thesaurus_map_ecolex';
-  $handler->display->display_options['fields']['field_thesaurus_map_ecolex']['field'] = 'field_thesaurus_map_ecolex';
-  $handler->display->display_options['fields']['field_thesaurus_map_ecolex']['label'] = 'ECOLEX subjects';
-  $handler->display->display_options['fields']['field_thesaurus_map_ecolex']['delta_offset'] = '0';
-  /* Field: Taxonomy term: Term edit link */
-  $handler->display->display_options['fields']['edit_term']['id'] = 'edit_term';
-  $handler->display->display_options['fields']['edit_term']['table'] = 'taxonomy_term_data';
-  $handler->display->display_options['fields']['edit_term']['field'] = 'edit_term';
-  $handler->display->display_options['fields']['edit_term']['label'] = 'Operations';
+  /* Field: Entity translation: Name: translated */
+  $handler->display->display_options['fields']['name_field_et']['id'] = 'name_field_et';
+  $handler->display->display_options['fields']['name_field_et']['table'] = 'field_data_name_field';
+  $handler->display->display_options['fields']['name_field_et']['field'] = 'name_field_et';
+  $handler->display->display_options['fields']['name_field_et']['relationship'] = 'parent';
+  $handler->display->display_options['fields']['name_field_et']['label'] = 'Parent';
+  $handler->display->display_options['fields']['name_field_et']['type'] = 'text_plain';
+  /* Field: Taxonomy term: Description */
+  $handler->display->display_options['fields']['description_field']['id'] = 'description_field';
+  $handler->display->display_options['fields']['description_field']['table'] = 'field_data_description_field';
+  $handler->display->display_options['fields']['description_field']['field'] = 'description_field';
+  $handler->display->display_options['fields']['description_field']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['description_field']['link_to_entity'] = 0;
   /* Sort criterion: Taxonomy term: Name (name_field) */
   $handler->display->display_options['sorts']['name_field_value']['id'] = 'name_field_value';
   $handler->display->display_options['sorts']['name_field_value']['table'] = 'field_data_name_field';
@@ -642,10 +641,23 @@ function informea_views_default_views() {
     'thesaurus_informea' => 'thesaurus_informea',
   );
   $handler->display->display_options['filters']['machine_name']['group'] = 1;
+  $handler->display->display_options['filters']['machine_name']['expose']['operator_id'] = 'machine_name_op';
+  $handler->display->display_options['filters']['machine_name']['expose']['label'] = 'Machine name';
+  $handler->display->display_options['filters']['machine_name']['expose']['operator'] = 'machine_name_op';
+  $handler->display->display_options['filters']['machine_name']['expose']['identifier'] = 'machine_name';
+  /* Filter criterion: Entity translation: Language */
+  $handler->display->display_options['filters']['language_1']['id'] = 'language_1';
+  $handler->display->display_options['filters']['language_1']['table'] = 'entity_translation';
+  $handler->display->display_options['filters']['language_1']['field'] = 'language';
+  $handler->display->display_options['filters']['language_1']['relationship'] = 'entity_translations';
+  $handler->display->display_options['filters']['language_1']['value'] = array(
+    'en' => 'en',
+  );
+  $handler->display->display_options['filters']['language_1']['group'] = 1;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'admin/content/informea-taxonomy-mappings';
+  $handler->display->display_options['path'] = 'admin/content/thesaurus/informea';
   $handler->display->display_options['menu']['type'] = 'tab';
   $handler->display->display_options['menu']['title'] = 'InforMEA Thesaurus';
   $handler->display->display_options['menu']['weight'] = '10';
@@ -653,21 +665,23 @@ function informea_views_default_views() {
   $handler->display->display_options['menu']['context_only_inline'] = 0;
   $translatables['taxonomy_mappings'] = array(
     t('Master'),
-    t('Glossary mappings'),
+    t('InforMEA Thesaurus'),
     t('more'),
     t('Apply'),
     t('Reset'),
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Displaying @total terms'),
+    t('Translations'),
+    t('Parent'),
     t('ID'),
     t('.'),
     t(','),
     t('Name'),
-    t('ECOLEX keywords'),
-    t('ECOLEX subjects'),
-    t('Operations'),
+    t('Description'),
     t('Term'),
+    t('Machine name'),
     t('Page'),
   );
   $export['taxonomy_mappings'] = $view;
@@ -982,11 +996,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['description'] = 'Enter few words from the title';
   $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
   $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
-  $handler->display->display_options['filters']['title']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
@@ -999,11 +1019,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['status']['expose']['label'] = 'Published';
   $handler->display->display_options['filters']['status']['expose']['operator'] = 'status_op';
   $handler->display->display_options['filters']['status']['expose']['identifier'] = 'status';
-  $handler->display->display_options['filters']['status']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['status']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: User: Name (raw) */
   $handler->display->display_options['filters']['name']['id'] = 'name';
@@ -1031,11 +1057,17 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Content type';
   $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
-  $handler->display->display_options['filters']['type']['expose']['remember'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   /* Filter criterion: Content: Data source (field_data_source) */
   $handler->display->display_options['filters']['field_data_source_tid']['id'] = 'field_data_source_tid';
@@ -1047,9 +1079,16 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['operator'] = 'field_data_source_tid_op';
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['identifier'] = 'field_data_source_tid';
   $handler->display->display_options['filters']['field_data_source_tid']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
   $handler->display->display_options['filters']['field_data_source_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_data_source_tid']['vocabulary'] = 'data_source';
@@ -1063,13 +1102,16 @@ function informea_views_default_views() {
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['operator'] = 'field_treaty_target_id_op';
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['identifier'] = 'field_treaty_target_id';
   $handler->display->display_options['filters']['field_treaty_target_id']['expose']['remember_roles'] = array(
-    2 => '2',
+    2 => 0,
     1 => 0,
     3 => 0,
     4 => 0,
     5 => 0,
     6 => 0,
     7 => 0,
+    8 => 0,
+    9 => 0,
+    10 => 0,
   );
 
   /* Display: Page */

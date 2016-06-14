@@ -1,0 +1,286 @@
+{
+  "responseHeader": {
+    "status": 0,
+    "QTime": 8,
+    "params": {
+      "q": "type:legislation",
+      "indent": "true",
+      "start": "0",
+      "rows": "2",
+      "wt": "json"
+    }
+  },
+  "response": {
+    "numFound": 131733,
+    "start": 0,
+    "docs": [
+      {
+        "legLanguage_es": [
+          "Albanés",
+          "Albanés"
+        ],
+        "docLanguage_es": [
+          "Albanés",
+          "Albanés"
+        ],
+        "legLinkToFullText": "http://faolex.fao.org/docs/pdf/alb20268.pdf",
+        "legLanguage_en": [
+          "Albanian"
+        ],
+        "docLanguage_en": [
+          "Albanian"
+        ],
+        "legStatus": "in force",
+        "legCountry_es": "Albania",
+        "docCountry_es": [
+          "Albania"
+        ],
+        "legYear": "1994",
+        "legLanguage_fr": [
+          "Albanais",
+          "Albanais"
+        ],
+        "docLanguage_fr": [
+          "Albanais",
+          "Albanais"
+        ],
+        "legKeyword_en": [
+          "agricultural land",
+          "classification/declassification",
+          "subsidy/incentive"
+        ],
+        "docKeyword_en": [
+          "agricultural land",
+          "classification/declassification",
+          "subsidy/incentive"
+        ],
+        "legSubject_en": [
+          "Agricultural and Rural Development"
+        ],
+        "docSubject_en": [
+          "Agricultural and Rural Development"
+        ],
+        "legLanguage_code": [
+          "E"
+        ],
+        "legSource": "Photocopy, 3 pp.",
+        "legGeoArea_en": [
+          "Europe",
+          "Southern Europe"
+        ],
+        "docRegion_en": [
+          "Europe",
+          "Southern Europe"
+        ],
+        "type": "legislation",
+        "legCountry_fr": "Albanie",
+        "docCountry_fr": [
+          "Albanie"
+        ],
+        "legEntryIntoForce": "This Law shall enter into force 15 days after publication.",
+        "legTitle": "Law No. 7836 on pricing of agricultural lands for compensation.",
+        "legCountry_en": "Albania",
+        "docCountry_en": [
+          "Albania"
+        ],
+        "legGeoArea_fr": [
+          "Europe",
+          "Europe du Sud"
+        ],
+        "docRegion_fr": [
+          "Europe",
+          "Europe du Sud"
+        ],
+        "legType_es": "Legislación",
+        "slug": "law-no-7836-on-pricing-of-agricultural-lands-for-compensation-lex-faoc020268",
+        "legType_en": "Legislation",
+        "legSubject_fr": [
+          "Agriculture et Développement Rural"
+        ],
+        "docSubject_fr": [
+          "Agriculture et Développement Rural"
+        ],
+        "legType_fr": "Législation",
+        "legCountry_iso": "ALB",
+        "legGeoArea_es": [
+          "Europa",
+          "Europa Meridional"
+        ],
+        "docRegion_es": [
+          "Europa",
+          "Europa Meridional"
+        ],
+        "legSubject_code": [
+          "AG"
+        ],
+        "legTypeCode": "L",
+        "legKeyword_fr": [
+          "terrains agricoles",
+          "classement/déclassement",
+          "subvention/incitation"
+        ],
+        "docKeyword_fr": [
+          "terrains agricoles",
+          "classement/déclassement",
+          "subvention/incitation"
+        ],
+        "legKeyword_code": [
+          "364",
+          "303",
+          "107"
+        ],
+        "legAbstract": "This Law provides for the pricing of agricultural lands when compensating former owners according to Law No. 7699. Compensation rates are set in Law No. 7501, \"for land\".Article 2 defines the authority of the Ministry of Agriculture to set the price for land whose fertility has been improved and for unregistered land. The value of land specified in article 2 of this Law is given below for each hectare, in thousands of leks, according to the existing classification of agricultural land (10 classes). For each class 3 values are given according to the quality of land: up to 15 hectares, 15 to 100 ha, and 100 to 1100 ha, Class 1: 280, 310, 360; Class 2: 244, 274, 324; Class 3: 210, 240, 290; Class 4: 171, 201, 251; Class 5: 135, 165, 215; Class 6: 107, 137, 187; Class 7: 62, 92, 142; Classes 8,9 and 10: 50, 70, 108. Article 4 evaluates olives trees at 3000 leks. Article 5 states that hectares may be defined by dividing the number of fruits trees by standards reprinted in this Law but approved in Decision 68 of 13 February 1989. The State committee for the restitution and compensation to former property owners must be implemented no later than one month following the effective date of this Law. The deadline for submitting applications is 30 December 1994. Articles 8 and 9 relate to responsibilities of the district cadastral office to supply documents; article 10 describes consequence for persons refusing to accept certain lands; article 11 describes the decision and the notification process; article 12 describes the role of the Treasury Department in providing financial documents; article 13 concerns appeals to be presented within 30 days after formal decisions.",
+        "legId": "LEX-FAOC020268",
+        "legKeyword_es": [
+          "terrenos agrícolas",
+          "clasificación/declasificación",
+          "subvención/incentivo"
+        ],
+        "docKeyword_es": [
+          "terrenos agrícolas",
+          "clasificación/declasificación",
+          "subvención/incentivo"
+        ],
+        "legSubject_es": [
+          "Agricultura y Desarrollo Rural"
+        ],
+        "docSubject_es": [
+          "Agricultura y Desarrollo Rural"
+        ],
+        "id": "880761af-54a6-4e6e-bb39-6cbc1b5702ae",
+        "_version_": 1532033276791750656,
+        "indexedDate": "2016-04-19T10:13:07.956Z"
+      },
+      {
+        "legLanguage_es": [
+          "Albanés",
+          "Albanés"
+        ],
+        "docLanguage_es": [
+          "Albanés",
+          "Albanés"
+        ],
+        "legLinkToFullText": "http://faolex.fao.org/docs/pdf/alb20270.pdf",
+        "legLanguage_en": [
+          "Albanian"
+        ],
+        "docLanguage_en": [
+          "Albanian"
+        ],
+        "legStatus": "repealed",
+        "legCountry_es": "Albania",
+        "docCountry_es": [
+          "Albania"
+        ],
+        "legYear": "1994",
+        "legLanguage_fr": [
+          "Albanais",
+          "Albanais"
+        ],
+        "docLanguage_fr": [
+          "Albanais",
+          "Albanais"
+        ],
+        "legKeyword_en": [
+          "land-use planning",
+          "expropriation"
+        ],
+        "docKeyword_en": [
+          "land-use planning",
+          "expropriation"
+        ],
+        "legSubject_en": [
+          "Land & soil"
+        ],
+        "docSubject_en": [
+          "Land & soil"
+        ],
+        "legLanguage_code": [
+          "E"
+        ],
+        "legSource": "Photocopy, 5 pp.",
+        "legGeoArea_en": [
+          "Europe",
+          "Southern Europe"
+        ],
+        "docRegion_en": [
+          "Europe",
+          "Southern Europe"
+        ],
+        "type": "legislation",
+        "legCountry_fr": "Albanie",
+        "docCountry_fr": [
+          "Albanie"
+        ],
+        "legEntryIntoForce": "This Law shall enter into force 15 days after publication.",
+        "legTitle": "Law No. 7848 on land expropriation for public reasons.",
+        "legCountry_en": "Albania",
+        "docCountry_en": [
+          "Albania"
+        ],
+        "legGeoArea_fr": [
+          "Europe",
+          "Europe du Sud"
+        ],
+        "docRegion_fr": [
+          "Europe",
+          "Europe du Sud"
+        ],
+        "legType_es": "Legislación",
+        "slug": "law-no-7848-on-land-expropriation-for-public-reasons-lex-faoc020270",
+        "legType_en": "Legislation",
+        "legSubject_fr": [
+          "Terre et sols"
+        ],
+        "docSubject_fr": [
+          "Terre et sols"
+        ],
+        "legType_fr": "Législation",
+        "legCountry_iso": "ALB",
+        "legGeoArea_es": [
+          "Europa",
+          "Europa Meridional"
+        ],
+        "docRegion_es": [
+          "Europa",
+          "Europa Meridional"
+        ],
+        "legSubject_code": [
+          "LA"
+        ],
+        "legTypeCode": "L",
+        "legKeyword_fr": [
+          "planification territoriale",
+          "expropriation"
+        ],
+        "docKeyword_fr": [
+          "planification territoriale",
+          "expropriation"
+        ],
+        "legKeyword_code": [
+          "709",
+          "349"
+        ],
+        "legAbstract": "This Law gives the State the right to expropriate or temporarily use real property for public use or interest. The State may expropriate only in the following cases: for constructing roads, railroads, airports, ports, hydropower stations, or reservoirs; constructing or improving electrical, gas, steam, waterworks, waters channels or telecommunications; networks; constructing oil or gas transport networks, mines, oil or water wells; constructing schools, hospitals, parks, sport facilities or housing blocks built with State founds; protecting and preserving historical or archaeological landmarks through means of national defence and public order. The Law lists specific documents and their content that must be prepared and given to affect property owners and the Council of Ministers, which must approve each expropriation. The application of expropriation procedures includes appeals by the affected owner and methods for calculating compensation. This gives the State the right to temporarily use property in order to provide relief following natural disasters, for national defence and when constructing facilities on expropriated land. The prefect has the right to issue a decision to use property temporarily. Necessary documents and their contents are described. Compensation is based on evaluation made by three experts.",
+        "legId": "LEX-FAOC020270",
+        "legKeyword_es": [
+          "manejo de tierras",
+          "expropiación"
+        ],
+        "docKeyword_es": [
+          "manejo de tierras",
+          "expropiación"
+        ],
+        "legSubject_es": [
+          "Tierra y suelos"
+        ],
+        "docSubject_es": [
+          "Tierra y suelos"
+        ],
+        "id": "fc8c10c5-ff7f-4fd7-aa06-916832f066b0",
+        "_version_": 1532033276792799232,
+        "indexedDate": "2016-04-19T10:13:07.956Z"
+      }
+    ]
+  }
+}

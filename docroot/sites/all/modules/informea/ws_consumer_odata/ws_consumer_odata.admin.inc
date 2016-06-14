@@ -32,14 +32,14 @@ function ws_consumer_odata_admin_config_form() {
       '#type' => 'textfield',
       '#title' => t('Default/Common endpoint'),
       '#description' => t('Enter the endpoint common to all entities, if applicable'),
-      '#default_value' => $config['endpoints'][$mea]['default'],
+      '#default_value' => !empty($config['endpoints'][$mea]['default']) ? $config['endpoints'][$mea]['default'] : '',
     );
     foreach($entities as $entity) {
       $form['endpoints'][$mea][$entity] = array(
         '#type' => 'textfield',
         '#title' => t('Endpoint for ' . $entity),
         '#description' => t('Enter custom endpoint, leave empty to use default above'),
-        '#default_value' => $config['endpoints'][$mea][$entity],
+        '#default_value' => !empty($config['endpoints'][$mea][$entity]) ? $config['endpoints'][$mea][$entity] : '',
       );
     }
   }

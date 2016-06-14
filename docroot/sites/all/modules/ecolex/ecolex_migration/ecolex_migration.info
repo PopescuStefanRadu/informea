@@ -1,0 +1,10 @@
+name = ecolex_migration
+core = 7.x
+package = InforMEA
+version = 7.x-1.0
+project = ecolex_migration
+dependencies[] = migrate
+dependencies[] = elis_consumer
+files[] = ecolex_migration.elis-courtdecisions.migrate.inc
+files[] = ecolex_migration.elis-treaties.migrate.inc
+files[] = ecolex_migration.ecolex-legislation.migrate.inc

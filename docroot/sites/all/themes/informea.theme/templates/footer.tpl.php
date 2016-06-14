@@ -190,3 +190,4 @@
     </div><!-- .footer-section -->
   </div><!-- .container -->
 </footer><!-- .footer -->
+<a class="back-to-top" href="#"></a>

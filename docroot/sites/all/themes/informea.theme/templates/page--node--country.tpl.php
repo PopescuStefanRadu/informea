@@ -80,11 +80,10 @@
     <?php print render($title_prefix); ?>
     <div class="col-md-9"><h1><?php print informea_theme_country_flag($node); ?><?php print $title; ?></h1></div>
     <div class="col-md-3">
-      <form class="country-selector" role="form">
+      <form role="form">
         <?php print drupal_render($variables['select-switch-countries']); ?>
       </form>
     </div>
-
   </div>
 </div><!-- .page-header -->
 <div class="container">

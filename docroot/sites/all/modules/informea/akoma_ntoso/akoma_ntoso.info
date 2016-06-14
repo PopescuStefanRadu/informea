@@ -1,0 +1,7 @@
+name = Akoma Ntoso
+description = XML for parliamentary, legislative & judiciary documents
+core = 7.x
+version = 7.x-0.1
+files[] = includes/AkomaNtoso.inc
+files[] = includes/Elements/Element.inc
+files[] = includes/Elements/Document.inc

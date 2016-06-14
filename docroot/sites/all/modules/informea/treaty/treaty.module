@@ -6,6 +6,10 @@
 
 include_once 'treaty.features.inc';
 
+use Drupal\akoma_ntoso\AkomaNtoso;
+use Drupal\akoma_ntoso\Elements\Element as AkomaNtosoElement;
+use Drupal\akoma_ntoso\Elements\Document as AkomaNtosoDocument;
+
 define('INFORMEA_TREATY_TEXT_ALLOWED_TAGS', '<table><tr><td><th><tbody><thead><b><i><em><strong>');
 
 /**
@@ -428,6 +432,10 @@ EOT;
         }
         $node->content['context'] = country_deliverable_render_action_plans($rows);
         break;
+
+      case 'export':
+        treaty_export_text_to_xml($node);
+        break;
     }
     informea_theme_set_page_breadcrumb($breadcrumbs);
 
@@ -561,7 +569,7 @@ function treaty_page_alter(&$page) {
   }
 }
 
-function treaty_treaty_contextual_menu_alter(&$contextual_menu, $node) {
+function treaty_treaty_contextual_menu_alter(&$contextual_menu, $node, $hide = array()) {
   if ($node->type == 'treaty') {
     module_load_include('inc', 'country_deliverable', 'country_deliverable.api');
     module_load_include('inc', 'country_data', 'country_data.api');
@@ -635,7 +643,7 @@ function treaty_treaty_contextual_menu_alter(&$contextual_menu, $node) {
     if ($course_url = $wrapper->field_online_course_link->value()) {
       $menu_items['course'] = array(
         'title' => t('<span class="glyphicon glyphicon-book" aria-hidden="true"></span> e-Learning course'),
-        'url' => $course_url['display_url'],
+        'url' => !empty($course_url['display_url']) ? $course_url['display_url'] : $course_url['url'],
       );
     }
     foreach ($menu_items as $path => $menu_item) {
@@ -653,13 +661,18 @@ function treaty_treaty_contextual_menu_alter(&$contextual_menu, $node) {
       if (!empty($menu_item['disabled'])) {
         $list_item['class'][] = 'disabled';
       }
-      $contextual_menu['#items'][] = $list_item;
+      $contextual_menu['#items'][$path] = $list_item;
     }
     if ($untc_url = $wrapper->field_un_treaty_database_link->value()) {
-      $contextual_menu['#items'][] = array(
+      $contextual_menu['#items']['un-treaty-collection-link'] = array(
         'data' => l(t('UN treaty collection link'), $untc_url['url'], $untc_url),
         'role' => 'presentation',
       );
+    }
+    if (!empty($hide)) {
+      foreach ($hide as $k) {
+        unset($contextual_menu['#items'][$k]);
+      }
     }
   }
 }
@@ -824,12 +837,18 @@ function treaty_url_decision($id_treaty, $id_decision) {
   );
   $link = url('node/' . $id_treaty, $options) . '/decisions?';
   $query = array();
-  $w = entity_metadata_wrapper('node', $id_decision);
-  if ($meeting = $w->field_meeting->value()) {
-    $query['meeting'] = $meeting->nid;
+  $fragment = '#';
+  try {
+    $w = entity_metadata_wrapper('node', $id_decision);
+    if ($meeting = $w->field_meeting->value()) {
+      $query['meeting'] = $meeting->nid;
+    }
+    $fragment .= 'decision-' . $id_decision;
   }
-  $fragment = 'decision-' . $id_decision;
-  return $link . drupal_http_build_query($query) . '#' . $fragment;
+  catch(Exception $e) {
+    watchdog_exception('treaty', $e);
+  }
+  return $link . drupal_http_build_query($query) . $fragment;
 }
 
 function treaty_url_national_report($id_treaty, $id_report) {
@@ -1362,4 +1381,91 @@ EOT;
   foreach ($keys as $key => $id) {
     analytics_integration_piwik_send_hit($key, $id, $page_title);
   }
+}
+
+function treaty_export_text_add_tags(AkomaNtosoElement &$akomaNtosoElement, $node) {
+  $tags = array();
+  if (!empty($node->field_informea_tags)) {
+    foreach ($node->field_informea_tags[LANGUAGE_NONE] as $tag) {
+      $tags[] = $tag['tid'];
+    }
+  }
+  if (!empty($tags) && is_array($tags)) {
+    foreach ($tags as $tag) {
+      $term = taxonomy_term_load($tag);
+      if (!empty($term)) {
+        $tw = entity_metadata_wrapper('taxonomy_term', $term);
+        $keywordElement = new AkomaNtosoElement('keyword', $tw->label());
+        $keywordElement->addAttribute('dictionary', 'informea');
+        $akomaNtosoElement->addChild($keywordElement);
+      }
+    }
+  }
+}
+
+function treaty_export_text_to_xml($treaty) {
+  drupal_add_http_header('Content-Type', 'application/xml');
+  $wrapper = entity_metadata_wrapper('node', $treaty);
+  $akomaNtoso = new AkomaNtoso();
+  $document = new AkomaNtosoDocument();
+
+  /* META */
+  $meta = new AkomaNtosoElement('meta');
+  $publication = new AkomaNtosoElement('publication');
+  $publication->addAttribute('date', gmdate("Y/m/d", $wrapper->field_entry_into_force->value()));
+  $publication->addAttribute('name', $wrapper->field_official_name->value());
+  $publication->addAttribute('showAs', $wrapper->label());
+  $meta->addChild($publication);
+  $document->addChild($meta);
+  /* END META */
+
+  /* BODY */
+  $body = new AkomaNtosoElement('body');
+  $articles = treaty_get_treaty_text($treaty->nid);
+  foreach ($articles as $article) {
+    $aw = entity_metadata_wrapper('node', $article);
+    if (strtolower(trim($article->official_title)) == 'preamble') {
+      $articleElement = new AkomaNtosoElement('preamble');
+    }
+    else {
+      $articleElement = new AkomaNtosoElement('article');
+      $articleElement->addChild(new AkomaNtosoElement('heading', $article->official_title));
+    }
+
+    treaty_export_text_add_tags($articleElement, $article);
+    if (!empty($article->paragraphs)) {
+      foreach ($article->paragraphs as $paragraph) {
+        $pw = entity_metadata_wrapper('node', $paragraph);
+        $paragraphElement = new AkomaNtosoElement('paragraph');
+        treaty_export_text_add_tags($paragraphElement, $paragraph);
+        $text = field_view_field('node', $paragraph, 'body', 'full')[0]['#markup'];
+        //@todo: add CData or strip tags?
+        $text = strip_tags($text);
+        if ($official_order = $pw->field_official_order->value()) {
+          $paragraphElement->addChild(new AkomaNtosoElement('num', $official_order));
+        }
+        $paragraphElement->addChild(new AkomaNtosoElement('content', $text));
+        $articleElement->addChild($paragraphElement);
+      }
+    }
+    else {
+      if ($articleText = $aw->body->value()) {
+        $articleText = check_markup($articleText['safe_value'], 'full_html');
+        $articleElement->addChild(new AkomaNtosoElement('content', $articleText, TRUE));
+      }
+    }
+    switch ($articleElement->getType()) {
+      case 'preamble':
+        $document->addChild($articleElement);
+        break;
+      default:
+        $body->addChild($articleElement);
+    }
+  }
+  $document->addChild($body);
+  /* END BODY */
+
+  $akomaNtoso->addChild($document);
+  print $akomaNtoso->render()->asXML();
+  drupal_exit();
 }

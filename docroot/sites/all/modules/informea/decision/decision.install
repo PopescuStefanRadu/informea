@@ -24,3 +24,35 @@ function decision_update_7001() {
   $nids = $q->fetchCol();
   node_delete_multiple($nids);
 }
+
+/**
+ * Enable some modules and revert decision.
+ */
+function decision_update_7002(){
+  $modules = array('panels', 'page_manager', 'views_content', 'panels_breadcrumbs');
+  module_enable($modules);
+  features_revert_module('decision');
+}
+
+/** Delete old Ramsar decisions */
+function decision_update_7003() {
+  /*
+    SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+    LEFT JOIN migrate_map_odata_ramsar_decisions c ON a.nid = c.destid1
+      WHERE a.type = 'decision'
+        AND b.field_treaty_target_id = 272
+        AND c.destid1 IS NULL;
+   */
+
+  $q = db_query("
+    SELECT a.nid FROM node a
+      INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id
+    LEFT JOIN migrate_map_odata_ramsar_decisions c ON a.nid = c.destid1
+      WHERE a.type = 'decision'
+        AND b.field_treaty_target_id = 272
+        AND c.destid1 IS NULL;
+  ");
+  $nids = $q->fetchCol();
+  node_delete_multiple($nids);
+}

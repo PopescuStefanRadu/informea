@@ -88,7 +88,7 @@ function treaty_views_default_views() {
   $handler->display->display_options['fields']['draggableviews']['draggableviews']['draggableviews_handler_fieldapi'] = array(
     'field' => 'field_data_field_sorting_order:field_sorting_order_value',
   );
-  /* Field: Content: Number */
+  /* Field: Content: Decision number */
   $handler->display->display_options['fields']['field_decision_number']['id'] = 'field_decision_number';
   $handler->display->display_options['fields']['field_decision_number']['table'] = 'field_data_field_decision_number';
   $handler->display->display_options['fields']['field_decision_number']['field'] = 'field_decision_number';
@@ -176,7 +176,7 @@ function treaty_views_default_views() {
 </ol>'),
     t('Reordering @total decisions ...'),
     t('Content'),
-    t('Number'),
+    t('Decision number'),
     t('<div class="col-md-4">[field_decision_number]</div>'),
     t('All'),
     t('Start by selecting a meeting'),
@@ -388,7 +388,7 @@ function treaty_views_default_views() {
   $handler->display->display_options['fields']['title_field']['alter']['text'] = '<p class="text-muted">[title_field]</p>';
   $handler->display->display_options['fields']['title_field']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title_field']['link_to_entity'] = 0;
-  /* Field: Content: InforMEA Tags */
+  /* Field: Content: InforMEA tags */
   $handler->display->display_options['fields']['field_informea_tags']['id'] = 'field_informea_tags';
   $handler->display->display_options['fields']['field_informea_tags']['table'] = 'field_data_field_informea_tags';
   $handler->display->display_options['fields']['field_informea_tags']['field'] = 'field_informea_tags';

@@ -34,6 +34,14 @@ function country_deliverable_node_info() {
       'title_label' => t('Title'),
       'help' => '',
     ),
+    'national_report_paragraph' => array(
+      'name' => t('National Report paragraph'),
+      'base' => 'node_content',
+      'description' => '',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
     'reporting_obligation_cycle' => array(
       'name' => t('Reporting Obligation Cycle'),
       'base' => 'node_content',

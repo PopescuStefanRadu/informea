@@ -1,0 +1,16 @@
+name = ws_provider
+core = 7.x
+package = LEO
+version = 7.x-0.1
+dependencies[] = rest_server
+dependencies[] = services
+dependencies[] = services_views
+dependencies[] = views
+features[ctools][] = services:services:3
+features[ctools][] = views:views_default:3.0
+features[features_api][] = api:2
+features[services_endpoint][] = ws_provider
+features[views_view][] = ws_provider_court_decisions
+features[views_view][] = ws_provider_legislation
+features[views_view][] = ws_provider_literature
+features_exclude[dependencies][ctools] = ctools

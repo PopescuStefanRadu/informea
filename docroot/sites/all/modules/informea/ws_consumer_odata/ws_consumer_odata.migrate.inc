@@ -59,6 +59,7 @@ function ws_consumer_odata_migrate_api() {
       'odata_rotterdam_Decisions' => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_ROTTERDAM, ODataConsumerConfig::$ODATA_ENTITY_DECISIONS, array('odata_rotterdam_Meetings')),
       'odata_montreal_Decisions'  => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_MONTREAL, ODataConsumerConfig::$ODATA_ENTITY_DECISIONS, array('odata_montreal_Meetings')),
       'odata_ramsar_Decisions'  => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_RAMSAR, ODataConsumerConfig::$ODATA_ENTITY_DECISIONS, array('odata_ramsar_Meetings')),
+      'odata_unfccc_Decisions'  => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_UNFCCC, ODataConsumerConfig::$ODATA_ENTITY_DECISIONS),
 
       /* CountryReports migrations */
       'odata_ascobans_CountryReports'  => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_ASCOBANS, ODataConsumerConfig::$ODATA_ENTITY_NATIONAL_REPORT),
@@ -81,15 +82,16 @@ function ws_consumer_odata_migrate_api() {
 
 abstract class InforMEAAbstractODataMigrateSource extends MigrateSource {
 
-  protected $items = array();
+  protected $data = array();
   /** @var ODataConsumerConfig */
   protected $config = NULL;
   /** @var ODataConsumer */
   protected $consumer = NULL;
-  /** @var bool Data  */
-  protected $remote_queried = FALSE;
 
-  protected abstract function pullRemoteData();
+  protected $currentPage = 0;
+  protected $currentCount = 0;
+  protected $pageSize = 100;
+  protected $count = 0;
 
   public function __construct(array $options, $config) {
     parent::__construct($options);
@@ -103,38 +105,35 @@ abstract class InforMEAAbstractODataMigrateSource extends MigrateSource {
   }
 
   public function performRewind() {
-    $this->readRemoteItems();
-    reset($this->items);
+    reset($this->data);
   }
 
   public function computeCount() {
-    return $this->consumer->countTotal($this->config->odata_entity);
-  }
-
-  protected function readRemoteItems() {
-    if (empty($this->items) && !$this->remote_queried) {
-      migrate_instrument_start(get_class($this) . ' pullRemoteData', TRUE);
-      $this->items = array();
-      $this->remote_queried = TRUE;
-      try {
-        $rows = $this->pullRemoteData();
-        foreach ($rows as $row) {
-          if (empty($row->updated)) {
-            $row->updated = time();
-          }
-          $this->items[$row->id] = $row;
-        }
-      } catch (Exception $e) {
-        //@todo: Do we need to do anything here?
-      }
-      migrate_instrument_stop(get_class($this) . ' pullRemoteData');
+    if (empty($this->count)) {
+      $this->count = $this->consumer->countTotal($this->config->odata_entity);
     }
+    return $this->count;
   }
 
   public function getNextRow() {
-    $this->readRemoteItems();
-    $item = current($this->items);
-    next($this->items);
+    migrate_instrument_start(__METHOD__, TRUE);
+    $next_call_count = $this->currentPage * $this->pageSize;
+    if ($this->currentCount == $this->count()) {
+      return NULL;
+    }
+    if ($this->currentCount == $next_call_count && $next_call_count < $this->count()) {
+      $start = $this->currentPage * $this->pageSize;
+      if ($this->data = $this->consumer->getPage($this->config->odata_entity, $start, $this->activeMigration)) {
+        $this->currentPage++;
+      }
+    }
+    $item = NULL;
+    if (count($this->data)) {
+      $item = current($this->data);
+      next($this->data);
+      $this->currentCount++;
+    }
+    migrate_instrument_stop(__METHOD__);
     return $item;
   }
 
@@ -147,8 +146,7 @@ abstract class InforMEAAbstractODataMigrateSource extends MigrateSource {
   }
 
   public function resetData() {
-    $this->remote_queried = FALSE;
-    $this->items = array();
+    $this->data = array();
   }
 
   public function getConsumer() {
@@ -159,6 +157,66 @@ abstract class InforMEAAbstractODataMigrateSource extends MigrateSource {
 
 class ODataMigrationUtil {
 
+  public static function fixI18NString($str, $strip_tags = FALSE) {
+    $v = $strip_tags ? strip_tags($str) : $str;
+    $v = html_entity_decode($v);
+    // Post-process leftovers
+    $replace = array(
+      // Cyrillic
+      '&#1024' => 'Ѐ', '&#1025' => 'Ё', '&#1026' => 'Ђ', '&#1027' => 'Ѓ', '&#1028' => 'Є', '&#1029' => 'Ѕ',
+      '&#1030' => 'І', '&#1031' => 'Ї', '&#1032' => 'Ј', '&#1033' => 'Љ', '&#1034' => 'Њ', '&#1035' => 'Ћ',
+      '&#1036' => 'Ќ', '&#1037' => 'Ѝ', '&#1038' => 'Ў', '&#1039' => 'Џ', '&#1040' => 'А', '&#1041' => 'Б',
+      '&#1042' => 'В', '&#1043' => 'Г', '&#1044' => 'Д', '&#1045' => 'Е', '&#1046' => 'Ж', '&#1047' => 'З',
+      '&#1048' => 'И', '&#1049' => 'Й', '&#1050' => 'К', '&#1051' => 'Л', '&#1052' => 'М', '&#1053' => 'Н',
+      '&#1054' => 'О', '&#1055' => 'П', '&#1056' => 'Р', '&#1057' => 'С', '&#1058' => 'Т', '&#1059' => 'У',
+      '&#1060' => 'Ф', '&#1061' => 'Х', '&#1062' => 'Ц', '&#1063' => 'Ч', '&#1064' => 'Ш', '&#1065' => 'Щ',
+      '&#1066' => 'Ъ', '&#1067' => 'Ы', '&#1068' => 'Ь', '&#1069' => 'Э', '&#1070' => 'Ю', '&#1071' => 'Я',
+      '&#1072' => 'а', '&#1073' => 'б', '&#1074' => 'в', '&#1075' => 'г', '&#1076' => 'д', '&#1077' => 'е',
+      '&#1078' => 'ж', '&#1079' => 'з', '&#1080' => 'и', '&#1081' => 'й', '&#1082' => 'к', '&#1083' => 'л',
+      '&#1084' => 'м', '&#1085' => 'н', '&#1086' => 'о', '&#1087' => 'п', '&#1088' => 'р', '&#1089' => 'с',
+      '&#1090' => 'т', '&#1091' => 'у', '&#1092' => 'ф', '&#1093' => 'х', '&#1094' => 'ц', '&#1095' => 'ч',
+      '&#1096' => 'ш', '&#1097' => 'щ', '&#1098' => 'ъ', '&#1099' => 'ы', '&#1100' => 'ь', '&#1101' => 'э',
+      '&#1102' => 'ю', '&#1103' => 'я', '&#1104' => 'ѐ', '&#1105' => 'ё', '&#1106' => 'ђ', '&#1107' => 'ѓ',
+      '&#1108' => 'є', '&#1109' => 'ѕ', '&#1110' => 'і', '&#1111' => 'ї', '&#1112' => 'ј', '&#1113' => 'љ',
+      '&#1114' => 'њ', '&#1115' => 'ћ', '&#1116' => 'ќ', '&#1117' => 'ѝ', '&#1118' => 'ў', '&#1119' => 'џ',
+      '&#1120' => 'Ѡ', '&#1121' => 'ѡ', '&#1122' => 'Ѣ', '&#1123' => 'ѣ',
+      // Arabic
+      '&#1536' => '؀',  '&#1537' => '؁',  '&#1538' => '؂',  '&#1539' => '؃',  '&#1548' => '،',  '&#1549' => '؍',
+      '&#1550' => '؎',  '&#1551' => '؏',  '&#1552' => 'ؐ',  '&#1553' => 'ؑ',  '&#1554' => 'ؒ',  '&#1555' => 'ؓ',
+      '&#1556' => 'ؔ',  '&#1557' => 'ؕ',  '&#1563' => '؛',  '&#1566' => '؞',  '&#1567' => '؟',  '&#1569' => 'ء',
+      '&#1570' => 'آ',  '&#1571' => 'أ',  '&#1572' => 'ؤ',  '&#1573' => 'إ',  '&#1574' => 'ئ',  '&#1575' => 'ا',
+      '&#1576' => 'ب',  '&#1577' => 'ة',  '&#1578' => 'ت',  '&#1579' => 'ث',  '&#1580' => 'ج',  '&#1581' => 'ح',
+      '&#1582' => 'خ',  '&#1583' => 'د',  '&#1584' => 'ذ',  '&#1585' => 'ر',  '&#1586' => 'ز',  '&#1587' => 'س',
+      '&#1588' => 'ش',  '&#1589' => 'ص',  '&#1590' => 'ض',  '&#1591' => 'ط',  '&#1592' => 'ظ',  '&#1593' => 'ع',
+      '&#1594' => 'غ',  '&#1600' => 'ـ',  '&#1601' => 'ف',  '&#1602' => 'ق',  '&#1603' => 'ك',  '&#1604' => 'ل',
+      '&#1605' => 'م',  '&#1606' => 'ن',  '&#1607' => 'ه',  '&#1608' => 'و',  '&#1609' => 'ى',  '&#1610' => 'ي',
+      '&#1611' => 'ً',  '&#1612' => 'ٌ',  '&#1613' => 'ٍ',  '&#1614' => 'َ',  '&#1615' => 'ُ',  '&#1616' => 'ِ',  '&#1617' => 'ّ',
+      '&#1618' => 'ْ',  '&#1619' => 'ٓ',  '&#1620' => 'ٔ',  '&#1621' => 'ٕ',  '&#1622' => 'ٖ',  '&#1623' => 'ٗ',  '&#1624' => '٘',
+      '&#1625' => 'ٙ',  '&#1626' => 'ٚ',  '&#1627' => 'ٛ',  '&#1628' => 'ٜ',  '&#1629' => 'ٝ',  '&#1630' => 'ٞ',  '&#1632' => '٠',
+      '&#1633' => '١',  '&#1634' => '٢',  '&#1635' => '٣',  '&#1636' => '٤',  '&#1637' => '٥',  '&#1638' => '٦',
+      '&#1639' => '٧',  '&#1640' => '٨',  '&#1641' => '٩',  '&#1642' => '٪',  '&#1643' => '٫',  '&#1644' => '٬',
+      '&#1645' => '٭',  '&#1646' => 'ٮ',  '&#1647' => 'ٯ',  '&#1648' => 'ٰ',  '&#1649' => 'ٱ',  '&#1650' => 'ٲ',
+      '&#1651' => 'ٳ', '&#1653' => 'ٵ',  '&#1654' => 'ٶ',  '&#1655' => 'ٷ',  '&#1656' => 'ٸ',  '&#1657' => 'ٹ',
+      // @todo: arabic hamza high is missing - cannot paste :-)
+    );
+    $v = str_replace(array_keys($replace), array_values($replace), $v);
+    $replace = array(
+      '&#161' => '', '&#160' => '', '&#158' => '', '&#157' => '', '&#105' => '', '&#107' => '', '&#108' => '', '&#109' => '', '&#110' => '',
+      '&#82' => '', '&#39;' => "'", '&#16' => '' , '&#15' => '' , '&#11' => '' ,  '&#10' => '',
+      '&#8' => '', '&#1' => '',
+      '&#' => '',
+    );
+    $v = str_replace(array_keys($replace), array_values($replace), $v);
+    if (!$strip_tags) {
+      // Remove junk attributes
+      $v = preg_replace('/\s(border|align|style|width)=\"[a-zA-Z0-9\%\:\s\(\,\)\;\-\'\.]*"/', '', $v);
+      $v = preg_replace('/\<font(\ssize\=\"\-[a-z0-9\;]*">)?|<\/font>/', '', $v);
+    }
+    $v = preg_replace('/\s+/', ' ', $v);
+    $v = trim($v);
+    return $v;
+  }
+
   /**
    * Prepare English title (node.title).
    *
@@ -166,9 +224,12 @@ class ODataMigrationUtil {
    *
    * @return string title
    */
-  static function prepareTitle($values) {
+  static function prepareTitle(&$values) {
     if(empty($values) || !is_array($values)) {
       return NULL;
+    }
+    foreach($values as &$value) {
+      $value->value = self::fixI18NString($value->value, TRUE);
     }
     foreach ($values as $value) {
       if ($value->language == 'en') {
@@ -336,5 +397,78 @@ class ODataMigrationUtil {
       }
       return NULL;
     }
+  }
+
+  /**
+   * Make relative HTML anchors absolute, or remove if cannot resolve them properly.
+   * @param string $text
+   *   HTML text to check
+   * @param string $domain
+   *   Domain to append when making the anchors absolute
+   * @return string
+   *   Fixed string
+   */
+  static function fixHtmlAnchors($text, $domain) {
+    $doc = new DOMDocument('1.0', 'UTF-8');
+    if (defined('LIBXML_HTML_NOIMPLIED') && defined('LIBXML_HTML_NODEFDTD')) {
+      $loaded = @$doc->loadHTML($text, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    }
+    else {
+      $loaded = @$doc->loadHTML('<?xml encoding="utf-8" ?>' . mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8'));
+    }
+    if ($loaded) {
+      /** @var DOMNodeList $urls */
+      $anchors = $doc->getElementsByTagName('a');
+      /** @var DOMElement $anchor */
+      for($i = $anchors->length - 1; $i >= 0; $i--) {
+        $anchor = $anchors->item($i);
+        $href = $anchor->getAttribute('href');
+        if (preg_match('/^http/', $href)) {
+          $anchor->setAttribute('target', '_blank');
+        }
+        // Relative URL to the root of the domain, make it absolute
+        else if (preg_match('/^\//', $href) && $domain) {
+          $anchor->setAttribute('href', $domain . $href);
+          $anchor->setAttribute('target', '_blank');
+        }
+        // Relative URL, remove it - we don't know how to fix it
+        else {
+          $replacement = $doc->createTextNode($anchor->textContent);
+          $anchor->parentNode->replaceChild($replacement, $anchor);
+        }
+      }
+      if (defined('LIBXML_HTML_NOIMPLIED') && defined('LIBXML_HTML_NODEFDTD')) {
+        return $doc->saveHTML();
+      } else {
+        // Stone-age approach
+        $string = $doc->saveHTML();
+        return str_replace(
+          array(
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">',
+            '<html><body>',
+            '</body></html>'
+          ),
+          '',
+          $string
+        );
+      }
+    }
+    else {
+      // Unparseable - clobber all anchors the REGEX way
+      return preg_replace('/<a[^>]*>|<\/a>/', '', $text);
+    }
+  }
+
+  /**
+   * Make relative HTML anchors absolute, or remove if cannot resolve them properly.
+   * @param string $text
+   *   HTML text to check
+   * @param string $domain
+   *   Domain to append when making the anchors absolute
+   * @return string
+   *   Fixed string
+   */
+  static function removeHtmlAnchors($text) {
+    return preg_replace('/<a[^>]*>([^<]+)<\/a>/', '$1', $text);
   }
 }

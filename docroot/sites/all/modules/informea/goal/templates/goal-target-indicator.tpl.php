@@ -11,18 +11,13 @@ $highlight = isset($_GET['indicator']) ? $_GET['indicator'] == $indicator->nid :
   </p>
   <?php print theme('goal_text_tags', array('tags' => $tags)); ?>
   <ul class="list-inline actions">
-    <?php if (!empty($tags) && is_array($tags)): ?>
-      <li>
-        <span class="glyphicon glyphicon-tag"></span>
-      </li>
-    <?php endif; ?>
     <li class="action-hover">
       <?php
       print l('<i class="glyphicon glyphicon-link"></i>', $base_goal_url, array(
         'attributes' => array(
           'data-toggle' => 'tooltip', 'data-placement' => 'top',
           'title' => t('Permalink'),
-          'class' => array('pull-right permalink'),
+          'class' => array('permalink'),
           'target' => '_blank'
         ),
         'fragment' => 'indicator-' . $indicator->nid,
@@ -39,6 +34,11 @@ $highlight = isset($_GET['indicator']) ? $_GET['indicator'] == $indicator->nid :
           'html' => TRUE
         ));
         ?>
+      </li>
+    <?php endif; ?>
+    <?php if (!empty($tags) && is_array($tags)): ?>
+      <li>
+        <span class="glyphicon glyphicon-tag"></span>
       </li>
     <?php endif; ?>
   </ul><!-- .list-inline .actions -->

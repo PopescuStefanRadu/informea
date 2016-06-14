@@ -197,17 +197,4 @@ class InforMEAODataNationalPlansMigrateSource extends InforMEAAbstractODataMigra
       'updated' => 'Updated',
     );
   }
-
-  protected function pullRemoteData() {
-//    $highwater = $this->activeMigration->getHighwater();
-//    if (!empty($highwater)) {
-//      $query .= '&$filter=updated%20gt%20datetime%27' . date('Y-m-d\TH:i:s', $highwater) . '%27';
-//    }
-    $rows = $this->consumer->getPaginatedData(
-      $this->config->odata_entity,
-      $this->getLimit(),
-      $this->activeMigration
-    );
-    return $rows;
-  }
 }

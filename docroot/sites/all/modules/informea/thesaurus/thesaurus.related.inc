@@ -76,7 +76,9 @@ class InforMEAThesaurusTermRelatedContent {
           }
         break;
         default:
-          drupal_set_message('[thesaurus.related.inc] Related content bundle not handled: ' . $item->bundle, 'warning');
+          if (!user_is_anonymous()) {
+            drupal_set_message('[thesaurus.related.inc] Related content bundle not handled: ' . $item->bundle, 'warning');
+          }
       }
     }
     return array(
@@ -94,7 +96,7 @@ class InforMEAThesaurusTermRelatedContent {
           if (!empty($content)) {
             array_unshift($content, array(
               '#type' => 'item',
-              '#markup' => '<h3>' . t('Articles') . '</h3>',
+              '#markup' => '<h3>' . t('Treaty articles') . '</h3>',
             ));
           }
           // Decisions

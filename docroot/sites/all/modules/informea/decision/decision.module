@@ -21,3 +21,42 @@ function decision_form_decision_node_form_alter(&$form, &$form_state) {
   hide($form['field_meeting_url']);
   hide($form['field_meeting_title_en']);
 }
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function decision_views_pre_render(&$view) {
+  if ($view->name == 'other_meetings') {
+    if ($view->current_display == 'block') {
+      $node = menu_get_object();
+      if (!empty($node->nid) && $node->type == 'decision') {
+        $wrapper = entity_metadata_wrapper('node', $node);
+        $treaty = $wrapper->field_treaty->value()[0];
+        $view->display_handler->set_option('use_more', TRUE);
+        $view->display_handler->set_option('use_more_text', t('Browse all meetings'));
+        $view->display_handler->set_option('link_display', 'custom_url');
+        $view->display_handler->set_option('link_url', 'node/' . $treaty->nid . '/decisions');
+      }
+    }
+  }
+  if ($view->name == 'decisions_of_meeting') {
+    if ($view->current_display == 'block') {
+      $node = menu_get_object();
+      if (!empty($node->nid) && $node->type == 'decision') {
+        $wrapper = entity_metadata_wrapper('node', $node);
+        $treaty = $wrapper->field_treaty->value()[0];
+        $view->display_handler->set_option('use_more', TRUE);
+        $view->display_handler->set_option('use_more_text', t('Browse all decisions'));
+        $view->display_handler->set_option('link_display', 'custom_url');
+        $view->display_handler->set_option('link_url', 'node/' . $treaty->nid . '/decisions');
+      }
+    }
+  }
+}
+
+function _decision_get_treaty_links($node, $hide = array()) {
+  $contextual_menu = array();
+  treaty_treaty_contextual_menu_alter($contextual_menu, $node, $hide);
+  $contextual_menu['#attributes']['class'] = array('nav', 'nav-tabs');
+  return $contextual_menu;
+}

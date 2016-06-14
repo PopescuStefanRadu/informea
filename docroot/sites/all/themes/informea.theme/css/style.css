@@ -35,13 +35,13 @@ h1 {
 }
 
 .breadcrumb {
-  margin: -15px 0 0 0;
-  font-size: 85%;
   background-color: transparent;
+  font-size: 85%;
+  margin: 10px 0;
   padding: 0;
 }
 
-.breadcrumb>.last {
+.breadcrumb > .last {
   color: #c6cedb;
 }
 
@@ -132,10 +132,10 @@ h1 {
 
 /* Dropdown menu */
 .dropdown-menu {
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   border-radius: 0;
   border: 2px solid #ffcc66;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 }
 
 /* Hover/Focus state */
@@ -292,9 +292,9 @@ h1 {
 }
 
 .nav-pills.nav-stacked {
-  -webkit-box-shadow: 0 0 1px rgba(138, 149, 166, 0.5) inset;
+  -webkit-box-shadow: 0 0 1px rgba(138, 149, 166, .5) inset;
   background-color: #f3f3f3;
-  box-shadow: 0 0 1px rgba(138, 149, 166, 0.5) inset;
+  box-shadow: 0 0 1px rgba(138, 149, 166, .5) inset;
   padding-bottom: 8px;
   padding-top: 8px;
 }
@@ -353,6 +353,7 @@ h1 {
 .navbar {
   border: 0;
   min-height: 68px;
+  margin-bottom: 0;
 }
 
 /* Navbar logo */
@@ -375,8 +376,8 @@ h1 {
 /* Navbar collapse */
 
 .navbar-collapse {
-  -webkit-box-shadow: 0 1px 0 rgba(247, 247, 247, 0.25) inset;
-  box-shadow: 0 1px 0 rgba(247, 247, 247, 0.25) inset;
+  -webkit-box-shadow: 0 1px 0 rgba(247, 247, 247, .25) inset;
+  box-shadow: 0 1px 0 rgba(247, 247, 247, .25) inset;
 }
 
 @media (max-width: 1199px) {
@@ -401,7 +402,7 @@ h1 {
 
 /* Static top navbar */
 .navbar-static-top + .hero-unit {
-  margin-top: -20px;
+  margin-top: 0px;
 }
 
 
@@ -463,8 +464,8 @@ h1 {
 }
 
 .navbar-default .navbar-nav {
-  border-left: 1px solid rgba(26, 58, 111, 0.25);
-  border-right: 1px solid rgba(247, 247, 247, 0.25);
+  border-left: 1px solid rgba(26, 58, 111, .25);
+  border-right: 1px solid rgba(247, 247, 247, .25);
 }
 
 @media (max-width: 1199px) {
@@ -475,8 +476,8 @@ h1 {
 }
 
 .navbar-default .navbar-nav > li > a {
-  border-left: 1px solid rgba(247, 247, 247, 0.25);
-  border-right: 1px solid rgba(26, 58, 111, 0.25);
+  border-left: 1px solid rgba(247, 247, 247, .25);
+  border-right: 1px solid rgba(26, 58, 111, .25);
   color: #fff;
   font-size: 14px;
 }
@@ -547,7 +548,7 @@ h1 {
 
 .navbar-default .navbar-collapse,
 .navbar-default .navbar-form {
-  border-color: rgba(26, 58, 111, 0.25);
+  border-color: rgba(26, 58, 111, .25);
 }
 
 #search-form { width: 280px; }
@@ -563,7 +564,7 @@ h1 {
   }
 
   .navbar-default .navbar-nav .open .dropdown-menu .divider {
-    background-color: rgba(247, 247, 247, 0.25);
+    background-color: rgba(247, 247, 247, .25);
   }
 
   .navbar-default .navbar-nav .open .dropdown-menu > li > a,
@@ -676,10 +677,10 @@ button.toggle {
 /* Base class */
 
 .broadcast {
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   background-color: #ffcc66;
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
   padding: 3px;
 }
 
@@ -870,8 +871,8 @@ button.toggle {
 }
 
 
-/* Country selector */
-/* ---------------- */
+/* Front page country switcher */
+/* --------------------------- */
 
 
 /* Wrapper and base class */
@@ -883,14 +884,14 @@ button.toggle {
 
 /* Form alignment */
 
-.country-selector > form {
+.country-selector form {
   position: absolute;
   left: 0;
   right: 0;
   top: 50%;
 }
 
-.country-selector > form > .form-control {
+.country-selector .form-control {
   margin-left: auto;
   margin-right: auto;
   margin-top: -15px;
@@ -1373,7 +1374,8 @@ button.toggle {
 body.page-treaties h3 { font-size: 1.2em; margin-top: 0; font-weight: normal; }
 body.page-treaties div.regional { margin-top: 25px; }
 
-#table-treaties thead th, #table-treaties thead td { border: 0; }
+#table-treaties thead th,
+#table-treaties thead td { border: 0; }
 
 #table-treaties {
   margin-bottom: 0;
@@ -1396,11 +1398,15 @@ body.node-type-treaty div.field-label { min-width: 150px; }
 div.accordion .panel { border: 0; box-shadow: none; -webkit-box-shadow: none; }
 div.accordion .panel-heading { background-color: transparent; padding-left: 15px; padding-right: 15px; }
 
-body.node-type-treaty div.panel-heading a.permalink, a.administrative { display: none;  }
+body.node-type-treaty div.panel-heading a.permalink,
+a.administrative { display: none;  }
+
 body.node-type-treaty div.panel-heading:hover a.permalink,
 body.node-type-treaty div.panel-heading:hover a.administrative { display: block; }
 
-body.node-type-treaty div.paragraph a.permalink, a.administrative { display: none;  }
+body.node-type-treaty div.paragraph a.permalink,
+a.administrative { display: none;  }
+
 body.node-type-treaty div.paragraph:hover a.permalink,
 body.node-type-treaty div.paragraph:hover a.administrative { display: inline; }
 body.node-type-treaty div.paragraph:hover { background-color: #f0f0f0; }
@@ -1416,7 +1422,7 @@ iframe.ecolex {
 /* Disclaimer block from the Minamata convention page */
 body.page-node-303 h2.block-title { font-size: 18px; font-weight: bold;}
 
-.smallipop-instance a{ color: white; text-transform: none; text-shadow: none; }
+.smallipop-theme-default a { color: white; text-transform: none; text-shadow: none; }
 
 .media-list .media-list > .media {
   margin-left: 50px;
@@ -1439,16 +1445,16 @@ body.page-node-303 h2.block-title { font-size: 18px; font-weight: bold;}
   margin-top: -1px;
 }
 
-div.accordion .panel-heading h4 { display: inline; margin-left: 15px; }
+div.accordion .panel-heading h4 { margin-left: 25px; }
 div.accordion .panel-heading .meta { text-align: right; font-size: 12px; color: #999; font-weight: normal; }
 div.accordion .panel-heading ul { margin: 0; }
-div.accordion .panel-heading .glyphicon-plus-sign { color: #777; font-size: 14px; }
+div.accordion .panel-heading .glyphicon-plus-sign { color: #777; font-size: 14px; position: absolute; top: 12px; }
 div.accordion .panel-heading .glyphicon-plus-sign:before { content: "\e082"; }
 div.accordion .panel-heading.collapsed .glyphicon-plus-sign { color: #c6cedb; }
 div.accordion .panel-heading.collapsed .glyphicon-plus-sign:before { content: "\e081"; }
 
 div.accordion .panel { margin: 0; border-bottom: 1px solid #ddd; border-radius: 0; }
-div.accordion .panel-heading { border: 1px solid transparent; cursor: pointer; margin: 0; border-radius: 0; }
+div.accordion .panel-heading { border: 1px solid transparent; cursor: pointer; margin: 0; border-radius: 0; position: relative; }
 div.accordion .panel-heading:hover { border: 1px solid #39c; background-color: #D2EEFC; }
 
 img.flag-xs { max-height: 16px; }
@@ -1489,7 +1495,8 @@ img.flag-medium { max-height: 48px; }
 div.accordion ol.paragraphs { list-style-type: none; margin-left: 10px; padding: 0; }
 
 /* Events page */
-.view-events .media-detail, .view-past-events .media-detail {
+.view-events .media-detail,
+.view-past-events .media-detail {
   font-size: 85%;
   color: #666;
 }
@@ -1503,8 +1510,10 @@ div.accordion ol.paragraphs { list-style-type: none; margin-left: 10px; padding:
   margin-left: 0;
 }
 
-.view-events .media-body, .view-events .media-left,
-.view-past-events .media-body, .view-past-events .media-left {
+.view-events .media-body,
+.view-events .media-left,
+.view-past-events .media-body,
+.view-past-events .media-left {
   border: 0; border-bottom: 1px dashed #c6cedb;
 }
 
@@ -1518,8 +1527,11 @@ div.accordion ol.paragraphs { list-style-type: none; margin-left: 10px; padding:
   padding: 6px;
 }
 
-.view-events li, .view-past-events li { margin-bottom: 20px; margin-top: 15px; }
-.view-events .media-body, .view-past-events .media-body { padding-bottom: 5px; }
+.view-events li,
+.view-past-events li { margin-bottom: 20px; margin-top: 15px; }
+
+.view-events .media-body,
+.view-past-events .media-body { padding-bottom: 5px; }
 
 /* News page */
 .view-news .media-body,
@@ -1591,7 +1603,8 @@ font-size: 20px;
 }
 
 /* Front page */
-.carousel .media-left, .carousel .media-body { border: 0; }
+.carousel .media-left,
+.carousel .media-body { border: 0; }
 
 
 /* Search page */
@@ -1741,6 +1754,7 @@ strong.excerpt {
     float: right;
   }
 }
+
 .view-treaty-listing-page .views-field-field-logo,
 .view-treaty-listing-page .views-field-field-region,
 .view-treaty-listing-page .views-field-field-entry-into-force {
@@ -1766,7 +1780,7 @@ strong.excerpt {
 }
 
 .party-row-light-blue {
-  background-color: rgba(0, 153, 213, 0.16);
+  background-color: rgba(0, 153, 213, .16);
 }
 
 #block-informea-informea-front-page-slider .carousel-caption .media-left img {
@@ -1778,15 +1792,583 @@ strong.excerpt {
   background-color: #ed9f0d;
   padding: 2px;
 }
-/* Tables CSS*/
+
+/* Tables */
 .node-type-treaty .paragraph table {
   border: 1px solid black;
 }
-.node-type-treaty .paragraph table td, .node-type-treaty .paragraph table th {
+
+.node-type-treaty .paragraph table td,
+.node-type-treaty .paragraph table th {
   border: 1px solid black;
   padding: 15px;
 }
 
 .results-for {
   margin-bottom: 10px;
+}
+
+/* Decision page */
+iframe.pdfjs {
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  border-radius: 4px;
+  border: 1px solid #333;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  height: 600px;
+  width: 100%;
+}
+
+.above-content {}
+
+.node-type-decision .page-header {
+  background-color: #005289;
+  border-bottom: 0;
+  margin-bottom: 0;
+  padding-bottom: 40px;
+}
+
+.node-type-decision .page-header,
+.node-type-decision .page-header a {
+  color: #fff;
+}
+
+.node-type-decision .title-prefix {
+  font-size: 21px;
+  font-weight: bold;
+}
+
+.view.text-overflow-ellipsis .views-field-title a {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.node-type-decision .sidebar-right .panel-pane {
+  border: 1px solid #b1d6e6;
+  margin-bottom: 86px;
+  margin-top: 45px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  position: relative;
+}
+
+.pane-informea-informea-subscribe-updates .pane-title,
+.pane-informea-informea-share .pane-title {
+  font-weight: 300;
+}
+
+.node-type-decision .sidebar-right .pane-other-meetings {
+  margin-top: 128px;
+}
+
+.node-type-decision .sidebar-right .pane-title {
+  font-weight: 300;
+  left: -1px;
+  margin: 0;
+  position: absolute;
+  top: -36px;
+}
+
+.node-type-decision .sidebar-right .pager {
+  bottom: -34px;
+  left: -1px;
+  margin: 0;
+  position: absolute;
+  text-align: left;
+}
+
+.node-type-decision .sidebar-right .more-link {
+  bottom: -64px;
+  font-size: 85%;
+  font-weight: 500;
+  left: -1px;
+  position: absolute;
+  text-transform: uppercase;
+}
+
+.node-type-decision .sidebar-right .pager > li {
+  float: left;
+}
+
+.node-type-decision .sidebar-right .pager > li.pager-previous {
+  margin-right: 1px;
+}
+
+.node-type-decision .sidebar-right .pager > li.pager-current {
+  display: none;
+}
+
+.node-type-decision .sidebar-right .pager > li.pager-previous a,
+.node-type-decision .sidebar-right .pager > li.pager-next a {
+  background-color: #005289;
+  border-radius: 0;
+  border: 0;
+  border-top: 3px solid #1a3a6f;
+  color: #fff;
+  font-size: 85%;
+  font-weight: 500;
+  height: 33px;
+  line-height: 1;
+  padding: 8px 30px 10px;
+  text-transform: uppercase;
+}
+
+.decision-tags-container,
+#decision-body-field {
+  border-top: 1px solid #ddd;
+  margin-top: 40px;
+  padding-top: 30px;
+}
+
+#decision-body-field {
+  margin-bottom: 30px;
+}
+
+.decision-tags-container .panels-flexible-row-inside {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.node-type-decision .decision-update-container {
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+
+.pane-node-field-official-name .pane-title,
+.pane-node-field-meeting .pane-title {
+  font-size: 85%;
+  margin-bottom: 10px;
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+
+.pane-node-field-official-name .pane-content,
+.pane-node-field-meeting .pane-content {
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.decision-files-other-container {
+  margin-top: 30px;
+}
+
+.row-other .pane-node-field-decision-type .field-label,
+.row-other .pane-node-field-decision-status .field-label {
+  font-size: 85%;
+  text-transform: uppercase;
+}
+
+.row-other .pane-node-field-decision-type .field-items,
+.row-other .pane-node-field-decision-status .field-items {
+  color: #777;
+  font-size: 16px;
+  text-transform: capitalize;
+}
+
+.view-decisions-of-meeting.view-id-decisions_of_meeting .views-row > .views-field-nothing a {
+  color: #777;
+}
+
+.node-type-decision .pane-node-field-related-url,
+.node-type-decision .pane-node-field-url {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.node-type-decision .pane-node-field-related-url,
+.node-type-decision .pane-node-field-url {
+  font-size: 85%;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.node-type-decision .panel-separator {
+  display: none;
+}
+
+.row-other .field-name-field-decision-type,
+.row-other .field-name-field-decision-status {
+  display: block;
+  float: left;
+  padding-right: 5px;
+  width: 25%;
+}
+
+.row-other .field-name-field-decision-type:before,
+.row-other .field-name-field-decision-status:before {
+  border-top: 5px solid #dff6fe;
+  content: "";
+  display: block;
+  height: 0;
+  margin-bottom: 10px;
+}
+
+#skip-to-body {
+  display: block;
+  float: left;
+  font-size: 85%;
+  font-weight: 500;
+  text-transform: uppercase;
+  vertical-align: top;
+  width: 50%;
+}
+
+#skip-to-body a {
+  background-color: #e0f7ff;
+  border: 1px solid #f7f7f7;
+  display: block;
+  padding: 18px;
+  text-align: center;
+}
+
+#skip-to-body + .panel-separator {
+  clear: both;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.node-type-decision .page-header h1 {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+#informea-subscribe-updates-form {
+  display: table;
+  margin-top: 30px;
+}
+
+#informea-subscribe-updates-form .form-type-textfield,
+#informea-subscribe-updates-form #edit-actions {
+  display: table-cell;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#informea-subscribe-updates-form .form-type-textfield {
+  width: 99%;
+}
+
+#informea-subscribe-updates-form #edit-mail {
+  -webkit-box-shadow: none;
+  border-radius: 0;
+  box-shadow: none;
+  height: 38px;
+}
+
+#informea-subscribe-updates-form #edit-actions {
+  width: 1%;
+}
+
+#informea-subscribe-updates-form .form-submit {
+  background-color: #005289;
+  border: 0;
+  border-bottom: 3px solid #1a3a6f;
+  color: #fff;
+  font-size: 85%;
+  font-weight: 500;
+  margin-left: 30px;
+  padding: 10px 30px 8px;
+  text-transform: uppercase;
+}
+
+.node-type-decision .pane-node-field-files .btn-group:before {
+  color: #fff;
+  content: attr(data-label);
+  font-weight: 500;
+  left: 100px;
+  pointer-events: none;
+  position: absolute;
+  text-transform: uppercase;
+  top: 20px;
+  z-index: 3;
+}
+
+.node-type-decision .pane-node-field-files .btn {
+  background: #fc3 url('../img/icon-pdf.png') no-repeat 10px center;
+  border: 0;
+  border-bottom: 5px solid #e1b52e;
+  color: #005289;
+  font-size: 18px;
+  font-weight: 500;
+  height: 85px;
+  padding-left: 100px;
+  padding-right: 30px;
+  padding-top: 40px;
+  text-align: left;
+}
+
+.node-type-decision .pane-node-field-files .btn > .caret {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  border: 0;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  height: auto;
+  line-height: 1;
+  margin-left: 30px;
+  position: relative;
+  top: 2px;
+  vertical-align: baseline;
+  width: auto;
+}
+
+.node-type-decision .pane-node-field-files .btn > .caret:before {
+  content: "\e259";
+}
+
+#decision-date-title {
+  margin-top: -32px;
+}
+
+.decision-treaty-tabs {
+  font-size: 85%;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+.decision-treaty-tabs .nav-tabs,
+.decision-treaty-tabs .nav-tabs > li > a:hover,
+.decision-treaty-tabs .nav-tabs > li:nth-child(4) > a {
+  border-bottom-color: #005289;
+}
+
+.decision-treaty-tabs .nav-tabs > li > a {
+  color: #005289;
+  padding: 10px 15px 7px;
+}
+
+.decision-treaty-tabs .badge {
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.decision-treaty-tabs .badge:before {
+  content: "(";
+}
+
+.decision-treaty-tabs .badge:after {
+  content: ")";
+}
+
+.page-node.node-type-decision .field-name-field-sorting-date {}
+
+.page-node.node-type-decision .field-name-field-sorting-date .form-group,
+.page-node.node-type-decision .field-name-title-field .form-group {
+  margin-bottom: 0;
+}
+
+.page-node.node-type-decision .field-name-field-sorting-date .form-type-item {
+  background-color: #fff;
+  border: 2px solid #fc3;
+  border-bottom: 0;
+  display: inline-block;
+  font-weight: bold;
+  padding: 5px 15px;
+}
+
+.page-node.node-type-decision .field-name-field-sorting-date .form-type-item label {
+  margin-bottom: 0;
+}
+
+.page-node.node-type-decision .field-name-title-field {
+  display: none;
+}
+
+.page-node.node-type-decision .field-name-field-sorting-date label:after,
+.page-node.node-type-decision .field-name-title-field label:after {
+  content: ":";
+}
+
+.page-node.node-type-decision .field-name-title-field {
+  background: #fc3;
+  font-weight: bold;
+  line-height: 1.1;
+  padding: 15px 10px;
+}
+
+.node-type-decision .pane-informea-informea-share,
+.node-type-decision .decision-updates-form-container {
+  border: 1px solid #f7f7f7;
+  height: 180px;
+  padding: 15px 30px;
+}
+
+.node-type-decision .pane-informea-informea-share {
+  background-color: #effafe;
+}
+
+.node-type-decision .decision-updates-form-container {
+  background-color: #e0f7ff;
+}
+
+.node-type-decision .pane-informea-informea-share h4 {
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.informea-share-widget {
+  list-style: none;
+  padding-left: 0;
+}
+
+.informea-share-widget > li + li {
+  margin-top: 8px;
+}
+
+.informea-share-widget > li > a {
+  display: inline-block;
+}
+
+.decision-tags-container .pane-decisions-of-meeting .pane-title,
+.decision-tags-container .pane-node-field-informea-tags .pane-title {
+  font-weight: 300;
+}
+
+.decision-tags-container .pane-decisions-of-meeting .views-row {
+  margin-top: 15px;
+}
+
+.decision-tags-container .pane-decisions-of-meeting .views-field-title {
+  text-transform: uppercase;
+}
+
+.pane-node-body .pane-title {
+  font-size: 85%;
+  text-transform: uppercase;
+}
+
+.sidebar-right .pane-decisions-of-meeting .views-row {
+  height: 55px;
+  position: relative;
+}
+
+.sidebar-right .pane-decisions-of-meeting .views-field-field-decision-number {
+  left: 20px;
+  pointer-events: none;
+  position: absolute;
+  top: 10px;
+  z-index: 1;
+}
+
+.sidebar-right .pane-decisions-of-meeting .views-field-title a {
+  bottom: 0;
+  font-size: 85%;
+  font-weight: 500;
+  left: 0;
+  padding: 25px 20px 0;
+  position: absolute;
+  right: 0;
+  text-transform: uppercase;
+  top: 0;
+}
+
+.sidebar-right .pane-decisions-of-meeting .views-field-title a:hover,
+.sidebar-right .pane-decisions-of-meeting .views-field-title a:focus {
+  background-color: #effafe;
+}
+
+.sidebar-right .pane-decisions-of-meeting .views-field-title a.active {
+  background-color: #effafe;
+  color: #555;
+}
+
+.sidebar-right .pane-other-meetings .views-field-title a {
+  display: block;
+  padding: 10px 20px;
+}
+
+.node-type-decision .sidebar-right .views-row .views-field-field-decision-number,
+.view-decisions-of-meeting.view-id-decisions_of_meeting .views-row > .views-field-nothing {
+  color: #777;
+  font-size: 85%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.back-to-top {
+  background-color: #ffcc33;
+  border-radius: 50%;
+  bottom: 30px;
+  display: block;
+  display: none;
+  height: 56px;
+  position: fixed;
+  right: 30px;
+  width: 56px;
+}
+
+.back-to-top:before {
+  border-bottom: 12px solid #005289;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid transparent;
+  bottom: 54px;
+  content: "";
+  display: block;
+  height: 0;
+  position: fixed;
+  right: 46px;
+  width: 0;
+}
+
+.back-to-top:after {
+  border-bottom: 12px solid #ffcc33;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 12px solid transparent;
+  bottom: 53px;
+  content: "";
+  display: block;
+  height: 0;
+  position: fixed;
+  right: 46px;
+  width: 0;
+}
+
+.view-strategic-goals-and-targets h2 {
+  font-size: 21px;
+  font-weight: 400;
+  margin-top: 0;
+}
+
+#block-block-4 {
+  margin-top: 30px;
+}
+
+#block-views-4efd08939690e3edf1a75a578e89ae32 .block-title {
+  border-top: 1px solid #ddd;
+  font-size: 24px;
+  margin-bottom: 15px;
+  padding-top: 15px;
+}
+
+.panel-heading > .actions {
+  float: right;
+}
+
+.panel-heading > .actions > .action-hover {
+  display: none;
+}
+
+.panel-heading:hover > .actions > .action-hover,
+.panel-heading:focus > .actions > .action-hover {
+  display: inline-block;
+}
+
+.panel-title-target {
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.panel-title-target .title {
+  font-weight: bold;
 }

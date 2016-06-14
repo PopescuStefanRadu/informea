@@ -110,6 +110,12 @@ function goal_strongarm() {
       'ajax' => array(
         'custom_settings' => TRUE,
       ),
+      'treaty_listing' => array(
+        'custom_settings' => TRUE,
+      ),
+      'print' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -121,6 +127,15 @@ function goal_strongarm() {
         ),
         'language' => array(
           'weight' => '0',
+        ),
+        'metatags' => array(
+          'weight' => '18',
+        ),
+        'redirect' => array(
+          'weight' => '16',
+        ),
+        'xmlsitemap' => array(
+          'weight' => '15',
         ),
       ),
       'display' => array(),
@@ -180,6 +195,13 @@ function goal_strongarm() {
   $strongarm->name = 'pathauto_node_goal_pattern';
   $strongarm->value = 'goal/[node:title]';
   $export['pathauto_node_goal_pattern'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_taxonomy_term_goal_sources_pattern';
+  $strongarm->value = 'goals/[term:field_abbreviation]';
+  $export['pathauto_taxonomy_term_goal_sources_pattern'] = $strongarm;
 
   return $export;
 }

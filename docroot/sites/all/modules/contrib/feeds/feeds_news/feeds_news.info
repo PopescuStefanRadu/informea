@@ -24,7 +24,6 @@ features[field_instance][] = node-feed_item-field_feed_item_description
 features[field_instance][] = node-feed_item-field_image
 features[field_instance][] = node-feed_item-field_mea_topic
 features[field_instance][] = node-feed_item-field_parent_feed
-features[field_instance][] = node-feed_item-field_tags
 features[field_instance][] = node-feed_item-field_treaty
 features[field_instance][] = node-feed_item-field_url
 features[node][] = feed

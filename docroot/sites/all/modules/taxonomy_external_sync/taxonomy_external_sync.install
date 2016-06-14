@@ -1,0 +1,52 @@
+<?php
+
+
+/**
+ * Implements hook_schema().
+ */
+function taxonomy_external_sync_schema() {
+  $schema = array();
+  $schema['taxonomy_external_sync'] = array(
+    'description' => 'External synchronization configurations',
+    'fields' => array(
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'The name of the bundle a mapping applies to.',
+      ),
+      'configuration' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+        'description' => 'Serialized configuration',
+        'translatable' => TRUE,
+      ),
+    ),
+    'primary key' => array('bundle'),
+  );
+  $schema['taxonomy_external_sync_map'] = array(
+    'description' => 'Store mappings of migrated terms',
+    'fields' => array(
+      'source_id' => array(
+        'type' => 'varchar',
+        'length' => 512,
+        'not null' => TRUE,
+        'description' => 'The source id field value',
+      ),
+      'destination_tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'Migrated term id',
+      ),
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'The machine name of the vocabulary.',
+      ),
+    ),
+  );
+  return $schema;
+}

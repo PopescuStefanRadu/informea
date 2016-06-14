@@ -77,10 +77,17 @@
 <div class="page-header">
   <div class="container">
     <?php if (!empty($breadcrumb)): print $breadcrumb; endif;?>
+    <div class="title-prefix">
     <?php print render($title_prefix); ?>
+    </div>
     <h1><?php print $title; ?></h1>
   </div>
 </div><!-- .page-header -->
+<?php if (!empty($page['above_content'])): ?>
+<div class="above-content">
+  <?php print render($page['above_content']); ?>
+</div>
+<?php endif; ?>
 <div class="container">
   <?php if (!empty($page['header'])): ?>
     <header id="page-header" role="banner">

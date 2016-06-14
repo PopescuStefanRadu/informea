@@ -12,6 +12,7 @@ define('INFORMEA_VOC_IEG', 'thesaurus_ieg');
 define('INFORMEA_VOC_GEMET', 'thesaurus_gemet');
 
 define('ROLE_MEA', 'MEA');
+define('ROLE_ADMINISTRATOR', 'administrator');
 
 /**
  * Implements hook_schema_alter()
@@ -56,6 +57,20 @@ function informea_block_info() {
       'visibility' => BLOCK_VISIBILITY_LISTED,
       'pages' => '<front>',
     ),
+    'informea_share' => array(
+      'info' => t('Informea Share'),
+      'cache' => DRUPAL_NO_CACHE,
+      'weight' => 10,
+      'status' => 1,
+      'visibility' => BLOCK_VISIBILITY_LISTED,
+    ),
+    'informea_subscribe_updates' => array(
+      'info' => t('Informea updates'),
+      'cache' => DRUPAL_NO_CACHE,
+      'weight' => 10,
+      'status' => 1,
+      'visibility' => BLOCK_VISIBILITY_LISTED,
+    ),
   );
 }
 
@@ -68,6 +83,40 @@ function informea_block_view($delta = '') {
   switch ($delta) {
     case 'informea_front_page_slider':
       $block['content'] = informea_theme_slider();
+      break;
+
+    case 'informea_share':
+      global $language;
+      $content = '';
+      $node = menu_get_object();
+      if (!empty($node->nid)) {
+        $url = url('/node/' . $node->nid, array('absolute' => TRUE));
+        $title = field_get_items('node', $node, 'title_field');
+        $title = current($title)['value'];
+        $site_name = variable_get('site_name', '');
+        // Construct the tweet.
+        $twitter_text = $title . ' | ' . $site_name;
+        $tweet_url = url('https://twitter.com/intent/tweet', array(
+          'query' => array(
+            'original_referer' => $url,
+            'text' => $twitter_text,
+//            'url' => shorten_url($url),
+            'url' => $url,
+          ),
+        ));
+        $vars = array(
+          'url' => $url,
+          'tweet_url' => $tweet_url,
+          'node' => $node,
+          'language' => $language,
+        );
+        $content = theme('informea_share_widget', $vars);
+      }
+      $block['content'] = $content;
+      break;
+
+    case 'informea_subscribe_updates':
+      $block['content'] = drupal_get_form('informea_subscribe_updates_form');
       break;
   }
   return $block;
@@ -161,7 +210,12 @@ function informea_menu() {
     'type'              => MENU_CALLBACK,
     'access arguments'  => array('access content'),
   );
-
+  $items['pdfjs'] = array(
+    'page callback'     => 'informea_pdfjs_view',
+    'page arguments'    => array(1),
+    'type'              => MENU_CALLBACK,
+    'access arguments'  => array('access content'),
+  );
   $items['admin/config/services/analytics/google-analytics'] = array(
     'title' => 'Configure Google Analytics',
     'description' => 'Configure the keys for Google Analytics tracking',
@@ -294,6 +348,27 @@ function informea_library() {
   );
 }
 
+function informea_subscribe_updates_form($form, &$form_state) {
+  $form = array();
+
+  $form['mail'] = array(
+    '#attributes' => array('placeholder' => t('Enter email address')),
+    '#type' => 'textfield'
+  );
+
+  $form['actions'] = array(
+    '#type' => 'container'
+  );
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Send me updates'
+  );
+
+  return $form;
+}
+
+
 class MigrationUtil {
 
     /**
@@ -403,6 +478,14 @@ function informea_field_formatter_info() {
       'label' => t('External URL to file'),
       'field types' => array('file')
     ),
+    'informea_file_dropdown' => array(
+      'label' => t('Dropdown'),
+      'field types' => array('file'),
+    ),
+    'informea_pdf_js' => array(
+      'label' => t('PDF JS viewport'),
+      'field types' => array('file'),
+    ),
   );
 }
 
@@ -419,8 +502,69 @@ function informea_field_formatter_view($entity_type, $entity, $field, $instance,
         );
       }
       break;
+
+    case 'informea_file_dropdown':
+      if (!empty($items)) {
+        $elements[0] = array(
+          '#markup' => theme('informea_file_dropdown', array('items' => $items)),
+        );
+      }
+      break;
+
+    case 'informea_pdf_js':
+      if (!empty($items)) {
+        $elements[0] = array(
+          '#markup' => theme('informea_pdf_js', array('files' => $items)),
+        );
+      }
+      break;
   }
   return $elements;
+}
+
+function theme_informea_file_dropdown($variables) {
+  $items = array();
+  foreach ($variables['items'] as $file) {
+    $url = file_create_url($file['uri']);
+    if (!empty($file['description']) && strpos($file['description'], 'http') !== FALSE) {
+      $url = $file['description'];
+    }
+    $items[] = array(
+      'title' => $file['filename'],
+      'href' => $url,
+      'attributes' => array('target' => '_blank'),
+    );
+  }
+  return theme('bootstrap_btn_dropdown', array(
+    'attributes' => array(
+      'data-label' => t('Files')
+    ),
+    'label' => t('Choose a file'),
+    'links' => $items
+  ));
+}
+
+function theme_informea_pdf_js($variables) {
+  if (!empty($variables['files'])) {
+    $files = $variables['files'];
+    $url = NULL;
+    foreach ($files as $file) {
+      if ($file['filemime'] == 'application/pdf') {
+        $url = file_create_url($file['uri']);
+        break;
+      }
+    }
+    if ($url)
+    $link = url(
+      'pdfjs',
+      [
+        'absolute' => 1,
+        'query' => ['file' => $url]
+      ]
+    );
+    return sprintf('<iframe mozallowfullscreen="true" webkitallowfullscreen="true" class="pdfjs decision" src="%s"></iframe>', $link);
+  }
+  return FALSE;
 }
 
 function informea_theme() {
@@ -431,6 +575,25 @@ function informea_theme() {
         'element' => NULL,
       ),
       'path' => drupal_get_path('module', 'informea') . '/templates',
+    ),
+    'informea_file_dropdown' => array(
+      'variables' => array('items'),
+    ),
+    'informea_pdf_js' => array(
+      'variables' => array('files'),
+      'path' => drupal_get_path('module', 'informea') . '/templates',
+    ),
+    'pdfjs_markup' => array(
+      'template' => 'pdfjs_markup',
+      'variables' => array('file'),
+      'path' => drupal_get_path('module', 'informea') . '/templates',
+    ),
+    'informea_share_widget' => array(
+      'variables' => array(
+        'url' => '',
+        'node' => array(),
+      ),
+      'template' => 'templates/informea_share_widget',
     ),
   );
 }
@@ -542,7 +705,7 @@ function informea_block_view_block_4_alter(&$data, $block) {
  * Implements hook_page_alter().
  */
 function informea_page_alter(&$page) {
-  if (!module_exists('anlytics_integration')) {
+  if (!module_exists('analytics_integration')) {
     return;
   }
   if ($ga_informea_key = variable_get('ga_informea_key')) {
@@ -624,6 +787,9 @@ function informea_user_get_assigned_treaties($user) {
  *   user's assigned treaties in field_user_treaties.
  */
 function informea_user_mea_can_edit_node($node, $user) {
+  if (in_array(ROLE_ADMINISTRATOR, $user->roles)) {
+    return TRUE;
+  }
   if (in_array(ROLE_MEA, $user->roles)) {
     $allowed = informea_user_get_assigned_treaties($user);
     $nid = NULL;
@@ -634,7 +800,7 @@ function informea_user_mea_can_edit_node($node, $user) {
     }
     return in_array($nid, $allowed);
   }
-  return TRUE;
+  return FALSE;
 }
 
 function informea_mea_content_types() {
@@ -720,6 +886,28 @@ function informea_form_node_form_alter(&$form, &$form_state, $form_id) {
       'type' => 'inline',
     );
   }
+
+
+  // Use custom autocomplete for field_meeting to filter autocomplete list of treaties
+  if (!empty($form['field_sdg_goals'])) {
+    /*
+    SELECT a.* FROM node a
+      INNER JOIN field_data_field_goal_type b ON a.nid = b.entity_id
+      INNER JOIN field_data_field_goal_source c ON a.nid = c.entity_id
+      WHERE a.type = 'goal'
+        AND b.field_goal_type_tid IN (1734, 1737)
+        AND c.field_goal_source_tid = 1753
+        ORDER BY a.title;
+    */
+    $q = db_select('node', 'a')->fields('a', array('nid', 'title'));
+    $q->join('field_data_field_goal_type', 'b', 'a.nid = b.entity_id');
+    $q->join('field_data_field_goal_source', 'c', 'a.nid = c.entity_id');
+    $q->condition('a.type', 'goal');
+    $q->condition('b.field_goal_type_tid', array(1734, 1737), 'IN'); // Goal, Target (vid=30)
+    $q->condition('c.field_goal_source_tid', 1753); // Sustainable development goals (vid=28)
+    $q->orderBy('a.title');
+    $form['field_sdg_goals'][LANGUAGE_NONE]['#options'] = $q->execute()->fetchAllKeyed();
+  }
 }
 
 function informea_node_form_validate_field_treaty($form, $form_state) {
@@ -757,4 +945,19 @@ function informea_user_is_mea($user) {
   return count($user->roles) == 2
       && in_array(ROLE_MEA, $user->roles)
       && in_array('authenticated user', $user->roles);
+}
+
+function informea_pdfjs_view() {
+  global $base_url;
+  $q = $base_url;
+  if (strpos($_GET['file'], '/') !== 0) {
+    $q .= '/';
+  }
+  $q .= $_GET['file'];
+  str_replace('..', '', $q);
+  if (strpos(strtolower($q), '.pdf') !== strlen($q) - 4) {
+    die();
+  }
+  print theme('pdfjs_markup', ['file' => $q]);
+  die();
 }

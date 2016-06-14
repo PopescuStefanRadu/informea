@@ -1,0 +1,114 @@
+<?php
+
+function elis_consumer_xml_http_request($url, $xml_encoding) {
+  // elis_consumer_log($url);
+  $ret = NULL;
+  if ($response = elis_consumer_http_request($url, array('Accept' => 'application/xml'))) {
+    try {
+      libxml_clear_errors();
+      if (strtolower($xml_encoding) == 'utf-8') {
+        $data = trim($response);
+      }
+      else {
+        $data = trim(utf8_decode($response));
+      }
+      $ret = simplexml_load_string($data);
+    } catch (Exception $e) {
+      $error = libxml_get_last_error();
+      $msg = sprintf('elis_consumer_xml_http_request: Cannot parse XML (%s), line %d:%d, %s', $error->file, $error->line, $error->column, $error->message);
+      elis_consumer_log($msg, MigrationBase::MESSAGE_ERROR);
+    }
+  }
+  return $ret;
+}
+
+
+function elis_consumer_http_request($url, $headers = array()) {
+  migrate_instrument_start(__CLASS__ . ' http_request');
+  elis_consumer_log(__METHOD__ . ": $url", MigrationBase::MESSAGE_INFORMATIONAL);
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt($ch, CURLOPT_NOBODY, 0);
+  $ret = curl_exec($ch);
+  $info = curl_getinfo($ch);
+  if ($info['http_code'] != 200) {
+    $code = $info['http_code'];
+    elis_consumer_log(__METHOD__ . ": Failure ({$code}) for URL: $url", MigrationBase::MESSAGE_ERROR);
+    $ret = NULL;
+  }
+  curl_close($ch);
+  migrate_instrument_stop(__CLASS__ . ' http_request');
+  return $ret;
+}
+
+
+/**
+ * Log system for the ws_consumer_odata migrations.
+ *
+ * @param string $message
+ *   Log message
+ * @param int $severity
+ *    See MigrationBase::MESSAGE_* constants
+ */
+function elis_consumer_log($message, $severity = MigrationBase::MESSAGE_INFORMATIONAL) {
+  if (function_exists('drush_log')) {
+    $status = 'status';
+    switch($severity) {
+      case MigrationBase::MESSAGE_ERROR:
+        $status = 'error';
+        break;
+      case MigrationBase::MESSAGE_WARNING:
+        $status = 'warning';
+        break;
+      case MigrationBase::MESSAGE_NOTICE:
+        $status = 'notice';
+        break;
+    }
+    drush_log($message, $status);
+  }
+}
+
+
+function elis_migration_translate_entity($entity_type, $entity, $translations = array()) {
+  if (empty($translations)) {
+    return;
+  }
+  $languages = array_keys(language_list());
+  $translation_handler = entity_translation_get_handler($entity_type, $entity);
+  $translation_handler->setOriginalLanguage('en');
+  $translation_handler->initTranslations();
+  $entity->translations = $translation_handler->getTranslations();
+  foreach ($languages as $language) {
+    if ($language == 'en') {
+      continue;
+    }
+    if (in_array($language, $translations)) {
+      $translation_handler->setTranslation(array(
+        'translate' => 0, 'status' => 1, 'uid' => 1,
+        'language' => $language,
+        'source' => 'en',
+      ));
+    }
+  }
+  entity_save($entity_type, $entity);
+}
+
+function elis_migration_create_taxonomy_term($name, $vocabulary_machine_name, $translations = array()) {
+  $voc = taxonomy_vocabulary_machine_name_load($vocabulary_machine_name);
+  $term = new stdClass();
+  $term->name = $name;
+  $term->vid = $voc->vid;
+  $term->language = 'en';
+  if (!empty($translations)) {
+    $term->name_field = array();
+    foreach ($translations as $lang => $value) {
+      $term->name_field[$lang][0]['value'] = $value;
+    }
+  }
+  taxonomy_term_save($term);
+  elis_migration_translate_entity('taxonomy_term', $term, array_keys($translations));
+  return $term->tid;
+}

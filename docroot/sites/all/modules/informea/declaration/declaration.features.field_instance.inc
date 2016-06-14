@@ -10,7 +10,7 @@
 function declaration_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'node-declaration-body'
+  // Exported field_instance: 'node-declaration-body'.
   $field_instances['node-declaration-body'] = array(
     'bundle' => 'declaration',
     'default_value' => NULL,
@@ -38,6 +38,12 @@ function declaration_field_default_field_instances() {
         'type' => 'text_summary_or_trimmed',
         'weight' => 0,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
@@ -61,7 +67,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration-field_abbreviation'
+  // Exported field_instance: 'node-declaration-field_abbreviation'.
   $field_instances['node-declaration-field_abbreviation'] = array(
     'bundle' => 'declaration',
     'default_value' => NULL,
@@ -81,6 +87,12 @@ function declaration_field_default_field_instances() {
         'weight' => 1,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -107,7 +119,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration-title_field'
+  // Exported field_instance: 'node-declaration-title_field'.
   $field_instances['node-declaration-title_field'] = array(
     'bundle' => 'declaration',
     'default_value' => NULL,
@@ -127,6 +139,12 @@ function declaration_field_default_field_instances() {
         'weight' => 2,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -156,7 +174,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_paragraph-body'
+  // Exported field_instance: 'node-declaration_paragraph-body'.
   $field_instances['node-declaration_paragraph-body'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -185,6 +203,12 @@ function declaration_field_default_field_instances() {
         'type' => 'text_summary_or_trimmed',
         'weight' => 1,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'body',
@@ -209,7 +233,7 @@ function declaration_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-declaration_paragraph-field_declaration_paragraph_type'
+  // 'node-declaration_paragraph-field_declaration_paragraph_type'.
   $field_instances['node-declaration_paragraph-field_declaration_paragraph_type'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => array(
@@ -237,6 +261,12 @@ function declaration_field_default_field_instances() {
         'settings' => array(),
         'type' => 'hidden',
         'weight' => 5,
+      ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
@@ -268,7 +298,7 @@ function declaration_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-declaration_paragraph-field_declaration_parent_section'
+  // 'node-declaration_paragraph-field_declaration_parent_section'.
   $field_instances['node-declaration_paragraph-field_declaration_parent_section'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -293,6 +323,12 @@ function declaration_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 3,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_declaration_parent_section',
@@ -315,7 +351,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_paragraph-field_informea_tags'
+  // Exported field_instance: 'node-declaration_paragraph-field_informea_tags'.
   $field_instances['node-declaration_paragraph-field_informea_tags'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -336,6 +372,12 @@ function declaration_field_default_field_instances() {
         'weight' => 6,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -369,7 +411,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_paragraph-field_official_order'
+  // Exported field_instance: 'node-declaration_paragraph-field_official_order'.
   $field_instances['node-declaration_paragraph-field_official_order'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -396,6 +438,12 @@ function declaration_field_default_field_instances() {
         'type' => 'text_plain',
         'weight' => 0,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_official_order',
@@ -418,7 +466,7 @@ function declaration_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-declaration_paragraph-field_parent_declaration'
+  // 'node-declaration_paragraph-field_parent_declaration'.
   $field_instances['node-declaration_paragraph-field_parent_declaration'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -442,6 +490,12 @@ function declaration_field_default_field_instances() {
         'settings' => array(),
         'type' => 'hidden',
         'weight' => 4,
+      ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
@@ -470,7 +524,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_paragraph-title_field'
+  // Exported field_instance: 'node-declaration_paragraph-title_field'.
   $field_instances['node-declaration_paragraph-title_field'] = array(
     'bundle' => 'declaration_paragraph',
     'default_value' => NULL,
@@ -494,6 +548,12 @@ function declaration_field_default_field_instances() {
         'settings' => array(),
         'type' => 'hidden',
         'weight' => 2,
+      ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
       ),
     ),
     'entity_type' => 'node',
@@ -520,7 +580,7 @@ function declaration_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-declaration_section-field_declaration_parent_section'
+  // 'node-declaration_section-field_declaration_parent_section'.
   $field_instances['node-declaration_section-field_declaration_parent_section'] = array(
     'bundle' => 'declaration_section',
     'default_value' => NULL,
@@ -548,6 +608,12 @@ function declaration_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_declaration_parent_section',
@@ -570,7 +636,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_section-field_hidden'
+  // Exported field_instance: 'node-declaration_section-field_hidden'.
   $field_instances['node-declaration_section-field_hidden'] = array(
     'bundle' => 'declaration_section',
     'default_value' => array(
@@ -599,6 +665,12 @@ function declaration_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'treaty_listing' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
     ),
     'entity_type' => 'node',
     'field_name' => 'field_hidden',
@@ -619,7 +691,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_section-field_informea_tags'
+  // Exported field_instance: 'node-declaration_section-field_informea_tags'.
   $field_instances['node-declaration_section-field_informea_tags'] = array(
     'bundle' => 'declaration_section',
     'default_value' => NULL,
@@ -639,6 +711,12 @@ function declaration_field_default_field_instances() {
         'weight' => 3,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -673,7 +751,7 @@ function declaration_field_default_field_instances() {
   );
 
   // Exported field_instance:
-  // 'node-declaration_section-field_parent_declaration'
+  // 'node-declaration_section-field_parent_declaration'.
   $field_instances['node-declaration_section-field_parent_declaration'] = array(
     'bundle' => 'declaration_section',
     'default_value' => NULL,
@@ -696,6 +774,12 @@ function declaration_field_default_field_instances() {
         'weight' => 0,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -728,7 +812,7 @@ function declaration_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'node-declaration_section-title_field'
+  // Exported field_instance: 'node-declaration_section-title_field'.
   $field_instances['node-declaration_section-title_field'] = array(
     'bundle' => 'declaration_section',
     'default_value' => NULL,
@@ -748,6 +832,12 @@ function declaration_field_default_field_instances() {
         'weight' => 4,
       ),
       'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'treaty_listing' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',

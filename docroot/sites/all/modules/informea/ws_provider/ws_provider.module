@@ -1,0 +1,178 @@
+<?php
+
+include_once 'ws_provider.features.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function ws_provider_menu() {
+  $items = array();
+  $items['node/%/json'] = array(
+    'page callback' => 'ws_provider_export_node_as_json',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_services_views_execute_view_alter().
+ */
+function ws_provider_services_views_execute_view_alter(&$output, $view) {
+  if(in_array($view->name, array('ws_provider_court_decisions', 'ws_provider_legislation', 'ws_provider_literature'))) {
+    global $base_url;
+    foreach ($output as $row) {
+      $row->data_url = $base_url . '/node/' . $row->uuid . '/json';
+      $row->link = url('node/' . $row->nid, array('absolute' => TRUE));
+      unset($row->nid);
+    }
+  }
+}
+
+function ws_provider_export_node_as_json($uuid) {
+  global $base_url;
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('uuid', $uuid);
+  $result = $query->execute();
+  if (empty($result)) {
+    drupal_not_found();
+  }
+  $node = reset($result['node']);
+  $node = node_load($node->nid);
+  if (!$node) {
+    drupal_not_found();
+    return;
+  }
+  $data = array(
+    'uuid' => $node->uuid,
+    'changed' => $node->changed,
+  );
+  $fields = field_info_instances('node', $node->type);
+  $w = entity_metadata_wrapper('node', $node);
+  foreach (array_keys($fields) as $field_name) {
+    $info = field_info_field($field_name);
+    if ($info['type'] == 'file') {
+      $files = array();
+      if (!empty($node->{$field_name})) {
+        foreach ($node->{$field_name} as $lang => $lang_files) {
+          foreach($lang_files as $item) {
+            $files[$lang][] = array(
+              'filename' => $item['filename'],
+              'url' => file_create_url($item['uri']),
+            );
+          }
+        }
+      }
+      $data[$field_name] = $files;
+      continue;
+    }
+    if ($field_name == 'field_sorting_date') {
+      foreach ($node->{$field_name}[LANGUAGE_NONE] as $key => $element) {
+        unset($element['db']);
+        $node->{$field_name}[LANGUAGE_NONE][$key] = $element;
+      }
+    }
+    if ($info['type'] == 'entityreference') {
+      $data[$field_name] = array();
+      if ($field_name == 'field_country') {
+        foreach ($node->{$field_name}[LANGUAGE_NONE] as $element) {
+          $country = node_load($element['target_id']);
+          $country_code = $country->field_country_iso3[LANGUAGE_NONE][0]['value'];
+          $data[$field_name][] = $country_code;
+        }
+      }
+      elseif (in_array($field_name, array('field_treaty', 'field_faolex_reference'))) {
+        foreach ($node->{$field_name}[LANGUAGE_NONE] as $element) {
+          $target = node_load($element['target_id']);
+          $original_id = !empty($target->field_original_id) ? $target->field_original_id[LANGUAGE_NONE][0]['value'] : NULL;
+          $odata_identifier = !empty($target->field_odata_identifier) ? $target->field_odata_identifier[LANGUAGE_NONE][0]['value'] : NULL;
+          $data[$field_name][] = array(
+            'uuid' => $target->uuid,
+            'url' => url(drupal_get_path_alias('uuid/node/' . $target->uuid), array('absolute' => TRUE)),
+            'original_id' => $original_id,
+            'odata_identifier' => $odata_identifier,
+          );
+        }
+      }
+      else {
+        foreach ($node->{$field_name}[LANGUAGE_NONE] as $element) {
+          $target = node_load($element['target_id']);
+          $data[$field_name][] = array(
+            'uuid' => $target->uuid,
+            'url' => url(drupal_get_path_alias('uuid/node/' . $target->uuid), array('absolute' => TRUE)),
+          );
+        }
+      }
+      continue;
+    }
+    if ($info['type'] == 'taxonomy_term_reference') {
+      $terms = array();
+      $values = $w->$field_name->value();
+      if (is_array($values)) {
+        if (!empty($values)) {
+          foreach ($values as $key => $value) {
+            $translations = [];
+            $terms[$key] = (object) array(
+              'label' => $value->name,
+              'url' => url(drupal_get_path_alias('taxonomy/term/' . $value->tid), array('absolute' => TRUE)),
+            );
+            $term = taxonomy_term_load($value->tid);
+            foreach ($term->name_field as $language => $translation) {
+              if ($language != 'en') {
+                foreach ($translation as &$v) {
+                  unset($v['safe_value']);
+                }
+                $translations[$language] = $translation;
+              }
+            }
+            $terms[$key]->translations = $translations;
+          }
+          $data[$field_name] = $terms;
+          continue;
+        }
+      }
+      elseif ($values != NULL) {
+        $terms = array();
+        $terms[0] = (object) array(
+          'id' => $values->tid,
+          'url' => url('taxonomy/term/' . $values->tid, array('absolute' => TRUE)),
+          'label' => $values->name,
+        );
+        $data[$field_name] = $terms;
+        continue;
+      }
+      else {
+        $data[$field_name] = array();
+      }
+    }
+    if ($field_name == 'title_field') {
+      $v = $node->{$field_name};
+      foreach($v as $l => &$d) {
+        foreach($d as &$d1) {
+          unset($d1['safe_value']);
+          unset($d1['format']);
+        }
+      }
+      $data = array($field_name => $v) + $data;
+    }
+    else {
+      $v = $node->{$field_name};
+      foreach($v as $l => &$d) {
+        foreach($d as &$d1) {
+          unset($d1['safe_value']);
+        }
+      }
+      $data[$field_name] = $v;
+    }
+  }
+  unset($data['field_data_source']);
+  $aliases = array('default' => $base_url . '/node/' . $node->nid);
+  foreach (language_list() as $code => $language) {
+    $aliases[$code] = url('node/' . $node->nid, array('absolute' => TRUE, 'language' => $language));
+  }
+  $data['url'] = $aliases;
+  drupal_json_output($data);
+  drupal_exit();
+}

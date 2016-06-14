@@ -1,0 +1,1 @@
+http://www.akomantoso.org/akoma-ntoso-in-detail/schema/

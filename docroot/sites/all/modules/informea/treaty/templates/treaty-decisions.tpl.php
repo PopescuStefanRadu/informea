@@ -20,13 +20,7 @@ global $language, $user;
         <td class="col-sm-1 text-center"><?php print $number; ?></td>
         <td>
           <?php
-          print l($title, 'node/' . $nid, array(
-            'attributes' => array(
-              'data-toggle' => 'modal',
-              'data-target' => '#dialog-modal-ajax',
-              'data-remote' => url('ajax/modal/node/' . $nid)
-            )
-          ));
+          print l($title, 'node/' . $nid);
           if (user_access('edit any decision content')):
               print '&nbsp;&nbsp;' . l('<i class="glyphicon small glyphicon-pencil"></i>', 'node/' . $nid . '/edit', array('attributes' => array('target' => '_blank', 'title' => t('Edit')), 'html' => TRUE));
           endif;

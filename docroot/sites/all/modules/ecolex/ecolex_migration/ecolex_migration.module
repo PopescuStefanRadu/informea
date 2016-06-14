@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Implements hook_migrate_api().
+ *
+ * Set the API level to 2, for migration classes to be recognized by Migrate.
+ */
+function ecolex_migration_migrate_api() {
+  module_load_include('inc', 'elis_consumer', 'includes/migrations/TreatyElisMigration');
+  module_load_include('inc', 'elis_consumer', 'includes/migrations/CourtDecisionElisMigration');
+
+  $ret = array(
+    'api' => 2,
+    'groups' => array(
+      'ecolex' => array(
+        'title' => 'ECOLEX content migration'
+      ),
+      'elis' => array(
+        'title' => t('ELIS direct data migration'),
+      ),
+    ),
+    'migrations' => array(),
+  );
+  $ret['migrations']['elis_treaties'] = array(
+    'class_name' => 'ElisTreatyMigration',
+    'group_name' => 'elis',
+    'source_url_pattern' => 'http://www.ecolex.org/elis_isis3w.php?database=tre&search_type=page_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&spage_query=SPAGE_QUERY_VALUE&spage_first=SPAGE_FIRST_VALUE',
+    'xml_encoding' => 'iso-8859-15',
+  );
+  $ret['migrations']['elis_court_decisions'] = array(
+    'class_name' => 'ElisCourtDecisionMigration',
+    'group_name' => 'elis',
+    'source_url_pattern' => 'http://www.ecolex.org/elis_isis3w.php?database=cou&search_type=view_query_search&table=all&format_name=@xmlexp&lang=xmlf&page_header=@xmlh&vq_query=ID:"RECORD_ID"',
+    'xml_encoding' => 'iso-8859-15',
+  );
+  $ret['migrations']['ecolex_legislation'] = array(
+    'class_name' => 'EcolexLegislationMigration',
+    'group_name' => 'ecolex',
+    'source_url_pattern' => 'http://ecolex-frontend.edw.ro:8983/solr/ecolex/select?q=type%3Alegislation&wt=json',
+  );
+  return $ret;
+}

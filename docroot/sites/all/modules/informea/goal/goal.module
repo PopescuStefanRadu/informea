@@ -38,10 +38,142 @@ function goal_theme() {
       'variables' => array('goal', 'target', 'indicator', 'base_goal_url'),
       'path' => drupal_get_path('module', 'goal'),
     ),
+    'goal_related_content' => array(
+      'render element' => 'element',
+      'template' => 'templates/goal-related-content',
+      'variables' => array('items'),
+      'path' => drupal_get_path('module', 'goal'),
+    ),
   );
 }
 
+/**
+ * Implements hook_block_info().
+ */
+function goal_block_info() {
+  $blocks = [
+    'goal_related_content_block' => [
+      'info' => t('Goal related content'),
+      'cache' => DRUPAL_NO_CACHE,
+      'status' => 1,
+      'region' => 'content',
+      'visibility' => BLOCK_VISIBILITY_NOTLISTED,
+      'pages' => '',
+    ],
+  ];
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function goal_block_view($delta = '') {
+  $block = [];
+  switch ($delta) {
+    case 'goal_related_content_block':
+      $ob = menu_get_object();
+      if (!empty($ob) && $ob->type == 'goal') {
+        drupal_add_js(drupal_get_path('module', 'goal') . '/js/goal.js');
+        drupal_add_library('informea', 'scrollto');
+        drupal_add_library('informea', 'smallipop');
+        drupal_add_css(drupal_get_path('module', 'goal') . '/styles/goal.css');
+
+        $ob_w = entity_metadata_wrapper('node', $ob);
+        $type = $ob_w->field_goal_type->value();
+        switch ($type->name) {
+          case 'Goal':
+            $ob->targets = _get_goal_children($ob_w->field_goal_source->value(), $ob, 'Target');
+            if (!empty($ob->targets)) {
+              $block['content'] = '<h3>' . t('Targets') . '</h3>';
+              $block['content'] .= '<div class="children-container"><div class="accordion panel-group panel-collapse collapse in" role="tabpanel">';
+              foreach ($ob->targets as $target) {
+                $target->indicators = _get_goal_children($ob_w->field_goal_source->value(), $target, 'Indicator');
+                $block['content'] .= theme('goal_target', array('goal' => $ob, 'target' => $target, 'base_goal_url' => url('taxonomy/term/' . $ob_w->field_goal_source->value()->tid, ['absolute' => TRUE,])));
+              }
+              $block['content'] .= '</div></div>';
+            }
+            break;
+          case 'Target':
+            $parent = $ob_w->field_parent_goal->value();
+            if (!empty($parent) && is_array($parent)) {
+              $parent = reset($parent);
+            }
+            $ob->indicators = _get_goal_children($ob_w->field_goal_source->value(), $ob, 'Indicator');
+            if (!empty($ob->indicators)) {
+              $block['content'] = '<h3>' . t('Indicators') . '</h3>';
+              $block['content'] .= '<div class="children-container"><div class="accordion panel-group panel-collapse collapse in" role="tabpanel">';
+              foreach ($ob->indicators as $indicator) {
+                $block['content'] .= theme('goal_target_indicator', array('goal' => $parent, 'target' => $ob, 'indicator' => $indicator, 'base_goal_url' => url('taxonomy/term/' . $ob_w->field_goal_source->value()->tid, ['absolute' => TRUE,])));
+              }
+              $block['content'] .= '</div></div>';
+            }
+            break;
+          default:
+            $block['content'] = '';
+        }
+        $items = goal_get_related_content($ob->nid);
+        if (!empty($items)) {
+          $block['content'] .= '<h3>' . t('Related content') . '</h3>';
+          $block['content'] .= theme('goal_related_content', array('items' => $items));
+        }
+      }
+      break;
+  }
+  return $block;
+}
+
+function goal_get_related_content($goal_nid) {
+  $return = [];
+  $nids = db_select('field_data_field_sdg_goals', 'g')
+    ->fields('g', ['entity_id'])
+    ->condition('g.bundle', 'national_report_paragraph')
+    ->condition('g.field_sdg_goals_target_id', $goal_nid)
+    ->execute()->fetchCol();
+  if (!empty($nids)) {
+    $q = db_select('field_data_field_parent_national_report', 'p');
+    $q->innerJoin('field_data_field_treaty', 't', 'p.field_parent_national_report_target_id = t.entity_id');
+    $q->fields('p', ['entity_id', 'field_parent_national_report_target_id'])
+      ->fields('t', ['field_treaty_target_id'])
+      ->condition('p.entity_id', $nids, 'IN');
+    $paragraphs = $q->execute()->fetchAll();
+    foreach ($paragraphs as $paragraph) {
+      $treaty_id = $paragraph->field_treaty_target_id;
+      $national_report_id = $paragraph->field_parent_national_report_target_id;
+      if (empty($return[$treaty_id])) {
+        $treaty = node_load($treaty_id);
+        $treaty->national_reports = [];
+        $return[$treaty_id] = $treaty;
+      }
+      if (empty($return[$treaty_id]->national_reports[$national_report_id])) {
+        $national_report = node_load($national_report_id);
+        $national_report->children = [];
+        $return[$treaty_id]->national_reports[$national_report_id] = $national_report;
+      }
+      $paragraph = node_load($paragraph->entity_id);
+      $return[$treaty_id]->national_reports[$national_report_id]->children[] = $paragraph;
+    }
+  }
+  return $return;
+}
+
+function goal_preprocess_goal_target_indicator(&$variables) {
+  if (arg(0) == 'node' && !empty(arg(1)) && is_numeric(arg(1))) {
+    $goal = is_array($variables['goal']) ? reset($variables['goal']) : $variables['goal'];
+    $source = $goal->field_goal_source;
+    if (!empty($source) && !empty($source[LANGUAGE_NONE])) {
+      $variables['theme_hook_suggestions'][] = 'goal_target_indicator__' . $source[LANGUAGE_NONE][0]['tid'];
+    }
+  }
+  else {
+    $variables['theme_hook_suggestions'][] = 'goal_target_indicator__' . arg(2);
+  }
+}
+
 function _get_goal_source_goals($source, $type_of_goals) {
+  if (empty($source) || empty($type_of_goals)) {
+    return array();
+  }
+
   $query = new EntityFieldQuery();
 
   $goal_type_tid = NULL;
@@ -54,12 +186,14 @@ function _get_goal_source_goals($source, $type_of_goals) {
     ->propertyCondition('status', NODE_PUBLISHED)
     ->fieldCondition('field_goal_source', 'tid', $source->tid)
     ->fieldCondition('field_goal_type', 'tid', $goal_type_tid)
-    ->propertyOrderBy('title', 'ASC');
+    ->fieldOrderBy('field_sorting_order', 'value');
 
+  $ret = array();
   $result = $query->execute();
-  $nodes = $result['node'];
-
-  return $nodes;
+  if (!empty($result['node'])) {
+    $ret = $result['node'];
+  }
+  return $ret;
 }
 
 function _get_goal_children($source, $parent, $type_of_goals) {
@@ -93,22 +227,30 @@ function goal_taxonomy_term_view($term, $view_mode, $langcode) {
     drupal_add_library('informea', 'smallipop');
     drupal_add_css(drupal_get_path('module', 'goal') . '/styles/goal.css');
     switch ($term->tid) {
-      case '1732':
-        //Aichi Biodiversity Targets
+      case '1738':
+        // Magic number for Aichi Biodiversity Targets
         $goal_type = 'Strategic goal';
         $target_type = 'Aichi Target';
         break;
-      case '1733':
-        //For GEG we only show the view
-        unset($term->content);
+      case '1739':
+        // Magic number for GEG. We only show the view
+        hide($term->content);
         $goal_type = '';
         $target_type = '';
         break;
       case '1740':
-        //MDG's
+        // Magic number for MDG's
         $goal_type = 'Goal';
         $target_type = 'Target';
         break;
+      case '1753':
+        // Magic number for SDG's
+        $goal_type = 'Goal';
+        $target_type = 'Target';
+        break;
+      default:
+        $goal_type = '';
+        $target_type = '';
     }
     $goals = _get_goal_source_goals($term, $goal_type);
     foreach ($goals as $goal) {

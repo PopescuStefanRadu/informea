@@ -84,6 +84,13 @@ function leo_migrate_migrate_api() {
       'destination_type' => 'declaration_paragraph',
       'dependencies' => array('declaration', 'declaration_section', 'declaration_paragraph_type'),
     ),
+    'leo_court_decisions' => array(
+      'class_name' => 'LeoCourtDecisionMigration',
+      'description' => t('Migration of court decision manually added nodes from LEO.'),
+      'source_type' => 'court_decisions',
+      'destination_type' => 'court_decisions',
+      'dependencies' => array(),
+    ),
   );
 
   foreach ($node_arguments as $migration_name => $arguments) {

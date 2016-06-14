@@ -1,0 +1,5 @@
+<?php
+
+include_once 'includes/AkomaNtoso.inc';
+include_once 'includes/Elements/Element.inc';
+include_once 'includes/Elements/Document.inc';

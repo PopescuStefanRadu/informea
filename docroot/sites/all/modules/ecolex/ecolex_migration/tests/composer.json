@@ -1,0 +1,17 @@
+{
+    "name": "ws_consumer_odata/tests",
+    "description": "Tests for the ELIS consumer migrations",
+    "require": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "authors": [
+        {
+            "name": "Cristian Romanescu",
+            "email": "cristian@romanescu.ro"
+        },
+        {
+            "name": "Octavian Belu",
+            "email": "octavian.belu@eaudeweb.ro"
+        }
+    ]
+}

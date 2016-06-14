@@ -64,6 +64,10 @@ abstract class AbstractODataMigration extends Migration {
    * @param $row
    */
   function prepare($entity, $row) {
+    if (module_exists('uuid') && !$entity->is_new && $n = node_load($entity->nid)) {
+      $entity->uuid = $n->uuid;
+      $entity->vuuid = $n->vuuid;
+    }
     $languages = $row->languages;
     unset($languages['en']);
     $this->setTranslation($entity, $languages);

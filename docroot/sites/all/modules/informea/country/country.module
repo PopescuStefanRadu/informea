@@ -273,7 +273,7 @@ function country_node_view($node, $view_mode, $langcode) {
           }
           $rows[] = $row;
           if (count($nfps)) {
-            $nfp_data = country_data_render_focal_points($nfps);
+            $nfp_data = country_data_render_focal_points($nfps, $treaty);
             $row = array(
               'class' => array('collapse'),
               'data' => array(array('data' => drupal_render($nfp_data), 'colspan' => 4)),

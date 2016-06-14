@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-
   // Disable all clicks
   $('.disabled').click(function (event) { event.preventDefault() });
 
@@ -72,30 +71,11 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $('.node-switcher').on('change', function() {
+    var val = $(this).val();
 
-  /* Select to switch treaty in treaty index page */
-  jQuery('#treaty-selector').on('change', function() {
-    var url = window.location.href.split('/');
-    console.log(url);
-    if(url.length == 5 || url.length == 6) {
-      var treaty = url[4];
-      var dest = '/treaties/' + jQuery(this).val();
-      window.location.href = dest;
-    }
-  });
-
-  /* Select to switch treaty in treaty index page */
-  // jQuery('#treaty-selector').select2();
-  jQuery('#country-selector').on('change', function() {
-    var url = window.location.href.split('/');
-    console.log(url);
-    if(url.length == 5 || url.length == 6) {
-      var treaty = url[4];
-      var dest = '/countries/' + jQuery(this).val();
-      if (url.length == 6) {
-        dest += '/' + url[5];
-      }
-      window.location.href = dest;
+    if (val !== 0) {
+      window.location.href = val;
     }
   });
 
@@ -124,5 +104,29 @@ jQuery(document).ready(function ($) {
         return $(selector, this).text().toLowerCase().indexOf(value.toLowerCase()) > -1;
       }).show().length > 0;
     }).show();
+  });
+
+  $('.back-to-top').on('click', function (event) {
+    event.preventDefault();
+
+    $('html, body').animate({
+      scrollTop: 0
+    }, 600);
+  });
+
+  var timer;
+
+  $(window).on('scroll', function () {
+    if (!timer) {
+      timer = setTimeout(function () {
+        if ($(window).scrollTop() > 100) {
+          $('.back-to-top').fadeIn();
+        } else {
+          $('.back-to-top').fadeOut();
+        }
+
+        timer = null;
+      }, 300);
+    }
   });
 });

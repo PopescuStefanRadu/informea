@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result db="tre" queryID="" numberResultsFound="5" numberResultsPresented="5">
+  <document>
+    <db>tre</db>
+    <Recid>TRE-000140</Recid>
+    <dateOfEntry>1981-10-20</dateOfEntry>
+    <dateOfModification>2016-03-17</dateOfModification>
+    <titleOfText>
+      <![CDATA[Convention on the Prohibition of Military]]></titleOfText>
+    <titleOfTextFr>
+      <![CDATA[Convention sur l'interdiction d'utiliser des techniques de modification de l'environnement à]]></titleOfTextFr>
+    <titleOfTextSp>
+      <![CDATA[Convención sobre la Prohibición de Utilizar Técnicas de Modificación]]></titleOfTextSp>
+    <titleOfTextOther>
+      <![CDATA[Übereinkommen über das Verbot der militärischen oder sonstigen feindseligen Nutzung umweltverändernder Techniken]]></titleOfTextOther>
+    <titleAbbreviation>
+      <![CDATA[ LBS Protocol ]]>
+    </titleAbbreviation>
+    <typeOfText>Multilateral</typeOfText>
+    <typeOfText_fr_FR>Multilatéral</typeOfText_fr_FR>
+    <typeOfText_es_ES>Multilateral</typeOfText_es_ES>
+    <jurisdiction>International</jurisdiction>
+    <jurisdiction_fr_FR>International</jurisdiction_fr_FR>
+    <jurisdiction_es_ES>Internacional</jurisdiction_es_ES>
+
+    <fieldOfApplication>Global</fieldOfApplication>
+    <fieldOfApplication_fr_FR>Mondial</fieldOfApplication_fr_FR>
+    <fieldOfApplication_es_ES>Mundial</fieldOfApplication_es_ES>
+    <sortFieldOfApplication>1</sortFieldOfApplication>
+
+    <region><![CDATA[Arctic]]></region>
+    <region><![CDATA[Asia]]></region>
+    <subject><![CDATA[Environment gen.]]></subject>
+    <subject_fr_FR><![CDATA[Environnement gén.]]></subject_fr_FR>
+    <subject_es_ES><![CDATA[Medio ambiente gen.]]></subject_es_ES>
+    <subject><![CDATA[term2]]></subject>
+
+    <languageOfDocument>Arabic</languageOfDocument>
+    <languageOfDocument>Chinese</languageOfDocument>
+    <languageOfDocument>English</languageOfDocument>
+    <languageOfDocument>French</languageOfDocument>
+    <languageOfDocument>Russian</languageOfDocument>
+    <languageOfDocument>Spanish</languageOfDocument>
+    <languageOfDocument_fr_FR>Arabe</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Chinois</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Anglais</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Français</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Russe</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Espagnol</languageOfDocument_fr_FR>
+    <languageOfDocument_es_ES>Árabe</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Chino</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Inglés</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Francés</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Ruso</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Español</languageOfDocument_es_ES>
+    <languageOfTranslation>German</languageOfTranslation>
+    <languageOfTranslation_fr_FR>Allemand</languageOfTranslation_fr_FR>
+    <languageOfTranslation_es_ES>Alemán</languageOfTranslation_es_ES>
+    <placeOfAdoption>Geneva</placeOfAdoption>
+    <depository><![CDATA[UN United Nations]]></depository>
+    <depository_fr_FR><![CDATA[NU Nations Unies]]></depository_fr_FR>
+    <depository_es_ES><![CDATA[NU Naciones Unidas]]></depository_es_ES>
+    <dateOfText>1977-05-18</dateOfText>
+    <searchDate>1977-05-18</searchDate>
+    <entryIntoForceDate>1978-10-05</entryIntoForceDate>
+    <obsolete>true</obsolete>
+    <officialPublication>
+      <![CDATA[TIAS 9614 UN Doc.A/Res./31/72 UNJBB(1976)125 BGBl. 1983 II 125 UNTS I:17119]]></officialPublication>
+    <availableIn><![CDATA[B7 p. 977:37; UNE 1108 UNTS 151]]></availableIn>
+    <linkToFullText>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/En/TRE-000140.pdf]]></linkToFullText>
+    <linkToFullTextFr>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/Fr/TRE-000140.pdf]]></linkToFullTextFr>
+    <linkToFullTextSp>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/Sp/TRE-000140.pdf]]></linkToFullTextSp>
+    <relatedWebSite><![CDATA[www.un.org]]></relatedWebSite>
+    <relatedWebSite>
+      <![CDATA[http://treaties.un.org/Pages/ViewDetails.aspx?src=IND&mtdsg_no=XXVI-1&chapter=26&lang=en]]></relatedWebSite>
+    <keyword><![CDATA[dispute settlement]]></keyword>
+    <keyword><![CDATA[military activities]]></keyword>
+    <keyword><![CDATA[institution]]></keyword>
+    <keyword><![CDATA[international relations/cooperation]]></keyword>
+    <keyword_fr_FR><![CDATA[règlement des différends]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[solución de controversias]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[activités militaires]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[actividades militares]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[institution]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[institución]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[relations internationales/coopération]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[relaciones internacionales/cooperación]]></keyword_es_ES>
+    <amendsTreaty>TRE-000544</amendsTreaty>
+    <amendsTreaty>TRE-000543</amendsTreaty>
+    <abstract>
+      <![CDATA[
+Objective: To control emissions of heavy metals
+]]>
+    </abstract>
+    <abstract>
+      <![CDATA[
+Summary of provisions:
+]]>
+      <![CDATA[
+Parties agree
+]]>
+    </abstract>
+    <abstract>
+      <![CDATA[
+Institutional mechanisms
+]]>
+    </abstract>
+    <abstract>
+      <![CDATA[ (Source: IUCN ELC, 08.2005) ]]>
+    </abstract>
+    <party>
+      <potentialParty>Yes</potentialParty>
+      <country>Ethiopia</country>
+      <countryFr>Éthiopie</countryFr>
+      <countrySp>Etiopía</countrySp>
+      <dateOfAccessionApprobation>1985-10-22</dateOfAccessionApprobation>
+      <entryIntoForce>1986-10-22</entryIntoForce>
+    </party>
+    <party>
+      <potentialParty>No</potentialParty>
+      <country>Algeria</country>
+      <countryFr>Algérie</countryFr>
+      <countrySp>Argelia</countrySp>
+      <dateOfAccessionApprobation>1991-12-19</dateOfAccessionApprobation>
+      <entryIntoForce>1991-12-19</entryIntoForce>
+    </party>
+    <party>
+      <potentialParty>No</potentialParty>
+      <country>Afghanistan</country>
+      <countryFr>Afghanistan</countryFr>
+      <countrySp>Afghanistan</countrySp>
+      <dateOfSimpleSignature>1977-05-18</dateOfSimpleSignature>
+      <entryIntoForce>0000-00-00</entryIntoForce>
+    </party>
+    <party>
+      <potentialParty>No</potentialParty>
+      <country>Kyrgyzstan</country>
+      <countryFr>Kirghizistan</countryFr>
+      <countrySp>Kirguistán</countrySp>
+      <dateOfAccessionApprobation>2015-06-15</dateOfAccessionApprobation>
+      <entryIntoForce>2015-06-15</entryIntoForce>
+    </party>
+  </document>
+
+  <document>
+    <db>tre</db>
+    <Recid>TRE-000143</Recid>
+    <dateOfEntry>1981-10-21</dateOfEntry>
+    <dateOfModification>2016-03-17</dateOfModification>
+    <titleOfText><![CDATA[Convention on the Territorial Sea and the Contiguous Zone]]></titleOfText>
+    <titleOfTextFr><![CDATA[Convention sur la mer territoriale et la zone contiguë]]></titleOfTextFr>
+    <titleOfTextSp><![CDATA[Convención sobre el Mar Territorial y la Zona Contigua]]></titleOfTextSp>
+    <titleOfTextOther><![CDATA[Übereinkommen über Hoheitsgewässer und angrenzende Zonen]]></titleOfTextOther>
+    <typeOfText>Multilateral</typeOfText>
+    <typeOfText_fr_FR>Multilatéral</typeOfText_fr_FR>
+    <typeOfText_es_ES>Multilateral</typeOfText_es_ES>
+    <jurisdiction>International</jurisdiction>
+    <jurisdiction_fr_FR>International</jurisdiction_fr_FR>
+    <jurisdiction_es_ES>Internacional</jurisdiction_es_ES>
+
+    <fieldOfApplication>Global</fieldOfApplication>
+    <fieldOfApplication_es_ES>Mundial</fieldOfApplication_es_ES>
+    <fieldOfApplication_fr_FR>Mondial</fieldOfApplication_fr_FR>
+    <sortFieldOfApplication>1</sortFieldOfApplication>
+
+    <subject><![CDATA[Fisheries]]></subject>
+    <subject><![CDATA[Sea]]></subject>
+    <subject_fr_FR><![CDATA[Pêche]]></subject_fr_FR>
+    <subject_fr_FR><![CDATA[Mer]]></subject_fr_FR>
+    <subject_es_ES><![CDATA[Pesca]]></subject_es_ES>
+    <subject_es_ES><![CDATA[Mar]]></subject_es_ES>
+
+    <languageOfDocument>Chinese</languageOfDocument>
+    <languageOfDocument>English</languageOfDocument>
+    <languageOfDocument>French</languageOfDocument>
+    <languageOfDocument>Russian</languageOfDocument>
+    <languageOfDocument>Spanish</languageOfDocument>
+    <languageOfDocument_fr_FR>Chinois</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Anglais</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Français</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Russe</languageOfDocument_fr_FR>
+    <languageOfDocument_fr_FR>Espagnol</languageOfDocument_fr_FR>
+    <languageOfDocument_es_ES>Chino</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Inglés</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Francés</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Ruso</languageOfDocument_es_ES>
+    <languageOfDocument_es_ES>Español</languageOfDocument_es_ES>
+    <placeOfAdoption>Geneva</placeOfAdoption>
+    <depository><![CDATA[UN United Nations]]></depository>
+    <depository_fr_FR><![CDATA[NU Nations Unies]]></depository_fr_FR>
+    <depository_es_ES><![CDATA[NU Naciones Unidas]]></depository_es_ES>
+    <dateOfText>1958-04-29</dateOfText>
+    <searchDate>1958-04-29</searchDate>
+    <entryIntoForceDate>1964-09-10</entryIntoForceDate>
+    <obsolete>false</obsolete>
+    <numberOfPages>8</numberOfPages>
+    <officialPublication>
+      <![CDATA[516 UNTS 205 $ UKTS No.3 (1965) Cmnd.2511 15 UST 1606 TIAS 5639]]></officialPublication>
+    <availableIn><![CDATA[B7 p. 958:32]]></availableIn>
+    <linkToFullText>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/En/TRE-000143.pdf]]></linkToFullText>
+    <linkToFullTextFr>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/Fr/TRE-000143.pdf]]></linkToFullTextFr>
+    <linkToFullTextSp>
+      <![CDATA[http://www.ecolex.org/server2.php/server2neu.php/libcat/docs/TRE/Full/Sp/TRE-000143.pdf]]></linkToFullTextSp>
+    <relatedWebSite><![CDATA[www.un.org]]></relatedWebSite>
+    <relatedWebSite>
+      <![CDATA[treaties.un.org/pages/ViewDetails.aspx?src=TREATY&mtdsg_no=XXI-1&chapter=21&lang=en]]></relatedWebSite>
+    <keyword><![CDATA[high seas]]></keyword>
+    <keyword><![CDATA[maritime zone]]></keyword>
+    <keyword><![CDATA[navigation]]></keyword>
+    <keyword><![CDATA[sovereignty]]></keyword>
+    <keyword><![CDATA[territorial sea]]></keyword>
+    <keyword_fr_FR><![CDATA[haute mer]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[alta mar]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[zone marine]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[zona marítima]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[navigation]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[navegación]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[souveraineté]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[soberanía]]></keyword_es_ES>
+    <keyword_fr_FR><![CDATA[mer territoriale]]></keyword_fr_FR>
+    <keyword_es_ES><![CDATA[mar territorial]]></keyword_es_ES>
+    <abstract>
+      <![CDATA[Objectives: To define and limit the territorial sea and the contiguous zone.]]></abstract>
+  </document>
+
+  <!-- Empty record -->
+  <document>
+  </document>
+
+  <!-- Empty record without the title -->
+  <document>
+    <db>cou</db>
+    <Recid>COU-88888888</Recid>
+  </document>
+
+  <!-- Minimal record -->
+  <document>
+    <db>cou</db>
+    <Recid>COU-99999999</Recid>
+    <titleOfText><![CDATA[Empty valid court decision]]></titleOfText>
+  </document>
+</result>

@@ -16,3 +16,58 @@ function ws_consumer_odata_update_7003() {
   $ids = db_query("SELECT a.nid FROM node a INNER JOIN field_data_field_treaty b ON a.nid = b.entity_id WHERE a.`type` = 'contact_person' AND b.field_treaty_target_id IN (255, 262, 263) AND a.nid NOT IN (SELECT destid1 FROM migrate_map_odata_cbd_contacts WHERE destid1 IS NOT NULL)")->fetchCol();
   node_delete_multiple($ids);
 }
+
+/**
+ * Create the UNFCCC nodes
+ */
+function ws_consumer_odata_update_7004() {
+  $meetings = array(
+    "Conference of the Parties (COP), Eighteenth session, 26 November - 7 December 2012, Doha, Qatar" => [ 'date' => "2012-11-26", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Eighth session, 23 October - 1 November 2002, New Delhi, India" => [ 'date' => "2002-11-02", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Eleventh session, 28 November - 10 December 2005, Montreal, Canada" => [ 'date' => "2005-11-28", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Fifteenth session, 7-18 December 2009, Copenhagen, Denmark" => [ 'date' => "2009-12-07", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Fifth session, 25 October - 5 November 1999, Bonn, Germany" => [ 'date' => "1999-11-25", 'treaty' => 269 ],
+    "Conference of the Parties (COP), First session, 28 March - 7 April 1995, Berlin, Germany" => [ 'date' => "1995-03-28", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Fourteenth session, 1-12 December 2008, Poznan, Poland" => [ 'date' => "2008-12-01", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Fourth session, 2-13 November 1998, Buenos Aires, Argentina" => [ 'date' => "1998-11-02", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Nineteenth session, 11-22 November 2013, Warsaw, Poland" => [ 'date' => "2013-11-11", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Ninth session, 1-12 December 2003, Milan, Italy" => [ 'date' => "2003-12-01", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Second session, 8-19 July 1996, Geneva, Switzerland" => [ 'date' => "1996-07-08", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Seventeenth session, 28 November - 9 December 2011, Durban, South Africa" => [ 'date' => "2011-11-28", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Seventh session, 29 October - 10 November 2001, Marrakesh, Morocco" => [ 'date' => "2001-10-29", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Sixteenth session, 29 November - 10 December 2010, Cancun, Mexico" => [ 'date' => "2010-11-29", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Sixth session, First part, 13-25 November 2000, The Hague, Netherlands" => [ 'date' => "2000-11-13", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Sixth session, Second part, 16-27 July 2001, Bonn, Germany" => [ 'date' => "2001-07-16", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Tenth session, 6-17 December 2004, Buenos Aires, Argentina" => [ 'date' => "2004-12-06", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Third session, 1-10 December 1997, Kyoto, Japan" => [ 'date' => "1997-12-01", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Thirteenth session, 3-14 December 2007, Bali, Indonesia" => [ 'date' => "2007-12-03", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Twelfth session, 6-17 November 2006, Nairobi, Kenya" => [ 'date' => "2006-11-06", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Twentieth session,  1–12 December 2014, Lima, Peru" => [ 'date' =>  "2014-12-01", 'treaty' => 269 ],
+    "Conference of the Parties (COP), Twenty-first session,  30 November - 11 December 2015, Paris, France" => [ 'date' => "2015-11-30", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Eighth session,  26 November - 7 December 2012, Doha, Qatar" => [ 'date' => "2012-11-26", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Eleventh session,  30 November - 11 December 2015, Paris, France" => [ 'date' => "2015-12-11", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Fifth session, 7-18 December 2009, Copenhagen, Denmark" => [ 'date' => "2008-12-07", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Fourth session, 1-12 December 2008, Poznan, Poland" => [ 'date' => "2008-12-01", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Ninth session, 11-22 November 2013, Warsaw, Poland" => [ 'date' => "2013-11-11", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Seventh session, 28 November - 9 December 2011, Durban, South Africa" => [ 'date' => "2011-11-28", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Sixth session, 29 November - 10 December 2010, Cancun, Mexico" => [ 'date' => "2010-11-29", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Tenth session,  1–12 December 2014, Lima, Peru" => [ 'date' => "2014-12-01", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (CMP), Third session, 3-14 December 2007, Bali, Indonesia" => [ 'date' => "2007-12-03", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (COP/MOP), First session, 28 November - 10 December 2005, Montreal, Canada" => [ 'date' => "2005-11-28", 'treaty' => 269 ],
+    "Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol (COP/MOP), Second session, 6-17 November 2006, Nairobi, Kenya" => [ 'date' => "2006-11-06", 'treaty' => 269 ],
+  );
+
+  foreach ($meetings as $title => $row) {
+    $node = new stdClass();
+    $node->type = 'event_calendar';
+    $node->title = $title;
+    node_object_prepare($node);
+    $node->status = 1;
+    $node->language = 'en';
+    $node->title_field['en'][0]['value'] = $title;
+    $node->field_event_type[LANGUAGE_NONE][0]['tid'] = 821; // COP
+    $node->event_calendar_date[LANGUAGE_NONE][0]['value']['date'] = $row['date'];
+    $node->field_treaty[LANGUAGE_NONE][0]['target_id'] = $row['treaty'];
+    node_save($node);
+  }
+}

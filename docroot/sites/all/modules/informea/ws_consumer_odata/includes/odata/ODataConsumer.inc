@@ -143,7 +143,6 @@ abstract class ODataConsumer {
     $previous = NULL;
     $total = 0;
     $migration->getOption('update');
-//    $update = $migration->getOption('update');
     while ($rows = $this->parseJSONRemoteListPage($url)) {
       // Detect infinite loop when the service does not recognise pagination
       if (json_encode($rows) === json_encode($previous)) {
@@ -152,10 +151,6 @@ abstract class ODataConsumer {
       if (!empty($rows)) {
         foreach ($rows as $id => $row) {
           $total++;
-//          if (!$update && $x = $migration->getMap()->lookupDestinationID(array($id))) {
-//            // ws_consumer_odata_log(__METHOD__ . ": Skipping existing record:" . $row->id . " feed: " . $url, MigrationBase::MESSAGE_WARNING);
-//            continue;
-//          }
           if (array_key_exists($id, $ret)) {
             ws_consumer_odata_log(__METHOD__ . ": Ignoring duplicate row, id:" . $row->id . " feed: " . $url, MigrationBase::MESSAGE_WARNING);
             continue;
@@ -177,6 +172,37 @@ abstract class ODataConsumer {
     ws_consumer_odata_log($msg);
     return $ret;
   }
+
+
+  /**
+   * Return a single page of results
+   *
+   * @param Migration $migration
+   *
+   * @return array
+   *   Array of stdClass objects
+   */
+  public function getPage($entity, $start, $migration) {
+    $ret = array();
+    $pageSize = ODataConsumerConfig::getODataPageSize();
+    $base_url = $this->config->getEndpointURL() . '/' . $entity;
+    $url = sprintf($base_url . '?$top=%d&$skip=%d', $pageSize, $start);
+    $odata_filter = $this->config->getListingQueryString();
+    if ($odata_filter) {
+      $url .= $odata_filter;
+    }
+    $previous = NULL;
+    $migration->getOption('update');
+    if ($rows = $this->parseJSONRemoteListPage($url)) {
+      foreach ($rows as $id => $row) {
+        $ret[$id] = $row;
+      }
+    }
+    $msg = sprintf(__METHOD__ . '(%s): Remote service returned %d results', $this->config->odata_entity, count($ret), count($ret));
+    ws_consumer_odata_log($msg);
+    return $ret;
+  }
+
 
   /**
    * Parse the JSON OData feed.

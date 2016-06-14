@@ -27,7 +27,7 @@ function treaty_field_default_field_bases() {
     'settings' => array(
       'entity_translation_sync' => FALSE,
     ),
-    'translatable' => 0,
+    'translatable' => 1,
     'type' => 'text_long',
   );
 
@@ -261,7 +261,7 @@ function treaty_field_default_field_bases() {
     'settings' => array(
       'allowed_values' => array(
         0 => array(
-          'vocabulary' => 'thesaurus_ecolex',
+          'vocabulary' => 'ecolex_subjects',
           'parent' => 0,
         ),
       ),

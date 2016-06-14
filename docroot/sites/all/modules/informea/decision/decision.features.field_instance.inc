@@ -29,7 +29,7 @@ function decision_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 0,
+        'weight' => 9,
       ),
       'teaser' => array(
         'label' => 'hidden',
@@ -87,7 +87,7 @@ function decision_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => 3,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -104,7 +104,7 @@ function decision_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_decision_number',
-    'label' => 'Number',
+    'label' => 'Decision number',
     'required' => 0,
     'settings' => array(
       'entity_translation_sync' => FALSE,
@@ -137,11 +137,11 @@ function decision_field_default_field_instances() {
         'weight' => 3,
       ),
       'default' => array(
-        'label' => 'inline',
+        'label' => 'hidden',
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 2,
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -191,11 +191,11 @@ function decision_field_default_field_instances() {
         'weight' => 0,
       ),
       'default' => array(
-        'label' => 'inline',
+        'label' => 'hidden',
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 1,
+        'weight' => 2,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -244,11 +244,11 @@ function decision_field_default_field_instances() {
         'weight' => 4,
       ),
       'default' => array(
-        'label' => 'inline',
+        'label' => 'above',
         'module' => 'informea',
         'settings' => array(),
         'type' => 'external_url',
-        'weight' => 9,
+        'weight' => 8,
       ),
       'teaser' => array(
         'label' => 'inline',
@@ -266,7 +266,7 @@ function decision_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_files',
-    'label' => 'Files',
+    'label' => 'Documents',
     'required' => 0,
     'settings' => array(
       'description_field' => 1,
@@ -313,7 +313,7 @@ function decision_field_default_field_instances() {
         'module' => 'i18n_taxonomy',
         'settings' => array(),
         'type' => 'i18n_taxonomy_term_reference_link',
-        'weight' => 8,
+        'weight' => 7,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -378,7 +378,7 @@ function decision_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 11,
+        'weight' => 10,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -497,7 +497,7 @@ function decision_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 12,
+        'weight' => 11,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -549,7 +549,7 @@ function decision_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 15,
+        'weight' => 14,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -617,7 +617,7 @@ function decision_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 13,
+        'weight' => 12,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -665,17 +665,17 @@ function decision_field_default_field_instances() {
         'weight' => 0,
       ),
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'date',
         'settings' => array(
-          'format_type' => 'long',
+          'format_type' => 'short',
           'fromto' => 'both',
           'multiple_from' => '',
           'multiple_number' => '',
           'multiple_to' => '',
         ),
         'type' => 'date_default',
-        'weight' => 17,
+        'weight' => 1,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -692,7 +692,7 @@ function decision_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_sorting_date',
-    'label' => 'Document date',
+    'label' => 'Date',
     'required' => 0,
     'settings' => array(
       'default_value' => 'now',
@@ -735,7 +735,7 @@ function decision_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 16,
+        'weight' => 15,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -785,13 +785,13 @@ function decision_field_default_field_instances() {
         'weight' => 14,
       ),
       'default' => array(
-        'label' => 'inline',
+        'label' => 'hidden',
         'module' => 'entityreference',
         'settings' => array(
           'link' => 1,
         ),
         'type' => 'entityreference_label',
-        'weight' => 4,
+        'weight' => 0,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -862,7 +862,7 @@ function decision_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_url',
-    'label' => 'URL',
+    'label' => 'Link to decision on MEA website',
     'required' => 0,
     'settings' => array(
       'absolute_url' => 1,
@@ -914,7 +914,7 @@ function decision_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 14,
+        'weight' => 13,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -1583,17 +1583,18 @@ function decision_field_default_field_instances() {
   t('Attach here any files related to this decision in English or the language selected above. Use the "Translate" tab feature to add in other languages, after you save this language!');
   t('Body');
   t('DO NOT EDIT! Original corresponding unique identifier in the MEA database, use in future synchronizations');
+  t('Date');
   t('Date when decision was made, usually this is the date of the COP/MOP meeting.');
+  t('Decision number');
   t('Description');
-  t('Document date');
+  t('Documents');
   t('English meeting title');
-  t('Files');
   t('InforMEA Tags');
   t('Last update');
+  t('Link to decision on MEA website');
   t('Meeting');
   t('Meeting URL');
   t('Name');
-  t('Number');
   t('Official order');
   t('Order');
   t('Original ID');
@@ -1606,7 +1607,6 @@ function decision_field_default_field_instances() {
   t('Treaty');
   t('Type');
   t('Type of decision (decision, resolution, recommendation etc.)');
-  t('URL');
   t('URL to decision page (or PDF file) on the MEA website, if available');
   t('Unique MEA internal decision number (e.g. IX/13)');
   t('Use the autocomplete to search the meeting, if the meeting does not exist, please add a new one first - right click above on \'Add content\', then \'Open link in new tab ...\'');

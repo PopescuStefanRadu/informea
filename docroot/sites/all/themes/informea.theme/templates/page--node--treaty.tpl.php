@@ -84,7 +84,7 @@
     <?php print render($title_prefix); ?>
     <div class="col-md-9"><h1><?php print informea_theme_treaty_logo_link($node); ?><?php print $title; ?></h1></div>
     <div class="col-md-3">
-      <form class="treaty-selector" role="form">
+      <form role="form">
         <?php print drupal_render($variables['select-switch-treaties']); ?>
       </form>
     </div>

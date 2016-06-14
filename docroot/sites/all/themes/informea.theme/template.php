@@ -72,10 +72,9 @@ function informea_theme_preprocess_page(&$variables) {
         $variables['content_column_class'] = ' class="col-sm-9"';
         $variables['countries'] = $countries;
         $variables['select-switch-countries'] = array(
-          '#id' => 'country-selector',
-          '#type' => 'select',
+          '#attributes' => array('class' => array('form-control', 'node-switcher', 'country-switcher')),
           '#options' => $countries1,
-          '#attributes' => array('class' => array('form-control')),
+          '#type' => 'select'
         );
         array_unshift($variables['page']['sidebar_first'], menu_secondary_local_tasks());
         break;
@@ -87,12 +86,66 @@ function informea_theme_preprocess_page(&$variables) {
         $treaties1 = $treaties;
         array_unshift($treaties1, t('View another treaty'));
         $variables['select-switch-treaties'] = array(
-          '#id' => 'treaty-selector',
-          '#type' => 'select',
+          '#attributes' => array('class' => array('form-control', 'node-switcher', 'treaty-switcher')),
           '#options' => $treaties1,
-          '#attributes' => array('class' => array('form-control')),
+          '#type' => 'select'
         );
         array_unshift($variables['page']['sidebar_first'], menu_secondary_local_tasks());
+        break;
+
+      case 'decision':
+        if (!empty($node->field_decision_number[LANGUAGE_NONE][0]['value'])) {
+          $variables['classes_array'][] = 'decision-page';
+          $variables['title_prefix'] = $node->field_decision_number[LANGUAGE_NONE][0]['value'];
+          $variables['page']['above_content'] = array(
+            '#type' => 'container',
+            '#attributes' => array(
+              'id' => array('decision-date-title'),
+            ),
+            '#attached' => array(
+              'js' => array(
+                drupal_get_path('theme', 'informea_theme') . '/js/decision.js',
+              ),
+            ),
+          );
+          if (!empty($node->field_sorting_date[LANGUAGE_NONE][0]['value'])) {
+            $decision_date = date('d-m-Y', strtotime($node->field_sorting_date[LANGUAGE_NONE][0]['value']));
+            $variables['page']['above_content']['date'] = array(
+              '#type' => 'item',
+              '#title' => t('Date'),
+              '#markup' => $decision_date,
+              '#prefix' => '<div class="field-name-field-sorting-date"><div class="container">',
+              '#suffix' => '</div></div>',
+            );
+          }
+          $variables['page']['above_content']['title'] = array(
+            '#type' => 'item',
+            '#title' => t('Full title'),
+            '#markup' => $node->title,
+            '#prefix' => '<div class="field-name-title-field"><div class="container">',
+            '#suffix' => '</div></div>',
+          );
+          if (!empty($node->field_treaty[LANGUAGE_NONE][0]['target_id'])) {
+            $treaty_node = node_load($node->field_treaty[LANGUAGE_NONE][0]['target_id']);
+            $variables['page']['above_content']['tabs'] = _decision_get_treaty_links($treaty_node, array('un-treaty-collection-link'));
+            $variables['page']['above_content']['tabs']['#prefix'] = '<div class="decision-treaty-tabs"><div class="container">';
+            $variables['page']['above_content']['tabs']['#suffix'] = '</div></div>';
+          }
+        }
+        break;
+
+      case 'goal':
+        $sdgs_tid = 1753;
+        if (!empty($node->field_goal_source)
+          && !empty($node->field_goal_source[LANGUAGE_NONE])
+          && $node->field_goal_source[LANGUAGE_NONE][0]['tid'] == $sdgs_tid) {
+          $node_w = entity_metadata_wrapper('node', $node);
+          if (($term = $node_w->field_goal_type->value()) && in_array($term->name, ['Target', 'Indicator'])) {
+            $tw = entity_metadata_wrapper('taxonomy_term', $term);
+            drupal_set_title($tw->label() . ' ' . $node_w->label());
+          }
+        }
+        break;
     }
   }
   if (isset($variables['node']->type)) {
@@ -107,14 +160,14 @@ function informea_theme_preprocess_page(&$variables) {
     // Replace the <select> at this stage to avoid replacement issue coming from i18n_block_translate_block
     if (!empty($variables['page']['front_page_content']['block_10'])) {
       $block_data =& $variables['page']['front_page_content']['block_10'];
-      $countries = countries_get_countries('name', array('enabled' => COUNTRIES_ENABLED));
-      $html = '<select id="front-page-country-list-block" class="form-control input-sm">';
-      $html .= '<option>' . t('Select a country ...') . '</option>';
-      foreach ($countries as $iso2 => $country) {
-        $html .= sprintf('<option value="%s">%s</option>', $iso2, $country);
-      }
-      $html .= '</select>';
-      $block_data['#markup'] = preg_replace('/<select.*><\/select>/i', $html, $block_data['#markup']);
+      $countries = country_get_countries_select_options();
+      array_unshift($countries, t('Select a country…'));
+      $html = array(
+        '#attributes' => array('class' => array('form-control', 'node-switcher', 'country-switcher')),
+        '#options' => $countries,
+        '#type' => 'select'
+      );
+      $block_data['#markup'] = preg_replace('/<select.*><\/select>/i', drupal_render($html), $block_data['#markup']);
     }
   }
 
@@ -145,8 +198,25 @@ function informea_theme_theme() {
     'informea_search_form_wrapper' => array(
       'render element' => 'element',
     ),
+    'bootstrap_btn_dropdown' => array(
+      'variables' => array(
+        'links' => array(),
+        'attributes' => array(),
+        'type' => NULL,
+      ),
+    ),
   );
 }
+
+/**
+ * Implements theme_bootstrap_btn_dropdown().
+ */
+function informea_theme_bootstrap_btn_dropdown($variables) {
+  $path = drupal_get_path('theme', 'bootstrap');
+  require_once $path . '/theme/bootstrap/bootstrap-btn-dropdown.func.php';
+  return theme_bootstrap_btn_dropdown($variables);
+}
+
 
 function informea_theme_meeting_type($term) {
   if ($term) {
@@ -213,12 +283,12 @@ function informea_theme_slider() {
         switch ($w->getBundle()) {
           case 'feed_item':
             $url = $w->field_url->value();
-            $url = empty($url) ? url('node/' . $w->getIdentifier()) : $url['url'];
+            $url = empty($url) ? 'node/' . $w->getIdentifier() : $url['url'];
 
             break;
 
           default:
-            $url = url('node/' . $w->getIdentifier());
+            $url = 'node/' . $w->getIdentifier();
 
             break;
         }
@@ -229,9 +299,11 @@ function informea_theme_slider() {
         }
         catch(Exception $e) {}
         if (empty($image)) {
+          $alt = !empty($w->field_image->value()['alt']) ? $w->field_image->value()['alt'] : $w->label();
           $image = theme('image_style', array(
             'path' => $w->field_image->value()['uri'],
-            'style_name' => 'front_page_slider'
+            'style_name' => 'front_page_slider',
+            'alt' => $alt,
           ));
         }
         $slide = array(
@@ -317,10 +389,10 @@ function informea_theme_slider() {
       $url = empty($url) ? $url = url('node/' . $ob->nid) : $url = $url['url'];
       $start = $w->event_calendar_date->value();
       $start = format_date(strtotime($start['value']), 'short');
-      $image = theme('image', array('path' => $images[array_rand($images)]));
+      $image = theme('image', array('path' => $images[array_rand($images)], 'alt' => $w->label()));
       $slide = array(
         'image' => l($image, $url, array('absolute' => TRUE, 'html' => TRUE)),
-        'logo' => theme('image', array('path' => $logo['uri'])),
+        'logo' => theme('image', array('path' => $logo['uri'], 'alt' => $tw->label())),
         'date' => $start,
         'link' => l($w->label(), $url, array('absolute' => TRUE, 'attributes' => array('target' => '_blank'))),
       );
@@ -457,5 +529,79 @@ function informea_theme_preprocess_node(&$vars) {
   if ($view_mode = $vars['view_mode']) {
     $vars['theme_hook_suggestions'][] = 'node__' . $vars['node']->type . '__' . $view_mode;
     $vars['theme_hook_suggestions'][] = 'node__' . $vars['node']->nid . '__' . $view_mode;
+  }
+}
+
+/**
+ * Draw the flexible layout.
+ */
+function informea_theme_panels_flexible($vars) {
+  $css_id = $vars['css_id'];
+  $content = $vars['content'];
+  $settings = $vars['settings'];
+  $display = $vars['display'];
+  $layout = $vars['layout'];
+  $handler = $vars['renderer'];
+
+  panels_flexible_convert_settings($settings, $layout);
+
+  $renderer = panels_flexible_create_renderer(FALSE, $css_id, $content, $settings, $display, $layout, $handler);
+
+  $output = "<div class=\"panel-flexible " . $renderer->base['canvas'] . " clearfix\" $renderer->id_str>\n";
+  $output .= "<div class=\"panel-flexible-inside " . $renderer->base['canvas'] . "-inside\">\n";
+
+  $output .= panels_flexible_render_items($renderer, $settings['items']['canvas']['children'], $renderer->base['canvas']);
+
+  // Wrap the whole thing up nice and snug
+  $output .= "</div>\n</div>\n";
+
+  return $output;
+}
+
+function informea_theme_views_mini_pager($vars) {
+  global $pager_page_array, $pager_total;
+
+  $tags = $vars['tags'];
+  $element = $vars['element'];
+  $parameters = $vars['parameters'];
+  $pager_current = $pager_page_array[$element] + 1;
+  $pager_max = $pager_total[$element];
+
+  if ($pager_total[$element] > 1) {
+    $li_previous = theme('pager_previous', array(
+      'element' => $element,
+      'interval' => 1,
+      'parameters' => $parameters,
+      'text' => (isset($tags[1]) ? $tags[1] : t('‹‹'))
+    ));
+
+    $li_next = theme('pager_next', array(
+      'element' => $element,
+      'interval' => 1,
+      'parameters' => $parameters,
+      'text' => (isset($tags[3]) ? $tags[3] : t('››'))
+    ));
+
+    $items[] = array(
+      'class' => array('pager-previous'),
+      'data' => $li_previous
+    );
+
+    $items[] = array(
+      'class' => array('pager-current'),
+      'data' => t('@current of @max', array('@current' => $pager_current, '@max' => $pager_max))
+    );
+
+    $items[] = array(
+      'class' => array('pager-next'),
+      'data' => $li_next
+    );
+
+    return theme('item_list', array(
+      'attributes' => array('class' => array('pager')),
+      'items' => $items,
+      'title' => NULL,
+      'type' => 'ul'
+    ));
   }
 }

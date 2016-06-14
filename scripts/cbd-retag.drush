@@ -1,0 +1,41 @@
+#!/usr/bin/env drush
+<?php
+$data = json_decode(file_get_contents(DRUPAL_ROOT . '/../scripts/cbd-tags.json'));
+
+foreach ($data as $row) {
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'decision')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->fieldCondition('field_decision_number', 'value', $row->field_decision_number_value, '=')
+    ->fieldCondition('title_field', 'value', $row->title, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+
+  $result = $query->execute();
+
+  if (isset($result['node'])) {
+    $nids = array_keys($result['node']);
+    $nodes = entity_load('node', $nids);
+
+    foreach ($nodes as $nid => $node) {
+      $wrapper = entity_metadata_wrapper('node', $node);
+      $term = taxonomy_term_load($row->field_informea_tags_tid);
+
+      if ($row->name !== $term->name) {
+        drush_log('Name mismatch: ' . $row->field_informea_tags_tid . ': ' . $row->name . ': ' . $term->name, 'warning');
+      }
+
+      $value = $wrapper->field_informea_tags->value();
+      $value[$term->tid] = $term;
+      $wrapper->field_informea_tags->set($value);
+      $wrapper->save();
+
+      search_api_track_item_change('search_api_et_node', array($nid));
+    }
+
+    drush_log('Saved: ' . $nid . ': ' . $row->field_decision_number_value . ': ' . $row->title, 'success');
+  } else {
+    drush_log('Not found: ' . $row->field_decision_number_value . ': ' . $row->title, 'error');
+  }
+}

@@ -8,6 +8,21 @@ include_once 'country_deliverable.features.inc';
 
 
 /**
+ * Implements hook_menu().
+ */
+function country_deliverable_menu() {
+  $items['informea/autocomplete/single/field_parent_national_report/node/%'] = array(
+    'title' => 'Entity Reference Autocomplete',
+    'page callback' => 'country_deliverable_autocomplete_field_parent_national_report_callback',
+    'page arguments' => array(2, 3, 4, 5),
+    'access callback' => 'entityreference_autocomplete_access_callback',
+    'access arguments' => array(2, 3, 4, 5),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
  * Implement hook_theme().
  *
  * {@inheritdoc}
@@ -192,4 +207,45 @@ function country_deliverable_render_rod($id_treaty, $rows) {
     );
   }
   return $ret;
+}
+
+
+function country_deliverable_form_national_report_paragraph_node_form_alter(&$form, $form_state) {
+  // Use custom autocomplete for field to show the national report list
+  if (!empty($form['field_parent_national_report'][LANGUAGE_NONE]['#autocomplete_path'])) {
+    $bundle = $form['#node']->type;
+    /** @see country_deliverable_autocomplete_field_parent_national_report_callback */
+    $autocomplete_path = "informea/autocomplete/single/field_parent_national_report/node/$bundle/";
+    $autocomplete_path .= !empty($form['#node']->nid) ? $form['#node']->nid : 'NULL';
+    $form['field_parent_national_report'][LANGUAGE_NONE]['#autocomplete_path'] = $autocomplete_path;
+  }
+}
+
+function country_deliverable_autocomplete_field_parent_national_report_callback($type, $field_name, $entity_type, $bundle_name, $entity_id = '', $string = '') {
+  $q = db_select('node', 'a')->fields('a', array('nid', 'title'));
+  $q->condition('a.type', 'national_report');
+  $q->condition('a.title', '%' . $string . '%', 'LIKE');
+  $q->orderBy('a.title');
+  $q->range(0, 10);
+  $matches = array();
+  foreach ($q->execute()->fetchAllAssoc('nid') as $nid => $row) {
+    $treaty_title = '';
+    try {
+      $w = entity_metadata_wrapper('node', $nid);
+      $treaty = $w->field_treaty->value();
+      if ($treaty = reset($treaty)) {
+        $treaty_title = ' (' . $treaty->title . ')';
+      }
+    } catch (Exception $e) {}
+
+    $key = "{$row->title} ($nid)";
+    // Strip things like starting/trailing white spaces, line breaks and tags.
+    $key = preg_replace('/\s\s+/', ' ', str_replace("\n", '', trim(decode_entities(strip_tags($key)))));
+    // Names containing commas or quotes must be wrapped in quotes.
+    if (strpos($key, ',') !== FALSE || strpos($key, '"') !== FALSE) {
+      $key = '"' . str_replace('"', '""', $key) . '"';
+    }
+    $matches[$key] = '<div class="reference-autocomplete">' . $treaty_title . '<b>' . $row->title . '</b></div>';
+  }
+  drupal_json_output($matches);
 }
