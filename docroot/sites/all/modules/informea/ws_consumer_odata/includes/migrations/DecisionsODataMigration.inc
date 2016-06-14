@@ -160,7 +160,7 @@ class DecisionsODataMigration extends AbstractODataMigration {
           ws_consumer_odata_log('Missing language for file, Decision id=' . $row->id . '. File URL: ' . $file->url, MigrationBase::MESSAGE_WARNING);
           continue;
         }
-        $language = $file->language;
+        $language = ODataMigrationUtil::fixLanguage($file->language);
         $all_languages[] = $language;
 
         $row->files[] = $file->url;
