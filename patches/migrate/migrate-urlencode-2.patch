@@ -1,0 +1,12 @@
+diff --git a/plugins/destinations/file.inc b/plugins/destinations/file.inc
+index 228b600..918b614 100644
+--- a/migrate/plugins/destinations/file.inc
++++ b/migrate/plugins/destinations/file.inc
+@@ -421,6 +421,7 @@ class MigrateFileUri extends MigrateFile {
+       $filename = str_replace('%3F', '?', $filename);
+       $filename = str_replace('%26', '&', $filename);
+       $filename = str_replace('%3D', '=', $filename);
++      $filename = str_replace('%23', '#', $filename);
+     }
+     return $filename;
+   }

@@ -144,8 +144,8 @@ class DecisionsODataMigration extends AbstractODataMigration {
 
         // Filename validation
         $filename = NULL;
-        if (!empty($row->filename)) {
-          $filename = $row->filename;
+        if (!empty($file->filename)) {
+          $filename = $file->filename;
         }
         else {
           $filename = ODataMigrationUtil::filenameFromURL($file->url);
