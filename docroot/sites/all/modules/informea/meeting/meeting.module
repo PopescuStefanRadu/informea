@@ -75,6 +75,16 @@ function meeting_alter_tags_options($element) {
 }
 
 /**
+ * Implements hook_panels_pre_render().
+ */
+function meeting_panels_pre_render($panels_display, $renderer) {
+  if ($panels_display->uuid == '28410d2f-7636-46f1-93e7-a42ffe221921') {
+    drupal_add_js(libraries_get_path('jquery.expander') . '/jquery.expander.js', 'file');
+    drupal_add_js(drupal_get_path('module', 'meeting') . '/js/see_more.js', 'file');
+  }
+}
+
+/**
  * Implements hook_views_pre_render().
  */
 function meeting_views_pre_render(&$view) {

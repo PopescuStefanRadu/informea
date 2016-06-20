@@ -530,6 +530,26 @@ function informea_theme_views_pre_render(&$view) {
   }
 }
 
+/**
+ * Implements hook_preporcess_image_style().
+ */
+function informea_theme_preprocess_image_style(&$variables) {
+  $variables['attributes']['class'][] = 'img-responsive';
+  // Add default width and height attr.
+  if (empty($variables['width']) && empty($variables['height'])) {
+    $image_info = image_get_info($variables['path']);
+    if (!empty($image_info)) {
+      $variables['width'] = $image_info['width'];
+      $variables['height'] = $image_info['height'];
+    }
+  }
+  // Add an alt attribute.
+  if (empty($variables['alt'])) {
+    $variables['alt'] = drupal_basename($variables['path']);
+  }
+}
+
+
 function informea_theme_set_page_breadcrumb($breadcrumbs = array()) {
   array_unshift($breadcrumbs, l(t('Home'), '<front>'));
   drupal_set_breadcrumb($breadcrumbs);
