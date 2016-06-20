@@ -42,6 +42,7 @@ function ws_consumer_odata_migrate_api() {
       'odata_whc_Meetings'        => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_WHC, ODataConsumerConfig::$ODATA_ENTITY_MEETINGS),
       'odata_montreal_Meetings'   => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_MONTREAL, ODataConsumerConfig::$ODATA_ENTITY_MEETINGS),
       'odata_ramsar_Meetings'     => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_RAMSAR, ODataConsumerConfig::$ODATA_ENTITY_MEETINGS),
+      'odata_unfccc_Meetings'     => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_UNFCCC, ODataConsumerConfig::$ODATA_ENTITY_MEETINGS),
 
       /* NationalPlans migrations */
       'odata_stockholm_NationalPlans' => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_STOCKHOLM, ODataConsumerConfig::$ODATA_ENTITY_ACTION_PLAN),
@@ -73,6 +74,10 @@ function ws_consumer_odata_migrate_api() {
       /* Sites migrations */
       'odata_whc_Sites' => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_WHC, ODataConsumerConfig::$ODATA_ENTITY_SITES),
       'odata_ramsar_Sites' => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_RAMSAR, ODataConsumerConfig::$ODATA_ENTITY_SITES),
+
+      /* Documents migrations */
+      'odata_cms_documents' => ODataMigrationUtil::createMigrationConfig(ODataConsumerConfig::$ODATA_NAME_CMS, ODataConsumerConfig::$ODATA_ENTITY_DOCUMENT),
+
     )
   );
 
@@ -397,6 +402,15 @@ class ODataMigrationUtil {
       }
       return NULL;
     }
+  }
+
+  static function getTaxonomyTermByName($name, $vid) {
+    /** @var SelectQuery $query */
+    $query = db_select('taxonomy_term_data', 'a')->fields('a', array('tid'))->condition('vid', $vid)->condition('name', $name);
+    if ($tid = $query->execute()->fetchField()) {
+      return $tid;
+    }
+    return FALSE;
   }
 
   /**

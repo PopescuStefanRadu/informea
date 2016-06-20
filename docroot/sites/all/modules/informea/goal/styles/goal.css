@@ -65,6 +65,7 @@
 
 .related-national-reports-container .national-report-paragraphs .item {
     border-bottom: 1px solid #ddd;
+    margin-top: 10px;
 }
 
 .related-national-reports-container .national-reports .flag {

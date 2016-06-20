@@ -191,9 +191,16 @@ function treaty_format_meeting_description($meeting) {
     '#attributes' => array('class' => array('list-inline', 'meta'))
   );
   $description['#items'][] = format_date(strtotime($w->event_calendar_date->value()['value']), 'short');
-  $location = $w->field_location->value();
-  if (!empty($location)) {
+  if ($location = $w->field_location->value()) {
     $description['#items'][] = $location;
+  }
+  if ($city = $w->field_city->value()) {
+    $description['#items'][] = $city;
+  }
+  if ($country = $w->field_country->value()) {
+    if (!empty($country[0])) {
+      $description['#items'][] = $country[0]->title;
+    }
   }
   if (!empty($meeting->decisions)) {
     $description['#items'][] = format_plural(count($meeting->decisions), 'one decision', '@count decisions');

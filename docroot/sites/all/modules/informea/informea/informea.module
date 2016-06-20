@@ -910,6 +910,12 @@ function informea_form_node_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+function informea_field_widget_entityreference_autocomplete_form_alter(&$element, &$form_state, $context) {
+  if (!empty($context['field']) && $context['field']['field_name'] == 'field_sdg_goals' && !empty($element['target_id'])) {
+    $element['target_id']['#autocomplete_path'] = 'goal/autocomplete/field_sdg_goals';
+  }
+}
+
 function informea_node_form_validate_field_treaty($form, $form_state) {
   global $user;
   if (informea_user_is_mea($user)) {

@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file
+ * Code for the Document feature.
+ */
+
+include_once 'document.features.inc';
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function document_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#id'] == 'views-exposed-form-documents-page') {
+    if (isset($form['field_country'])) {
+      $q = db_select('node', 'a')->fields('a', array('nid', 'title'));
+      $q->innerJoin('field_data_field_country', 'b', 'a.nid = b.field_country_target_id');
+      $q->condition('b.bundle', 'document');
+      $q->groupBy('a.nid');
+      $q->orderBy('a.title');
+
+      $form['field_country']['#type'] = 'select';
+      $form['field_country']['#multiple'] = FALSE;
+      $form['field_country']['#size'] = NULL;
+      $form['field_country']['#empty_option'] = t('- Any -');
+      $form['field_country']['#options'] = $q->execute()->fetchAllKeyed();
+    }
+
+    if (isset($form['field_treaty'])) {
+      $q = db_select('node', 'a')->fields('a', array('nid', 'title'));
+      $q->innerJoin('field_data_field_treaty', 'b', 'a.nid = b.field_treaty_target_id');
+      $q->condition('b.bundle', 'document');
+      $q->groupBy('a.nid');
+      $q->orderBy('a.title');
+
+      $form['field_treaty']['#type'] = 'select';
+      $form['field_treaty']['#multiple'] = FALSE;
+      $form['field_treaty']['#size'] = NULL;
+      $form['field_treaty']['#empty_option'] = t('- Any -');
+      $form['field_treaty']['#options'] = $q->execute()->fetchAllKeyed();
+    }
+
+    if (isset($form['field_informea_tags'])) {
+      $q = db_select('taxonomy_term_data', 'a')->fields('a', array('tid'));
+      $q->innerJoin('field_data_field_informea_tags', 'b', 'a.tid = b.field_informea_tags_tid');
+      $q->condition('b.bundle', 'document');
+      $q->groupBy('a.tid');
+      $allowed = $q->execute()->fetchCol();
+      $options = array('All' => t('- Any -'));
+      foreach ($form['field_informea_tags']['#options'] as $k => $v) {
+        if (in_array($k, $allowed)) {
+          $options[$k] = $v;
+        }
+      }
+      $form['field_informea_tags']['#options'] = $options;
+    }
+  }
+}

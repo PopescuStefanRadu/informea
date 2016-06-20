@@ -13,13 +13,13 @@ function decision_form_decision_node_form_alter(&$form, &$form_state) {
   global $user;
 
   if ($user->uid !== 1 || !in_array('administrator', $user->roles)) {
-    hide($form['field_original_id']);
-    hide($form['field_sorting_order']);
+    $form['field_original_id']['#access'] = FALSE;
+    $form['field_sorting_order']['#access'] = FALSE;
   }
 
-  hide($form['field_last_update']);
-  hide($form['field_meeting_url']);
-  hide($form['field_meeting_title_en']);
+  $form['field_last_update']['#access'] = FALSE;
+  $form['field_meeting_url']['#access'] = FALSE;
+  $form['field_meeting_title_en']['#access'] = FALSE;
 }
 
 /**

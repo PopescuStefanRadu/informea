@@ -28,6 +28,155 @@ function informea_search_views_api($module = NULL, $api = NULL) {
  */
 function informea_search_default_search_api_index() {
   $items = array();
+  $items['informea_documents'] = entity_import('search_api_index', '{
+    "name" : "InforMEA Documents",
+    "machine_name" : "informea_documents",
+    "description" : null,
+    "server" : "solr_4_informea_documents",
+    "item_type" : "node",
+    "options" : {
+      "datasource" : { "bundles" : [ "document" ] },
+      "index_directly" : 1,
+      "cron_limit" : "50",
+      "fields" : {
+        "attachments_field_document_abstract" : { "type" : "text" },
+        "attachments_field_document_other" : { "type" : "text" },
+        "attachments_field_files" : { "type" : "text" },
+        "body:summary" : { "type" : "text" },
+        "body:value" : { "type" : "text" },
+        "created" : { "type" : "date" },
+        "field_country" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
+        "field_document_authors" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "field_document_identifiers" : {
+          "type" : "list\\u003Cinteger\\u003E",
+          "entity_type" : "field_collection_item"
+        },
+        "field_document_type" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "field_image:alt" : { "type" : "text" },
+        "field_image:file" : { "type" : "integer", "entity_type" : "file" },
+        "field_informea_tags" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "taxonomy_term" },
+        "field_last_update" : { "type" : "date" },
+        "field_sorting_date" : { "type" : "date" },
+        "field_sorting_order" : { "type" : "integer" },
+        "field_treaty" : { "type" : "list\\u003Cinteger\\u003E", "entity_type" : "node" },
+        "language" : { "type" : "string" },
+        "nid" : { "type" : "integer" },
+        "promote" : { "type" : "boolean" },
+        "search_api_language" : { "type" : "string" },
+        "status" : { "type" : "integer" },
+        "title" : { "type" : "text" },
+        "title_field" : { "type" : "text" },
+        "type" : { "type" : "string" },
+        "url" : { "type" : "uri" },
+        "uuid" : { "type" : "text" },
+        "vid" : { "type" : "integer" }
+      },
+      "data_alter_callbacks" : {
+        "search_api_alter_node_status" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_attachments_alter_settings" : {
+          "status" : 1,
+          "weight" : "0",
+          "settings" : {
+            "excluded_extensions" : "aif art avi bmp gif ico mov oga ogv png psd ra ram rgb flv",
+            "number_indexed" : "0",
+            "max_file_size" : "0",
+            "excluded_private" : 1
+          }
+        },
+        "search_api_attachments_entityreference_alter_settings" : {
+          "status" : 0,
+          "weight" : "0",
+          "settings" : {
+            "excluded_extensions" : "aif art avi bmp gif ico mov oga ogv png psd ra ram rgb flv",
+            "number_indexed" : "0",
+            "max_file_size" : "0",
+            "excluded_private" : 1
+          }
+        },
+        "search_api_alter_node_access" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_language_control" : {
+          "status" : 0,
+          "weight" : "0",
+          "settings" : { "lang_field" : "", "languages" : [] }
+        },
+        "search_api_alter_add_aggregation" : { "status" : 0, "weight" : "0", "settings" : [] },
+        "search_api_alter_add_viewed_entity" : { "status" : 0, "weight" : "0", "settings" : { "mode" : "full" } },
+        "search_api_alter_add_hierarchy" : { "status" : 0, "weight" : "0", "settings" : { "fields" : [] } },
+        "search_api_alter_add_url" : { "status" : 0, "weight" : "0", "settings" : [] }
+      },
+      "processors" : {
+        "search_api_case_ignore" : {
+          "status" : 0,
+          "weight" : "0",
+          "settings" : { "fields" : {
+              "title" : true,
+              "uuid" : true,
+              "title_field" : true,
+              "field_image:alt" : true
+            }
+          }
+        },
+        "search_api_html_filter" : {
+          "status" : 0,
+          "weight" : "10",
+          "settings" : {
+            "fields" : {
+              "title" : true,
+              "uuid" : true,
+              "title_field" : true,
+              "field_image:alt" : true
+            },
+            "title" : 0,
+            "alt" : 1,
+            "tags" : "h1 = 5\\r\\nh2 = 3\\r\\nh3 = 2\\r\\nstrong = 2\\r\\nb = 2\\r\\nem = 1.5\\r\\nu = 1.5"
+          }
+        },
+        "search_api_tokenizer" : {
+          "status" : 0,
+          "weight" : "20",
+          "settings" : {
+            "fields" : {
+              "title" : true,
+              "uuid" : true,
+              "title_field" : true,
+              "field_image:alt" : true
+            },
+            "spaces" : "[^[:alnum:]]",
+            "ignorable" : "[\\u0027]"
+          }
+        },
+        "search_api_stopwords" : {
+          "status" : 0,
+          "weight" : "30",
+          "settings" : {
+            "fields" : {
+              "title" : true,
+              "uuid" : true,
+              "title_field" : true,
+              "field_image:alt" : true
+            },
+            "file" : "",
+            "stopwords" : "but\\r\\ndid\\r\\nthe this that those\\r\\netc"
+          }
+        },
+        "search_api_highlighting" : {
+          "status" : 1,
+          "weight" : "35",
+          "settings" : {
+            "prefix" : "\\u003Cstrong\\u003E",
+            "suffix" : "\\u003C\\/strong\\u003E",
+            "excerpt" : 1,
+            "excerpt_length" : "256",
+            "exclude_fields" : [],
+            "highlight" : "always"
+          }
+        }
+      }
+    },
+    "enabled" : "1",
+    "read_only" : "0",
+    "rdf_mapping" : []
+  }');
   $items['informea_fulltext_solr_index'] = entity_import('search_api_index', '{
     "name" : "InforMEA fulltext Solr index",
     "machine_name" : "informea_fulltext_solr_index",
@@ -245,6 +394,30 @@ function informea_search_default_search_api_server() {
       "highlight_data" : 1,
       "skip_schema_check" : 0,
       "solr_version" : "4",
+      "http_method" : "AUTO"
+    },
+    "enabled" : "1",
+    "rdf_mapping" : []
+  }');
+  $items['solr_4_informea_documents'] = entity_import('search_api_server', '{
+    "name" : "solr 4 informea-documents",
+    "machine_name" : "solr_4_informea_documents",
+    "description" : "",
+    "class" : "search_api_solr_service",
+    "options" : {
+      "clean_ids" : true,
+      "site_hash" : true,
+      "scheme" : "http",
+      "host" : "localhost",
+      "port" : "8983",
+      "path" : "\\/solr\\/informea-documents",
+      "http_user" : "",
+      "http_pass" : "",
+      "excerpt" : 1,
+      "retrieve_data" : 1,
+      "highlight_data" : 1,
+      "skip_schema_check" : 0,
+      "solr_version" : "",
       "http_method" : "AUTO"
     },
     "enabled" : "1",

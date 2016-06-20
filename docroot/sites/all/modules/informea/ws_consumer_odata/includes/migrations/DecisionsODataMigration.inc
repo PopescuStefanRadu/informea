@@ -194,7 +194,7 @@ class DecisionsODataMigration extends AbstractODataMigration {
         ->condition('m.sourceid1', $id_event);
       $ret = $query->execute()->fetchField();
       if (!$ret) {
-        ws_consumer_odata_log('Meeting with source id=' . $id .' has not been found.', MigrationBase::MESSAGE_ERROR);
+        ws_consumer_odata_log('Meeting with source id=' . $id_event .' has not been found.', MigrationBase::MESSAGE_ERROR);
       }
     }
     else if (!empty($meeting_title) && !empty($id_treaty)) {

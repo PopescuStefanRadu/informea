@@ -39,6 +39,9 @@ class ODataConsumerConfig {
   public static $ODATA_ENTITY_DECISIONS = 'Decisions';
   public static $DRUPAL_TYPE_DECISIONS = 'decision';
 
+  public static $ODATA_ENTITY_DOCUMENT = 'Documents';
+  public static $DRUPAL_TYPE_DOCUMENT = 'document';
+
   protected static $SETTINGS_VARIABLE = 'informea_odata_consumer_config';
   public $odata_entity = NULL;
   public $odata_name = NULL;
@@ -86,6 +89,7 @@ class ODataConsumerConfig {
       ODataConsumerConfig::$ODATA_ENTITY_ACTION_PLAN,
       ODataConsumerConfig::$ODATA_ENTITY_SITES,
       ODataConsumerConfig::$ODATA_ENTITY_DECISIONS,
+      ODataConsumerConfig::$ODATA_ENTITY_DOCUMENT,
     );
   }
 
@@ -137,6 +141,7 @@ class ODataConsumerConfig {
       self::$ODATA_ENTITY_ACTION_PLAN => self::$DRUPAL_TYPE_ACTION_PLAN,
       self::$ODATA_ENTITY_SITES => self::$DRUPAL_TYPE_SITES,
       self::$ODATA_ENTITY_DECISIONS => self::$DRUPAL_TYPE_DECISIONS,
+      self::$ODATA_ENTITY_DOCUMENT => self::$DRUPAL_TYPE_DOCUMENT,
     );
     return $mappings[$this->odata_entity];
   }
@@ -178,7 +183,8 @@ class ODataConsumerConfig {
           'default' => 'http://odata.cites.org/informea.svc'
         ),
         self::$ODATA_NAME_CMS => array(
-          'default' => 'http://odata.cms.eaudeweb.ro/cms/informea.svc'
+          'default' => 'http://odata.cms.eaudeweb.ro/cms/informea.svc',
+          'Documents' => 'http://localhost:8180/informea.svc'
         ),
         self::$ODATA_NAME_AEWA => array(
           'default' => 'http://odata.cms.eaudeweb.ro/aewa/informea.svc'
@@ -273,6 +279,9 @@ class ODataConsumerConfig {
 
       case self::$ODATA_ENTITY_SITES:
         return '&$expand=name&$orderby=updated%20desc,id';
+
+      case self::$ODATA_ENTITY_DOCUMENT:
+        return '&$expand=authors,descriptions,files,identifier,keywords,referenceToEntities,tag,titles,types&$orderby=updated%20desc,id';
     }
     return '';
   }

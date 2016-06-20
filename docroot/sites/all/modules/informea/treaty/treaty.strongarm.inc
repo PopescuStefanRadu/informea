@@ -559,6 +559,12 @@ function treaty_strongarm() {
         'language' => array(
           'weight' => '0',
         ),
+        'metatags' => array(
+          'weight' => '40',
+        ),
+        'xmlsitemap' => array(
+          'weight' => '30',
+        ),
       ),
       'display' => array(),
     ),
@@ -584,6 +590,12 @@ function treaty_strongarm() {
         ),
         'redirect' => array(
           'weight' => '2',
+        ),
+        'metatags' => array(
+          'weight' => '40',
+        ),
+        'xmlsitemap' => array(
+          'weight' => '30',
         ),
       ),
       'display' => array(),

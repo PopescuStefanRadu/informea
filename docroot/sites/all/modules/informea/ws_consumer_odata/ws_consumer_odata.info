@@ -12,6 +12,7 @@ files[] = includes/migrations/MeetingsODataMigration.inc
 files[] = includes/migrations/NationalPlansODataMigration.inc
 files[] = includes/migrations/CountryReportsODataMigration.inc
 files[] = includes/migrations/DecisionsODataMigration.inc
+files[] = includes/migrations/DocumentsODataMigration.inc
 files[] = includes/migrations/SitesODataMigration.inc
 files[] = includes/odata/ODataConsumer.inc
 files[] = includes/odata/ODataConsumerV1.inc

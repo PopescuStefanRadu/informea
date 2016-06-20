@@ -9,7 +9,6 @@ function ws_consumer_odata_admin_config_form() {
     '#markup' => '<h1>Configure data providers</h1>' .
       '<p>Use this form to configure URL endpoints to the OData services</p>'
   );
-
   $form['odata_page_size'] = array(
     '#type' => 'textfield',
     '#size' => 20,

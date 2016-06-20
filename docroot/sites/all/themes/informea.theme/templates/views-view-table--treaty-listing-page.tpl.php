@@ -29,7 +29,7 @@
           <th <?php if ($header_classes[$field]) { print 'class="'. $header_classes[$field] . '" '; } ?>>
             <?php if ($field == 'field_region'): ?>
               <a id="dRegion" data-target="#" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <?php print $label; ?>
+                <?php print 'Geo. scope'; ?>
                 <span class="caret"></span>
               </a><!-- #dRegion -->
               <ul class="dropdown-menu dropdown-menu-right" aria-labeledby="dRegion">
@@ -52,11 +52,11 @@
         <?php foreach ($row as $field => $content): ?>
           <td <?php if ($field_classes[$field][$row_count]) { print 'class="'. $field_classes[$field][$row_count] . '" '; } ?><?php print drupal_attributes($field_attributes[$field][$row_count]); ?>>
             <?php print $content; ?>
-            <?php if ($field == 'field_official_name' && $view->result[$row_count]->total_protocols): ?>
+            <?php if ($field == 'field_title_abbreviation' && $view->result[$row_count]->total_protocols): ?>
               <p>
                 <button type="button" class="btn btn-primary btn-xs" data-toggle="protocols" data-nid="<?php print $view->result[$row_count]->nid; ?>">
                   <span class="glyphicon glyphicon-plus-sign"></span>
-                  <?php print t('Toggle protocols'); ?>
+                  <?php print t('View protocols'); ?>
                 </button><!-- .btn .btn-primary .btn-xs -->
               </p>
             <?php endif; ?>

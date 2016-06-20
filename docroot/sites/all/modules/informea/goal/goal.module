@@ -6,6 +6,47 @@
 
 include_once 'goal.features.inc';
 
+/**
+ * Implements hook_menu().
+ */
+function goal_menu() {
+
+  $items = array();
+
+  $items['goal/autocomplete/field_sdg_goals'] = array(
+    'title' => 'SDG goals Autocomplete',
+    'page callback' => 'sdg_goals_autocomplete_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Menu callback for SDG goals autocomplete.
+ *
+ * @param $string
+ */
+function sdg_goals_autocomplete_callback($string) {
+  $matches = [];
+
+  $args = func_get_args();
+  $string = implode('/', $args);
+
+  $q = db_select('node', 'n');
+  $q->innerJoin('field_data_field_goal_source', 'gs', 'n.nid = gs.entity_id');
+  $q->fields('n', ['nid', 'title']);
+  $q->condition('gs.field_goal_source_tid', '1753'); /* SDG goals */
+  $q->condition('n.title', '%' . db_like($string) . '%', 'LIKE');
+  $items = $q->execute()->fetchAllKeyed();
+  foreach ($items as $nid => $title) {
+    $matches["{$title} ({$nid})"] = '<div class="reference-autocomplete">' . $title . '</div>';
+  }
+
+  drupal_json_output($matches);
+}
+
 function goal_theme() {
   return array(
     'goals_listing' => array(
@@ -125,16 +166,17 @@ function goal_block_view($delta = '') {
 function goal_get_related_content($goal_nid) {
   $return = [];
   $nids = db_select('field_data_field_sdg_goals', 'g')
-    ->fields('g', ['entity_id'])
-    ->condition('g.bundle', 'national_report_paragraph')
+    ->fields('g', ['entity_id', 'bundle'])
+    ->condition('g.bundle', ['national_report_paragraph', 'treaty_paragraph'], 'IN')
     ->condition('g.field_sdg_goals_target_id', $goal_nid)
-    ->execute()->fetchCol();
+    ->execute()->fetchAllKeyed();
   if (!empty($nids)) {
+    // Get the national reports
     $q = db_select('field_data_field_parent_national_report', 'p');
     $q->innerJoin('field_data_field_treaty', 't', 'p.field_parent_national_report_target_id = t.entity_id');
     $q->fields('p', ['entity_id', 'field_parent_national_report_target_id'])
       ->fields('t', ['field_treaty_target_id'])
-      ->condition('p.entity_id', $nids, 'IN');
+      ->condition('p.entity_id', array_keys($nids), 'IN');
     $paragraphs = $q->execute()->fetchAll();
     foreach ($paragraphs as $paragraph) {
       $treaty_id = $paragraph->field_treaty_target_id;
@@ -151,6 +193,30 @@ function goal_get_related_content($goal_nid) {
       }
       $paragraph = node_load($paragraph->entity_id);
       $return[$treaty_id]->national_reports[$national_report_id]->children[] = $paragraph;
+    }
+
+    // Get the treaty articles
+    $q = db_select('field_data_field_parent_treaty_article', 'a');
+    $q->innerJoin('field_data_field_treaty', 't', 'a.field_parent_treaty_article_target_id = t.entity_id');
+    $q->fields('a', ['entity_id', 'field_parent_treaty_article_target_id'])
+      ->fields('t', ['field_treaty_target_id'])
+      ->condition('a.entity_id', array_keys($nids), 'IN');
+    $paragraphs = $q->execute()->fetchAll();
+    foreach ($paragraphs as $paragraph) {
+      $treaty_id = $paragraph->field_treaty_target_id;
+      $article_id = $paragraph->field_parent_treaty_article_target_id;
+      if (empty($return[$treaty_id])) {
+        $treaty = node_load($treaty_id);
+        $treaty->national_reports = [];
+        $return[$treaty_id] = $treaty;
+      }
+      if (empty($return[$treaty_id]->treaty_articles[$article_id])) {
+        $article = node_load($article_id);
+        $article->children = [];
+        $return[$treaty_id]->treaty_articles[$article_id] = $article;
+      }
+      $paragraph = node_load($paragraph->entity_id);
+      $return[$treaty_id]->treaty_articles[$article_id]->children[] = $paragraph;
     }
   }
   return $return;

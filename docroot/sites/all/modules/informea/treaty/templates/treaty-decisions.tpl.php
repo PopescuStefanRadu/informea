@@ -14,6 +14,9 @@ global $language, $user;
   <?php
     foreach ($decisions as $nid => $decision):
         $number = !empty($decision->field_decision_number[LANGUAGE_NONE][0]['value']) ? $decision->field_decision_number[LANGUAGE_NONE][0]['value'] : '&nbsp;';
+        if ($number == 'n/a') {
+          $number = '';
+        }
         $title = !empty($decision->title_field[$language->language][0]['value']) ? $decision->title_field[$language->language][0]['value'] : $decision->title;
   ?>
       <tr id="decision-<?php print $nid ?>">
